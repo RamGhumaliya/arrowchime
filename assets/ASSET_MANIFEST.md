@@ -1,0 +1,62 @@
+# Asset Manifest
+
+Every file the code references. Claude Code must create **obvious placeholders with these exact paths** (via `tool/gen_placeholder_assets.dart`, rules in `docs/10_DESIGN_SYSTEM.md` §10) so final **human-made** art/audio can be dropped in later with no code changes. Claude Code never generates or downloads realistic images for these paths.
+
+Formats: images WebP (PNG fallback for icons), audio OGG (WAV for placeholders is fine — keep the same base name and switch extension in one constant file `lib/core/assets.dart`).
+
+## Branding
+| Path | Spec |
+|---|---|
+| `assets/branding/app_icon.svg` | Icon direction sketch (provided) — final by designer |
+| `assets/branding/logo_concepts.svg` | Logo directions (provided) — final by designer |
+| `assets/images/app_icon_ios_1024.png`, `assets/images/app_icon_android_fg.png`, `app_icon_android_bg.png` | Final icon exports |
+| `assets/images/logo_wordmark.webp` | 1200×360, transparent |
+| `assets/images/splash_mark.webp` | 512×512, transparent |
+
+## Chapter scenes (per chapter N = 1..5)
+| Path | Spec |
+|---|---|
+| `assets/images/chapters/chN/bg_sky.webp` | 2048×2732 |
+| `assets/images/chapters/chN/bg_far.webp` | 2048×2732, transparent |
+| `assets/images/chapters/chN/bg_mid.webp` | 2048×2732, transparent |
+| `assets/images/chapters/chN/bg_near.webp` | 2048×2732, transparent |
+| `assets/images/chapters/chN/fg.webp` | 2048×2732, transparent |
+| `assets/images/chapters/chN/fragments.json` | 60 fragment definitions: `{id, rect | maskPath | elementId}` |
+| `assets/images/chapters/chN/thumb.webp` | 512×512 chapter card |
+
+Placeholder: plain vertical gradient in the chapter palette (debug builds add a small "PLACEHOLDER" label); `fragments.json` = 60 rects in a 6×10 grid.
+Landscape crops for tablets: same names with `_land` suffix, 2732×2048.
+
+## UI icons — 3D set by a human 3D artist (256 px WebP @1x/2x/3x)
+`coin`, `gem`, `heart`, `heart_broken`, `star`, `star_empty`, `chest`, `key`, `ice`, `hint` (bulb), `undo`, `grid`, `fit`, `pause`, `settings` (gear), `shop` (bag), `trophy`, `calendar`, `flame` (streak), `share`, `lock`, `bell` (Arrowchime chime), `quests` (scroll), `collection` (shelf box) → `assets/images/ui/<name>.webp` (+ `2.0x/`, `3.0x/` folders).
+One material style (soft clay-ceramic), top-left key light, slight 3/4 angle, transparent background. Until delivered, Claude Code paints placeholder icons in code (`lib/core/ui/icons/`).
+
+## Mechanic sprites
+`assets/images/mechanics/rotator_ring.svg`, `gate_amber.svg`, `gate_jade.svg`, `gate_rose.svg`, `gate_azure.svg`, `portal_ring.svg`, `chain_link.svg`, `ice_block_9slice.webp`
+
+## Cosmetics
+`assets/images/cosmetics/<skin_id>_preview.webp` (256×256) for: `candy, bamboo, brass, silk, crystal, galaxy, neon, paper, pixel`. Trails & instruments use icons from `ui/`.
+
+## Shaders
+`assets/shaders/glow.frag` (Neon/Galaxy skins), `assets/shaders/desaturate.frag` (optional; ColorFilter fallback).
+
+## Rive / Lottie (optional)
+`assets/rive/mascot.riv`, `assets/rive/buttons.riv`, `assets/lottie/confetti.json`
+
+## Fonts
+`assets/fonts/Fredoka-SemiBold.ttf`, `Fredoka-Bold.ttf`, `Nunito-Medium.ttf`, `Nunito-Bold.ttf` (+ OFL licence files)
+
+## Audio
+| Path | Notes |
+|---|---|
+| `assets/audio/music/chN_loop.ogg` | N = 1..5, gapless loop |
+| `assets/audio/music/boss_sting_chN.ogg` | 8–12 s |
+| `assets/audio/notes/<instrument>/<note>.ogg` | instruments: `kalimba, musicbox, santoor, celesta, harp, piano, marimba, pixel, choir`; notes named like `C4, D4, E4, G4, A4, C5 …` covering 2 octaves of the chapter scale |
+| `assets/audio/sfx/<id>.ogg` | ids from `docs/07_AUDIO_DESIGN.md` §2 |
+| `assets/audio/LICENSES.md` | Source + licence per file |
+
+## Licences
+`assets/ART_LICENSES.md` — every image/3D file → creator → licence (work-for-hire / full commercial rights).
+
+## Levels
+`assets/levels/level.schema.json` (provided), `assets/levels/sample_levels.json` (provided, 3 hand-made levels for engine tests), `assets/levels/ch1.json … ch5.json` (generated), `assets/levels/daily_2027.json` (generated).

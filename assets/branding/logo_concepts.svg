@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1800 720" width="1800" height="720">
+  <title>Arrowchime logo directions — A icon, B sticker wordmark, C dark lockup</title>
+  <defs>
+    <linearGradient id="tile" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#23A69B"/><stop offset="0.55" stop-color="#16707A"/><stop offset="1" stop-color="#0E3A4A"/>
+    </linearGradient>
+    <linearGradient id="brass" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#FFF0B8"/><stop offset="0.35" stop-color="#F5C451"/><stop offset="0.75" stop-color="#C98A22"/><stop offset="1" stop-color="#8A5A14"/>
+    </linearGradient>
+    <linearGradient id="word" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFB769"/><stop offset="0.55" stop-color="#FF8A1F"/><stop offset="1" stop-color="#E06B0C"/>
+    </linearGradient>
+    <g id="bell">
+      <path d="M 0 -40 C -22 -40 -28 -24 -29 -8 C -30 8 -34 16 -42 22 L 42 22 C 34 16 30 8 29 -8 C 28 -24 22 -40 0 -40 Z" fill="url(#brass)" stroke="#7E5011" stroke-width="3"/>
+      <circle cx="0" cy="30" r="8" fill="url(#brass)" stroke="#7E5011" stroke-width="3"/>
+      <path d="M -14 -24 C -18 -10 -19 2 -22 12" stroke="#FFF8DD" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.8"/>
+    </g>
+  </defs>
+  <rect width="1800" height="720" fill="#FFF6E6"/>
+  <g font-family="Fredoka, 'Arial Rounded MT Bold', Nunito, sans-serif" font-weight="700" fill="#121A2B" font-size="28" text-anchor="middle">
+    <text x="300" y="680">A · Icon "Chime Arrow"</text>
+    <text x="900" y="680">B · Sticker wordmark</text>
+    <text x="1500" y="680">C · Dark lockup</text>
+  </g>
+
+  <!-- A -->
+  <svg x="60" y="80" width="480" height="480" viewBox="0 0 1024 1024">
+  
+  <defs>
+    <linearGradient id="i_tile" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#23A69B"/>
+      <stop offset="0.55" stop-color="#16707A"/>
+      <stop offset="1" stop-color="#0E3A4A"/>
+    </linearGradient>
+    <linearGradient id="i_rim" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="0.45" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.35"/>
+    </linearGradient>
+    <radialGradient id="i_pool" cx="0.32" cy="0.22" r="0.7">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="i_brass" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#FFF0B8"/>
+      <stop offset="0.35" stop-color="#F5C451"/>
+      <stop offset="0.75" stop-color="#C98A22"/>
+      <stop offset="1" stop-color="#8A5A14"/>
+    </linearGradient>
+    <linearGradient id="i_brassRim" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FFE7A0"/>
+      <stop offset="0.5" stop-color="#D9A03A"/>
+      <stop offset="1" stop-color="#7E5011"/>
+    </linearGradient>
+    <filter id="i_soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="16"/></filter>
+    <filter id="i_tight" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/></filter>
+  </defs>
+
+  <!-- ceramic tile with top-left light -->
+  <rect width="1024" height="1024" rx="232" fill="url(#i_tile)"/>
+  <rect width="1024" height="1024" rx="232" fill="url(#i_pool)"/>
+  <rect x="10" y="10" width="1004" height="1004" rx="224" fill="none" stroke="url(#i_rim)" stroke-width="18"/>
+
+  <!-- BELL (brass) -->
+  <g>
+    <ellipse cx="420" cy="676" rx="190" ry="40" fill="#06222C" opacity="0.45" filter="url(#i_soft)"/>
+    <path d="M 420 330 C 330 330 300 400 296 480 C 292 560 270 600 236 630 C 226 640 232 656 246 656 L 594 656 C 608 656 614 640 604 630 C 570 600 548 560 544 480 C 540 400 510 330 420 330 Z" fill="url(#i_brass)"/>
+    <ellipse cx="420" cy="652" rx="176" ry="22" fill="url(#i_brassRim)"/>
+    <circle cx="420" cy="692" r="30" fill="url(#i_brass)"/>
+    <circle cx="410" cy="682" r="9" fill="#FFF6D8" opacity="0.8"/>
+    <rect x="404" y="294" width="32" height="44" rx="14" fill="url(#i_brass)"/>
+    <path d="M 352 400 C 340 450 336 520 322 580" fill="none" stroke="#FFF8DD" stroke-width="16" stroke-linecap="round" opacity="0.75"/>
+  </g>
+
+  <!-- chime waves -->
+  <g fill="none" stroke="#FFE7A8" stroke-linecap="round" opacity="0.9">
+    <path d="M 214 404 C 192 440 192 488 214 524" stroke-width="16"/>
+    <path d="M 168 372 C 136 424 136 508 168 560" stroke-width="12" opacity="0.6"/>
+  </g>
+
+  <!-- ARROW: glossy enamel tube, 5 passes -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path id="i_a" d="M 196 830 C 330 900 600 880 690 760 C 770 650 740 540 760 430 C 772 370 790 320 812 270"
+          stroke="#06222C" stroke-width="92" opacity="0.40" transform="translate(16,26)" filter="url(#i_soft)"/>
+    <path d="M 196 830 C 330 900 600 880 690 760 C 770 650 740 540 760 430 C 772 370 790 320 812 270" stroke="#B4500A" stroke-width="94"/>
+    <path d="M 196 830 C 330 900 600 880 690 760 C 770 650 740 540 760 430 C 772 370 790 320 812 270" stroke="#FF8A1F" stroke-width="78"/>
+    <path d="M 196 830 C 330 900 600 880 690 760 C 770 650 740 540 760 430 C 772 370 790 320 812 270" stroke="#FFB769" stroke-width="30" transform="translate(-8,-12)"/>
+    <path d="M 196 830 C 330 900 600 880 690 760 C 770 650 740 540 760 430 C 772 370 790 320 812 270" stroke="#FFFFFF" stroke-width="9" opacity="0.8" transform="translate(-14,-20)" stroke-dasharray="210 120 320 900"/>
+  </g>
+  <!-- nock ring at the tail -->
+  <circle cx="196" cy="830" r="38" fill="#C85A08"/>
+  <circle cx="196" cy="830" r="22" fill="#FFB769"/>
+  <!-- arrowhead -->
+  <g transform="translate(834,212) rotate(22)">
+    <path d="M 0 -96 L 78 34 Q 0 12 -78 34 Z" fill="#06222C" opacity="0.35" transform="translate(14,24)" filter="url(#i_tight)"/>
+    <path d="M 0 -96 L 78 34 Q 0 12 -78 34 Z" fill="#B4500A" stroke="#B4500A" stroke-width="16" stroke-linejoin="round"/>
+    <path d="M 0 -84 L 64 26 Q 0 8 -64 26 Z" fill="#FF8A1F"/>
+    <path d="M -6 -66 L -44 14" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" opacity="0.75"/>
+  </g>
+</svg>
+
+  <!-- B: sticker wordmark on cream -->
+  <g transform="translate(900,360)" font-family="Fredoka, 'Arial Rounded MT Bold', Nunito, sans-serif" font-weight="700" font-size="104" text-anchor="middle" letter-spacing="-1">
+    <text x="0" y="10" fill="#121A2B" opacity="0.35">Arrowch&#305;me</text>
+    <text x="0" y="0" fill="none" stroke="#121A2B" stroke-width="16" stroke-linejoin="round">Arrowch&#305;me</text>
+    <text x="0" y="0" fill="url(#word)">Arrowch&#305;me</text>
+    <use href="#bell" transform="translate(188,-84) scale(0.5)"/>
+    <text x="0" y="74" font-family="Nunito, sans-serif" font-size="30" font-weight="700" fill="#3A4A6B" letter-spacing="3">ARROW ESCAPE PUZZLE</text>
+  </g>
+
+  <!-- C: dark tile lockup -->
+  <g transform="translate(1230,210)">
+    <rect width="540" height="300" rx="56" fill="url(#tile)"/>
+    <rect x="6" y="6" width="528" height="288" rx="50" fill="none" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="6"/>
+    <use href="#bell" transform="translate(100,138) scale(1.15)"/>
+    <g font-family="Fredoka, 'Arial Rounded MT Bold', Nunito, sans-serif" font-weight="700" font-size="54">
+      <text x="170" y="164" fill="#06222C" opacity="0.4">Arrowchime</text>
+      <text x="170" y="157" fill="#FFF6E6">Arrowchime</text>
+    </g>
+    <path d="M 170 200 C 260 236 400 236 486 196" fill="none" stroke="#B4500A" stroke-width="18" stroke-linecap="round"/>
+    <path d="M 170 200 C 260 236 400 236 486 196" fill="none" stroke="#FF8A1F" stroke-width="12" stroke-linecap="round"/>
+    <path d="M 512 180 L 476 184 L 494 214 Z" fill="#FF8A1F" stroke="#B4500A" stroke-width="5" stroke-linejoin="round"/>
+  </g>
+</svg>

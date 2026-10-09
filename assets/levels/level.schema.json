@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arrowchime.app/schema/level-v1.json",
+  "title": "Arrowchime Level (schema v1)",
+  "type": "object",
+  "required": ["schema", "id", "width", "height", "hearts", "arrows"],
+  "additionalProperties": false,
+  "$defs": {
+    "cell": {
+      "type": "array",
+      "items": { "type": "integer", "minimum": 0 },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "color": { "enum": ["amber", "jade", "rose", "azure"] },
+    "arrow": {
+      "type": "object",
+      "required": ["id", "body", "dir", "kind"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "integer", "minimum": 0 },
+        "body": {
+          "description": "Ordered tail -> head, 4-adjacent cells",
+          "type": "array",
+          "items": { "$ref": "#/$defs/cell" },
+          "minItems": 1,
+          "maxItems": 40
+        },
+        "dir": { "enum": ["U", "D", "L", "R"] },
+        "kind": { "enum": ["normal", "rotator", "key", "switcher", "splitter"] },
+        "color": { "$ref": "#/$defs/color" },
+        "frozen": { "type": "integer", "minimum": 1, "maximum": 20 },
+        "link": { "type": "string", "pattern": "^L[0-9]+$" },
+        "skinHint": { "type": "integer", "minimum": 0, "maximum": 5 }
+      }
+    }
+  },
+  "properties": {
+    "schema": { "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "chapter": { "type": "integer", "minimum": 0 },
+    "index": { "type": "integer", "minimum": 1 },
+    "width": { "type": "integer", "minimum": 3, "maximum": 24 },
+    "height": { "type": "integer", "minimum": 3, "maximum": 24 },
+    "mask": {
+      "description": "null = full rectangle; else `height` strings of length `width`, '1' cell / '0' void",
+      "oneOf": [
+        { "type": "null" },
+        { "type": "array", "items": { "type": "string", "pattern": "^[01]+$" } }
+      ]
+    },
+    "hearts": { "type": "integer", "minimum": 1, "maximum": 9 },
+    "arrows": { "type": "array", "items": { "$ref": "#/$defs/arrow" }, "minItems": 1 },
+    "gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["cell", "color"],
+        "additionalProperties": false,
+        "properties": { "cell": { "$ref": "#/$defs/cell" }, "color": { "$ref": "#/$defs/color" } }
+      }
+    },
+    "portals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "a", "b"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "a": { "$ref": "#/$defs/cell" },
+          "b": { "$ref": "#/$defs/cell" }
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "seed": { "type": "integer" },
+        "generatorVersion": { "type": "string" },
+        "difficulty": { "type": ["number", "null"] },
+        "depth": { "type": "integer" },
+        "solution": { "type": "array", "items": { "type": "integer" } },
+        "melody": { "type": "string" },
+        "approved": { "type": "boolean" }
+      }
+    }
+  }
+}
