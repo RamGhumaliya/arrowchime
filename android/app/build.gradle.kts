@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.arrowchime"
+    namespace = "com.webazonic.arrowchime"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -15,8 +15,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.arrowchime"
+        applicationId = "com.webazonic.arrowchime"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -27,6 +26,19 @@ android {
         // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+    }
+
+    flavorDimensions += "env"
+    productFlavors {
+        create("dev") {
+            dimension = "env"
+            applicationIdSuffix = ".dev"
+            manifestPlaceholders["appName"] = "Arrowchime Dev"
+        }
+        create("prod") {
+            dimension = "env"
+            manifestPlaceholders["appName"] = "Arrowchime"
+        }
     }
 
     buildTypes {

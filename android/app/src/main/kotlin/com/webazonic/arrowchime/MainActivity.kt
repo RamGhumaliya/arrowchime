@@ -1,4 +1,4 @@
-package com.example.arrowchime
+package com.webazonic.arrowchime
 
 import io.flutter.embedding.android.FlutterActivity
 

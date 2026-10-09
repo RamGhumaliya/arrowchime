@@ -1,0 +1,17 @@
+{
+  "@@locale": "en",
+  "appTitle": "Arrowchime",
+  "stubComingSoon": "Coming soon.",
+  "routeSplash": "Arrowchime",
+  "routeHome": "Home",
+  "routeChapterMap": "Chapters",
+  "routeLevel": "Level {index}",
+  "@routeLevel": { "placeholders": { "index": { "type": "String" } } },
+  "routeDaily": "Daily Knot",
+  "routeShop": "Shop",
+  "routeCollection": "Collection",
+  "routeAchievements": "Achievements",
+  "routeSettings": "Settings",
+  "routeDesignGallery": "Design Gallery",
+  "routeLevelLab": "Level Lab"
+}

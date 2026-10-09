@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  check:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.7
+          channel: stable
+          cache: true
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - run: flutter pub get
+      - run: dart run build_runner build --delete-conflicting-outputs
+      - run: dart format --set-exit-if-changed .
+      - run: flutter analyze
+      - name: Pure-Dart guard (lib/core/level must not import Flutter)
+        run: |
+          if grep -rn "package:flutter" lib/core/level/ 2>/dev/null; then
+            echo "lib/core/level must stay pure Dart"; exit 1
+          fi
+      - run: flutter test
+      - name: Verify shipped levels
+        run: |
+          if [ -f tool/level_check.dart ]; then
+            dart run tool/level_check.dart assets/levels/
+          else
+            echo "tool/level_check.dart not present yet (Phase 2)"
+          fi
+      - run: flutter build appbundle --flavor dev -t lib/main_dev.dart
+
+  ios-nightly:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.7
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter build ios --no-codesign --flavor dev -t lib/main_dev.dart
