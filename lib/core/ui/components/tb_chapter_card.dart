@@ -77,7 +77,7 @@ class TBChapterCard extends StatelessWidget {
                     fit: StackFit.expand,
                     children: [
                       CustomPaint(
-                        painter: _ScenePainter(
+                        painter: ChapterScenePainter(
                           chapter: chapter,
                           restoration: locked ? 0 : restoration,
                           locked: locked,
@@ -174,7 +174,8 @@ class _Plaque extends StatelessWidget {
 
 /// Placeholder diorama: sky gradient, three ridges, and a colour wash that
 /// grows with the restoration (grey scene → coloured scene).
-class _ScenePainter extends CustomPainter {
+/// Public so the game screen can use the same backdrop behind the board.
+class ChapterScenePainter extends CustomPainter {
   const new({
     required this.chapter,
     required this.restoration,
@@ -225,7 +226,7 @@ class _ScenePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_ScenePainter old) =>
+  bool shouldRepaint(ChapterScenePainter old) =>
       old.chapter != chapter ||
       old.restoration != restoration ||
       old.locked != locked;

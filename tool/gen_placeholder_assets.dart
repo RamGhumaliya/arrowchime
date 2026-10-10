@@ -300,6 +300,7 @@ Pixmap _uiIcon(AssetEntry e) {
     'lock' => (Shapes.roundRect(0.6, 0.55, 0.2), PlaceholderPalette.ink500),
     'bell' => (Shapes.disc(0.65), PlaceholderPalette.butterLip),
     'quests' => (Shapes.roundRect(0.55, 0.8, 0.2), PlaceholderPalette.cream300),
+    'back' => (Shapes.roundRect(0.3, 0.7, 0.2), PlaceholderPalette.ink500),
     'collection' => (Shapes.roundRect(0.8, 0.6, 0.15), PlaceholderPalette.teal),
     _ => (Shapes.disc(), PlaceholderPalette.ink500),
   };

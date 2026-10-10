@@ -191,6 +191,34 @@ void main() {
     });
   });
 
+  group('+1 heart (fail sheet)', () {
+    test('a lost level resumes with one heart', () {
+      final engine = GameEngine(blockedPair(hearts: 1))..tap(0);
+      expect(engine.status, GameStatus.lost);
+      engine.addHeart();
+      expect(engine.status, GameStatus.playing);
+      expect(engine.hearts, 1);
+      expect(types(engine.tap(1)), [ArrowFreed]);
+    });
+
+    test('a running level just gains a heart; stars ignore it', () {
+      final engine = GameEngine(blockedPair())..addHeart();
+      expect(engine.hearts, 4);
+      engine.tap(0);
+      expect(engine.stars, 2);
+    });
+
+    test('a won level is left alone', () {
+      final engine = GameEngine(freeTrio())
+        ..tap(0)
+        ..tap(1)
+        ..tap(2)
+        ..addHeart();
+      expect(engine.status, GameStatus.won);
+      expect(engine.hearts, 3);
+    });
+  });
+
   group('G16 relaxed mode', () {
     test('blocked tap costs no heart; stars capped at two', () {
       final engine = GameEngine(

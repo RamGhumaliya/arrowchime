@@ -189,6 +189,7 @@ abstract final class AssetCatalog {
     'bell',
     'quests',
     'collection',
+    'back',
   ];
 
   static const List<String> mechanicSvgs = [

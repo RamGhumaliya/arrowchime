@@ -301,3 +301,55 @@ abstract final class TBBevel {
   static const double plaqueRim = 3;
   static const double woodRim = 6;
 }
+
+/// Board animation timings and limits for Flame, in seconds (`docs/03` §4).
+abstract final class TBGameMotion {
+  /// An arrow flying off the board: 250–450 ms depending on distance.
+  static const double exitMin = 0.25;
+  static const double exitMax = 0.45;
+  static const double exitPerCell = 0.03;
+
+  /// Blocked tap: the arrow lurches 0.35 cell, then recoils elastically.
+  static const double lurchCells = 0.35;
+  static const double lurch = 0.09;
+  static const double recoil = 0.22;
+
+  /// The blocker flashes red twice.
+  static const double flash = 0.4;
+
+  /// Frozen arrow shake.
+  static const double shake = 0.3;
+
+  /// Hint glow period.
+  static const double hintPulse = 1.1;
+
+  /// Long-press path preview fade.
+  static const double peekFade = 0.12;
+
+  /// Pause between the last arrow leaving and the win sheet.
+  static const double winDelay = 0.7;
+
+  /// Reduce Motion: a plain fade replaces flying and shaking.
+  static const double reducedFade = 0.16;
+
+  /// Hard cap of live particles (`CLAUDE.md` performance rule).
+  static const int maxParticles = 120;
+}
+
+/// Touch timings of the board (`docs/03` §3).
+abstract final class TBGesture {
+  /// Hold this long to peek an arrow's exit path.
+  static const Duration peekHold = Duration(milliseconds: 250);
+
+  /// Two taps on empty felt within this time fit the board.
+  static const Duration doubleTap = Duration(milliseconds: 300);
+
+  /// A Flow streak survives this long between correct taps.
+  static const Duration flowWindow = Duration(milliseconds: 1500);
+
+  /// How often the Flow meter checks whether the streak lapsed.
+  static const Duration flowTick = Duration(milliseconds: 150);
+
+  /// A finger that moved further than this (dp) is a drag, not a tap.
+  static const double slop = 8;
+}

@@ -64,7 +64,7 @@ void main() {
     expect(find.byType(DesignGalleryScreen), findsOneWidget);
   });
 
-  testWidgets('level route reads chapter and index', (tester) async {
+  testWidgets('a malformed level route falls back to the stub', (tester) async {
     final router = createRouter();
     addTearDown(router.dispose);
     await tester.pumpWidget(
@@ -78,8 +78,8 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
       ),
     );
-    router.go(AppRoutes.levelPath('ch1', 7));
+    router.go(AppRoutes.levelPath('ch9', 7));
     await tester.pumpAndSettle();
-    expect(find.text('Level ch1 · 7'), findsOneWidget);
+    expect(find.text('Level ch9 · 7'), findsOneWidget);
   });
 }

@@ -16,7 +16,7 @@ void main() {
       expect(count(AssetKind.chapterLayer), 50, reason: '5 layers x 2 x 5');
       expect(count(AssetKind.chapterThumb), 5);
       expect(count(AssetKind.chapterFragments), 5);
-      expect(count(AssetKind.uiIcon), 72, reason: '24 icons x @1x/2x/3x');
+      expect(count(AssetKind.uiIcon), 75, reason: '25 icons x @1x/2x/3x');
       expect(count(AssetKind.mechanicSvg), 7);
       expect(count(AssetKind.mechanicImage), 1);
       expect(count(AssetKind.cosmeticPreview), 9);
@@ -27,7 +27,7 @@ void main() {
       expect(count(AssetKind.sting), 5);
       expect(count(AssetKind.sfx), 23);
       expect(count(AssetKind.licence), 2);
-      expect(entries.length, 305);
+      expect(entries.length, 308);
     });
 
     test('instrument note sets match the chapter scales', () {

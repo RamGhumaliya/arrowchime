@@ -481,8 +481,8 @@ void main() {
   });
 
   group('TBIcon set (docs/10 §6)', () {
-    test('24 icons that match the manifest names exactly', () {
-      expect(TBIconId.values, hasLength(24));
+    test('25 icons that match the manifest names exactly', () {
+      expect(TBIconId.values, hasLength(25));
       expect({
         for (final i in TBIconId.values) i.assetName,
       }, AssetCatalog.uiIcons.toSet());

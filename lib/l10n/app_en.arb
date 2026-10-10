@@ -6,12 +6,123 @@
   "routeHome": "Home",
   "routeChapterMap": "Chapters",
   "routeLevel": "Level {index}",
-  "@routeLevel": { "placeholders": { "index": { "type": "String" } } },
+  "@routeLevel": {
+    "placeholders": {
+      "index": {
+        "type": "String"
+      }
+    }
+  },
   "routeDaily": "Daily Knot",
   "routeShop": "Shop",
   "routeCollection": "Collection",
   "routeAchievements": "Achievements",
   "routeSettings": "Settings",
   "routeDesignGallery": "Design Gallery",
-  "routeLevelLab": "Level Lab"
+  "routeLevelLab": "Level Lab",
+  "gameBack": "Back",
+  "gameLevelTitle": "Level {index}",
+  "@gameLevelTitle": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "gameHeartsLabel": "{count} hearts left",
+  "@gameHeartsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gameCoinsLabel": "{count} coins",
+  "@gameCoinsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gameBoardLabel": "Puzzle board, {count} arrows left",
+  "@gameBoardLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gameUndo": "Undo",
+  "gameUndoPrice": "Undo, {price} coins",
+  "@gameUndoPrice": {
+    "placeholders": {
+      "price": {
+        "type": "int"
+      }
+    }
+  },
+  "gameHint": "Hint",
+  "gameHintPrice": "Hint, {price} coins",
+  "@gameHintPrice": {
+    "placeholders": {
+      "price": {
+        "type": "int"
+      }
+    }
+  },
+  "gameGrid": "Grid lines",
+  "gameFit": "Fit board",
+  "gameNoCoins": "Not enough coins",
+  "gameNoHint": "No hint right now",
+  "gamePeekTip": "Hold to peek the path.",
+  "gameFlowNice": "Nice flow!",
+  "gameLoadError": "This level could not be opened.",
+  "gameLoading": "Setting up the board…",
+  "winTitle": "Level {index}",
+  "@winTitle": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "winCoins": "+{count} coins",
+  "@winCoins": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "winXp": "+{count} XP",
+  "@winXp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "winStars": "{count} of 3 stars",
+  "@winStars": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "winNext": "Next level",
+  "winReplay": "Replay",
+  "failTitle": "Out of hearts",
+  "failCaption": "So close — try again?",
+  "failRetry": "Retry",
+  "failHeartAd": "+1 heart",
+  "failHeartCoins": "+1 heart · {price}",
+  "@failHeartCoins": {
+    "placeholders": {
+      "price": {
+        "type": "int"
+      }
+    }
+  }
 }

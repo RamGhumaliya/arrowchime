@@ -24,7 +24,8 @@ enum TBIconId {
   lock,
   bell,
   quests,
-  collection;
+  collection,
+  back;
 
   /// Manifest file name (`heart_broken`, `star_empty`, …).
   String get assetName => switch (this) {
@@ -39,6 +40,7 @@ enum TBIconId {
     TBIconId.starEmpty => 'Empty star',
     TBIconId.hint => 'Hint',
     TBIconId.fit => 'Fit board',
+    TBIconId.back => 'Back',
     _ => '${name[0].toUpperCase()}${name.substring(1)}',
   };
 }

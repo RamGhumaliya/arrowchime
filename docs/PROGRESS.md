@@ -1,7 +1,7 @@
 # PROGRESS — Arrowchime
 
 ## Current phase
-**Phase 3 — Design system & component library: built, polished for responsiveness, committed. Design review gate (docs/10 §11): the human reviews `docs/screenshots/phase3/` (their go-ahead for Phase 4).** Phases 0–3 are committed.
+**Phase 4 — Playable game screen: built and verified; NOT committed. Design review gate (docs/10 §11): the human reviews `docs/screenshots/phase4/` (20 images) and the questions in "Phase 4 — for the human" below before Phase 5.** Phases 0–3 are committed; Phase 4 is a working-tree change waiting for your review and your word to commit.
 
 ## Done
 - Flutter pinned with FVM to **3.47.7 stable** (Dart 3.13.5) via `.fvmrc`; the machine's global Flutter is a 3.49 `main` build and is left untouched. Run commands as `fvm flutter ...`.
@@ -76,7 +76,7 @@
 Built exactly per `docs/10`:
 - `lib/core/ui/painters/`: `ceramic` (buttons), `paper` (panels/sheets, raised + recessed), `inset` (recessed wells), `wood` (shelf, tab bar, tray rim, felt), `brass`, `crystal`, `knob`, `enamel_tube` (the 5-pass arrow of §8: shadow, dark rim, body, light band, specular on up/left runs, rounded head, nock), `shade` (three-tone helper, deterministic grain).
 - `lib/core/ui/components/`: `TBText` (sticker treatment once), `TBButton` primary/secondary/tertiary, `TBIconButton` (+ `TBBadge`), `TBPill`, `TBPanel` raised/recessed, `TBRibbon`, `TBSheet` (+ `showTBSheet`), `TBToggle`, `TBSlider`, `TBTabBar`, `TBStarRow`, `TBProgressBar`, `TBToast` (+ `showTBToast`), `TBChapterCard`, `TBFlowMeter`, `TBTray`.
-- `lib/core/ui/icons/`: 24 code-painted 3-tone placeholder icons (`TBIcon`), names equal the asset manifest (a test checks it).
+- `lib/core/ui/icons/`: 25 code-painted 3-tone placeholder icons (24 + `back`, added in Phase 4) (`TBIcon`), names equal the asset manifest (a test checks it).
 - `lib/features/design_gallery/` (debug route `/design-gallery`): 8 pages (Foundations, Buttons, Panels, HUD, Controls, Chapters, Icons, Materials); every component with all its states on cream, ink and one chapter background.
 - Press physics: face down 4 dp, lip 6 -> 2 dp, shadow e2 -> e1, haptic, mTap/mRelease with overshoot; Reduce Motion = 160 ms fade, no overshoot. Verified from rasterised pixels.
 - Tokens added (and documented in docs/10 §3.6 and §3.8): `TBMaterials`, `TBBevel`, component sizes, motion extras.
@@ -84,7 +84,7 @@ Built exactly per `docs/10`:
 ### Phase 3 acceptance
 | Criterion | Result |
 |---|---|
-| Golden tests for every component state at 1x and 3x (D6) | 172 goldens in `test/core/ui/goldens/` (86 cases x 2), all 24 icons included |
+| Golden tests for every component state at 1x and 3x (D6) | 172 goldens in `test/core/ui/goldens/` (86 cases x 2), all icons included (24 at the time; `back` added in Phase 4) |
 | Screenshots iPhone SE (375 wide) + Pro Max (430 wide) + Android tablet landscape (1280x800) in `docs/screenshots/phase3/` | 19 images: 8 pages x 2 phone sizes + 3 tablet pages (Buttons, HUD, Chapters), made by `design_gallery_screenshots_test.dart` at 2x |
 | B1–B16, D2 | automated scan `design_rules_test.dart` (17 tests) passes; B6/B9/B11–B15 reviewed by eye below |
 | D3 light direction / D4 pressed states | pixel tests: highlight top-left, shadow down-right, lip 6/2 dp; every pressable has a pressed golden |
@@ -117,6 +117,62 @@ Found by the new sweep and fixed: the star row overflowed narrow boxes (now scal
 - `TBHaptics` is a thin hook over `HapticFeedback`; the real `HapticsService` replaces it in Phase 5.
 - After switching Dart SDKs, `flutter run` can fail with "Invalid kernel binary format version" from a stale build-hook cache: delete `.dart_tool/hooks_runner`.
 
+## Phase 4 — Playable game screen (design gate: human review)
+Route `/level/chXX/N` now opens the real game (`LevelRef.parse`; a malformed route still falls back to the stub).
+
+**What exists** (`lib/features/game/`, plus `core/economy`, `core/ads`):
+- `flame/`: `ArrowGame` (FlameGame + `CameraComponent`; replays engine events only, reads the engine for queries), `BoardComponent` (felt tray + wooden rim, wooden blocks for masked cells, stitched grid toggle, gates, portals with a swirl, brass chains between linked arrows, long-press path preview), `ArrowComponent` (5-pass enamel tube via `EnamelTube.paintPath`; rotator brass ring, key badge with colour-blind symbol, frozen crystal + counter; exit along an extended `PathMetric` path 250–450 ms ease-in, blocked lurch 0.35 cell + elastic recoil 220 ms, blocker red flash twice, frozen shake, hint glow, rotator turn), `ParticlePool` (fixed 120 slots, no allocation while playing), `BakedPicture` (see Performance).
+- `input/`: `TapResolver` (tap assist: 30% edge zone, nearest centre within 0.8 cell, dense boards 1.0 and head preference) and `BoardGestures` (raw pointer events: instant tap, 250 ms peek, pinch, drag, wheel; a double tap on empty felt fits the board; no 300 ms tap delay).
+- `model/`: `BoardGeometry`, `ViewTransform` (zoom 1×–4×, pan clamped to board + 20%), `FlowTracker` (3 taps within 1.5 s give ×2, +1 per 2 more up to ×5).
+- `state/`: `GameSession` (Riverpod notifier per `LevelRef`: engine + Flow + hint cache, event stream for Flame, free/paid undo and hint, retry, +1 heart, pays the win reward once), `SessionState` (freezed), `GameSettings` (left-handed, relaxed, grid), `LevelRepository` (loads `assets/levels/ch{N}.json`).
+- `hud/` + `dialogs/` + `game_screen.dart`: top bar (back, compact ribbon, hearts capsule, coins pill), `TBFlowMeter`, wooden shelf (Undo, Hint, Grid, Fit; mirrored for left-handed; vertical on tablet landscape), `WinSheet`, `FailSheet` (thumbnail of the board where it ended), toasts, chapter scene behind everything.
+- `core/economy`: `Pricing` (docs/08 defaults), `Rewards` (10 + 5 per star, Knot ×1.5, Boss ×3, +10 at Flow ×5; XP), `Wallet` (in memory until Phase 6). `core/ads/rewarded_ads.dart`: interface + `StubRewardedAds` (grants at once) until the ad SDK in Phase 8.
+- Engine: `GameEngine.addHeart()` for the fail sheet (a heart already lost still counts against the stars).
+- Also: `TBIconId.back` (25th icon), tokens `TBGameMotion` / `TBGesture`, 33 new ARB strings, `ChapterScenePainter` made public, `EnamelTube.paintPath`.
+
+### Phase 4 acceptance (docs/09 §2 G1–G16 and §3 D1–D8)
+| Goal | How it is checked | Result |
+|---|---|---|
+| G1 free tap, G2 blocked tap, G4 win pays once, G5 two quick taps | engine tests + `game_session_test` + `game_goals_test` (through the real screen) | pass |
+| G3 Retry is free and has no ad | `GameSession.retry` + widget test through the fail sheet | pass |
+| G6 undo restores arrow, rotations, thaws and gates | engine tests + `arrow_game_test` | pass |
+| G7–G11 rotator, key/gate, frozen, linked, portal | engine tests; each mechanic also animates in `arrow_game_test` and has a screenshot | pass |
+| G12 hints always lead to a win | follows hints only on Ch1 L1–20 plus 5 levels of each other chapter: wins, no heart lost | pass |
+| G13 long-press 250 ms peek, no heart cost | `game_goals_test` (hold on screen) | pass |
+| G14 pinch / double tap / wheel, 1×–4×, clamped pan | `view_transform` tests + screen gesture test | pass |
+| G15 tap assist ≥ 95% | scripted taps on every cell of the densest board (24×24, cells of 12 dp): **2436 / 2436 = 100%** (taps up to 0.4 cell off-centre) | pass |
+| G16 relaxed mode: no heart lost, max ★★ | `game_goals_test` | pass |
+| Ch1 L1–20 playable | `integration_test/play_chapter1_test.dart` taps every arrow on screen and presses "Next level" 19 times on the Android emulator (Pixel 5, Android 15) | **pass** |
+| iOS | not possible here (no Mac) | **not verified** |
+| 60 fps in profile mode on 14×14 | see Performance | **not proven on a real device** |
+| D1 / D2 (B1–B16, tokens only) | `design_rules_test` scans `lib/features/game` | pass |
+| D7 sizes | screenshots at iPhone SE, Pro Max, Android tablet landscape | done |
+| D8 5-pass arrow at 1× and 4× | `dense_*` and `dense_4x_*` screenshots | by eye: OK |
+| Analyzer / format / tests | clean / clean / 987 tests pass | |
+
+### Performance (emulator only, so indicative)
+`integration_test/performance_test.dart` (run with `flutter drive --driver=test_driver/integration_test.dart --target=integration_test/performance_test.dart --profile --flavor dev --dart-define=PERF_LEVEL=1/60`) prints frame times as `FRAMES …` lines; `baseline_test.dart` gives the emulator's floor. On this software-rendered emulator a trivial 40-circle animation costs **2.9 ms raster (p50)**.
+- 14×14 board (Ch1 L60, 77 arrows): build p50 ≈ 2 ms, raster p50 ≈ 15–26 ms while pinching and tapping (46 ms before the work below). 24×24 board (Ch5 L60, 69 arrows): raster p50 ≈ 30 ms (69 ms before).
+- What was done: static art is baked into images once per zoom bucket (`BakedPicture`: tray, grid, every arrow; vector fallback until baked, at most 8 bakes per frame, re-baking waits until a pinch ends); off-screen arrows are not drawn; arrows in flight use a hard shadow instead of a blurred one; particles are pooled.
+- **I cannot claim 60 fps from this.** The emulator rasterises in software, so it only shows relative improvement (about 2×). The first frame after opening a level takes 200–350 ms raster here (all images are baked at once). Someone has to run the command above on a real 2021 mid-range Android phone. If it misses 16.7 ms there, the next lever is one baked layer for all idle arrows.
+
+### Design review self-review (docs/10 §11 step 3), Phase 4
+| Screen | Issues I found in my own screenshots | Fixed |
+|---|---|---|
+| Board (all sizes) | The Flame canvas painted an opaque black rectangle over the chapter scene (Flame's default background) | Y (transparent) |
+| Win sheet | "+48 coins / +50 XP" were an unreadable blob (ink text inside the ink sticker stroke) | Y (butter / sky fill) |
+| Tablet landscape | The top bar floated in the middle of the board column | Y (ribbon takes the free space, counters on the right) |
+| Dense board | Long chains drew long diagonal lines across the whole board | Y (sparser dots beyond 6 cells); still a visible detail, please judge |
+| Win sheet | The "Nice flow!" toast sits on top of the ribbon while the sheet is up (scripted fast taps reach ×5) | open: cosmetic; toasts get their juice pass in Phase 5 |
+| Dense board on iPhone SE | A 24×24 board has 12 dp cells at 1×; it is playable only through zoom and tap assist | by design (docs/03); please confirm the Ch5 sizes are what you want |
+| Process | `dart fix` again moved a package into pubspec (`riverpod: any`) and added a `riverpod/src` import; both removed | Y |
+
+### Phase 4 — for the human
+1. **Review `docs/screenshots/phase4/`**: `board_*`, `dense_*` (1×), `dense_4x_*`, `win_*`, `fail_*` for iPhone SE, Pro Max and Android tablet landscape; `mechanic_*` (rotator, frozen, gate + key, linked, portal) on Pro Max.
+2. **Approve the two states I added to docs/10 §7** (CLAUDE rule 5): the loading / load-error state of the Level screen, and the tablet-landscape layout (ASCII is in §7).
+3. A real-device 60 fps check (see Performance) and an iOS build/run need you.
+4. Decisions to confirm: hearts are shown as heart icons on a recessed capsule (the spec said "[♥♥♥]"), not a TBPill; the "+1 heart" ad button grants the heart at once (stub) until Phase 8; wallet and settings are in memory until Phase 6 (coins reset on restart); Next on level 60 goes to the Chapters stub; portal travel animates as "slide into portal A, fade, emerge from portal B" (simplified); no sound or haptics yet (Phase 5).
+
 ## Re-verification of Phase 0 + 1 (2026-10-10)
 | Check | Result |
 |---|---|
@@ -132,12 +188,14 @@ Found by the new sweep and fixed: the star row overflowed narrow boxes (now scal
 | `dart run flutter_soloud:skills` | done: 14 skill files in `.agents/skills/` |
 
 ## Next
-- **Human design review of Phase 3** (`docs/screenshots/phase3/`), then Phase 4 (Playable game screen, also a design-gate phase).
+- **Human design review of Phase 4** (`docs/screenshots/phase4/`) and your word to commit it; then Phase 5 (juice & audio).
+- Human review of Phase 3 is still on record (screenshots in `docs/screenshots/phase3/`).
 - Human review of Phase 2 is still open (nothing blocks Phase 3 work).
 - Material/Cupertino migration deferred (human decision) to a later phase, before the November stable deprecation.
 - Human review of Phase 0 + Phase 1, then Phase 2 (generator, difficulty, tools).
 
 ## Known issues
+- **Phase 4:** 60 fps is not proven on a real device (emulator only); iOS not built; wallet / settings are not persisted yet (Phase 6); the rewarded-ad button is a stub; no audio/haptics yet; the first frame of a level bakes all images (~0.2 s on the emulator).
 - **flutter_soloud removed from pubspec until Phase 5 (audio)** (human decision): its native build fails on this Windows PC (Windows SDK missing from Visual Studio, `stddef.h`), which broke local `flutter test`. Re-add with `flutter pub add flutter_soloud` in Phase 5 (after installing the "Windows 11 SDK" component, or tests must be run on CI/Linux). The 14 agent skill files from `dart run flutter_soloud:skills` are kept in `.agents/skills/`.
 - `android/gradle.properties` sets `kotlin.incremental=false` (Kotlin cache failed because project (D:) and pub cache (C:) are on different drives). Slower builds.
 - **Material/Cupertino standalone packages (corrects an earlier note):** 3.47 publishes `material_ui` / `cupertino_ui` 1.x as an opt-in; the in-SDK `material.dart` still works and is formally deprecated in the November stable. Migration = `dart fix --apply --code=migrate_design_widgets`. Not applied yet: the app uses `WidgetsApp.router` + `GlobalMaterialLocalizations` only. Decision pending (see questions to the human).
@@ -147,8 +205,9 @@ Found by the new sweep and fixed: the star row overflowed narrow boxes (now scal
 - Lint `unnecessary_type_name_in_constructor` (very_good_analysis 11) was auto-fixed to the `const new(...)` constructor shorthand.
 
 ## New dependencies (justification)
+Phase 4: none. (`integration_test` was already there; `test_driver/integration_test.dart` is the standard 3-line driver for `flutter drive --profile`.)
 Phase 2: `integration_test` (SDK, dev only): runs the golden determinism hashes on a real device (`flutter test integration_test --flavor dev`). No other new packages; `dart:io` is used only by `tool/` and tests.
 See "Packages added" above; all from docs/05 §1. `very_good_analysis` for lints; `flame_test` for Flame tests; `intl` + `flutter_localizations` for ARB l10n.
 
 ## Design review gate
-**Phase 3 is committed; the human reviews `docs/screenshots/phase3/` (19 images, incl. tablet) before Phase 4 starts.** Self-review and the responsiveness pass are in the Phase 3 section above.
+**Phase 4 is built and tested but not committed; the human reviews `docs/screenshots/phase4/` (20 images, incl. tablet) before Phase 5 starts.** Self-review and the open questions are in the Phase 4 section above. Phase 3's gate material is in `docs/screenshots/phase3/`.

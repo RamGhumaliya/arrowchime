@@ -150,14 +150,14 @@ All components live in `lib/core/ui/components/`, are custom-painted, and ship w
 | `TBFlowMeter` | Segmented glass tube along the top of the board; segments light up with chapter colour; ×N badge pops. |
 | `TBTray` | The board tray of §8 as a widget: chapter felt colour, fabric noise, inner shadow, 6 dp wooden rim. Used by the game screen (Phase 4). |
 | `TBText` | The six text styles; sticker treatment (stroke + hard shadow) implemented once. |
-| `TBIcon` | 24 placeholder 3D icons painted in code (3-tone + specular), names = `assets/ASSET_MANIFEST.md`. Replaced by the artist's WebP set. |
+| `TBIcon` | 25 placeholder 3D icons painted in code (3-tone + specular), names = `assets/ASSET_MANIFEST.md`. Replaced by the artist's WebP set. |
 | `TBBadge` | Butter count/price pill (part of `TBIconButton`). |
 
 Every component reads tokens only — no literal colours, sizes or durations inside component code.
 
 ## 6. Icons
 
-- **Custom 3D icon set** (24 icons, list in `assets/ASSET_MANIFEST.md`): rendered by a human 3D artist (Blender / Spline / Cinema4D) in one consistent style: soft clay-ceramic material, top-left key light, slight 3/4 angle, transparent background, delivered as 256 px WebP @1x/2x/3x.
+- **Custom 3D icon set** (25 icons, list in `assets/ASSET_MANIFEST.md`; Phase 4 added `back`): rendered by a human 3D artist (Blender / Spline / Cinema4D) in one consistent style: soft clay-ceramic material, top-left key light, slight 3/4 angle, transparent background, delivered as 256 px WebP @1x/2x/3x.
 - Until then, Claude Code draws **simple placeholder icons** with `CustomPainter` using the 3-tone rule (face + bevel + highlight) so the layout is right — clearly marked placeholder in the Design Gallery.
 - No Material/Cupertino icons, no emoji, no icon fonts in player UI.
 
@@ -200,6 +200,31 @@ WIN SHEET            FAIL SHEET
   [Replay] tertiary
 ```
 Tablet landscape: board left 70%, HUD shelf as a vertical wooden panel on the right.
+
+**LEVEL: states added in Phase 4 (not in the original spec, awaiting approval).**
+```
+LOADING / LOAD ERROR (chapter scene behind, centred, same Level backdrop)
+┌───────────────────────────────────────┐
+│                                       │
+│          "Setting up the board…"      │  TBText.title, cream, ink stroke
+│   (error: "This level could not be    │  error variant adds one primary
+│    opened."  [ Back ]  TBButton.primary)│  TBButton "Back" → previous screen / Home
+│                                       │
+└───────────────────────────────────────┘
+
+LEVEL, tablet landscape (≥600 dp shortest side, width > height)
+┌──────────────────────────────────┬──────────┐
+│ [‹]      Level 37        ♥♥♥ coin │  wooden  │  top bar spans the board column
+│ ═══ Flow meter ══════════════════ │  shelf   │  (ribbon takes the free space)
+│ ┌──────────────────────────────┐ │ (Undo)   │
+│ │ board tray                   │ │ (Hint)   │  shelf = vertical wooden panel,
+│ │                              │ │ (Grid)   │  centred in the right 30%
+│ └──────────────────────────────┘ │ (Fit)    │
+└──────────────────────────────────┴──────────┘
+Left-handed reverses the order of the shelf buttons (left↔right on phones, top↔bottom on tablets).
+Hearts = row of heart icons on a recessed capsule (broken heart = lost); coins = TBPill.
+Shelf badges: Undo = free undos left, then its price; Hint = free hints left, then price (none while free).
+```
 
 Other screens (Shop, Collection, Daily, Settings, Achievements) follow the same kit: header `TBRibbon`, content in `TBPanel.recessed` lists, one primary CTA max. Before building any of them, Claude Code writes its ASCII layout into this section for approval.
 

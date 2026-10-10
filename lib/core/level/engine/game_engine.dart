@@ -62,6 +62,10 @@ class GameEngine {
 
   BoardState _state;
   late int _hearts;
+
+  /// Hearts spent on blocked taps; unlike [hearts] it is never refunded by
+  /// [addHeart], so stars stay honest.
+  int _heartsLost = 0;
   GameStatus _status = GameStatus.playing;
 
   /// Current runtime state. Replaced on undo/reset: re-read after those.
@@ -83,7 +87,7 @@ class GameEngine {
   /// 1 = ★ (generalised to other heart counts as "hearts lost").
   /// Relaxed mode caps at ★★.
   int get stars {
-    final lost = _initialHearts - _hearts;
+    final lost = _heartsLost;
     final raw = (3 - lost).clamp(1, 3);
     return options.relaxed && raw > 2 ? 2 : raw;
   }
@@ -161,10 +165,20 @@ class GameEngine {
     return [UndoApplied(restoredArrowIds: restored)];
   }
 
+  /// Gives one extra heart (the fail sheet's "+1 heart"). A lost level
+  /// resumes where it stopped; the hearts already lost still count against the
+  /// stars, so an extra heart never earns extra stars.
+  void addHeart() {
+    if (_status == GameStatus.won) return;
+    _hearts++;
+    if (_status == GameStatus.lost) _status = GameStatus.playing;
+  }
+
   /// Starts the level over: full board, full hearts, empty undo history.
   void reset() {
     _state = BoardState.fromLayout(layout);
     _hearts = _initialHearts;
+    _heartsLost = 0;
     _status = GameStatus.playing;
     _undo.clear();
     stats
@@ -192,6 +206,7 @@ class GameEngine {
     ];
     if (!options.relaxed) {
       _hearts--;
+      _heartsLost++;
       events.add(HeartLost(heartsLeft: _hearts));
       if (_hearts <= 0) {
         _status = GameStatus.lost;

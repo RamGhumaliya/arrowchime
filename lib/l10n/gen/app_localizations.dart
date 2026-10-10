@@ -171,6 +171,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Level Lab'**
   String get routeLevelLab;
+
+  /// No description provided for @gameBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get gameBack;
+
+  /// No description provided for @gameLevelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Level {index}'**
+  String gameLevelTitle(int index);
+
+  /// No description provided for @gameHeartsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} hearts left'**
+  String gameHeartsLabel(int count);
+
+  /// No description provided for @gameCoinsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} coins'**
+  String gameCoinsLabel(int count);
+
+  /// No description provided for @gameBoardLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Puzzle board, {count} arrows left'**
+  String gameBoardLabel(int count);
+
+  /// No description provided for @gameUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get gameUndo;
+
+  /// No description provided for @gameUndoPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo, {price} coins'**
+  String gameUndoPrice(int price);
+
+  /// No description provided for @gameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hint'**
+  String get gameHint;
+
+  /// No description provided for @gameHintPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Hint, {price} coins'**
+  String gameHintPrice(int price);
+
+  /// No description provided for @gameGrid.
+  ///
+  /// In en, this message translates to:
+  /// **'Grid lines'**
+  String get gameGrid;
+
+  /// No description provided for @gameFit.
+  ///
+  /// In en, this message translates to:
+  /// **'Fit board'**
+  String get gameFit;
+
+  /// No description provided for @gameNoCoins.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough coins'**
+  String get gameNoCoins;
+
+  /// No description provided for @gameNoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No hint right now'**
+  String get gameNoHint;
+
+  /// No description provided for @gamePeekTip.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold to peek the path.'**
+  String get gamePeekTip;
+
+  /// No description provided for @gameFlowNice.
+  ///
+  /// In en, this message translates to:
+  /// **'Nice flow!'**
+  String get gameFlowNice;
+
+  /// No description provided for @gameLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'This level could not be opened.'**
+  String get gameLoadError;
+
+  /// No description provided for @gameLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Setting up the board…'**
+  String get gameLoading;
+
+  /// No description provided for @winTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Level {index}'**
+  String winTitle(int index);
+
+  /// No description provided for @winCoins.
+  ///
+  /// In en, this message translates to:
+  /// **'+{count} coins'**
+  String winCoins(int count);
+
+  /// No description provided for @winXp.
+  ///
+  /// In en, this message translates to:
+  /// **'+{count} XP'**
+  String winXp(int count);
+
+  /// No description provided for @winStars.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of 3 stars'**
+  String winStars(int count);
+
+  /// No description provided for @winNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next level'**
+  String get winNext;
+
+  /// No description provided for @winReplay.
+  ///
+  /// In en, this message translates to:
+  /// **'Replay'**
+  String get winReplay;
+
+  /// No description provided for @failTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of hearts'**
+  String get failTitle;
+
+  /// No description provided for @failCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'So close — try again?'**
+  String get failCaption;
+
+  /// No description provided for @failRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get failRetry;
+
+  /// No description provided for @failHeartAd.
+  ///
+  /// In en, this message translates to:
+  /// **'+1 heart'**
+  String get failHeartAd;
+
+  /// No description provided for @failHeartCoins.
+  ///
+  /// In en, this message translates to:
+  /// **'+1 heart · {price}'**
+  String failHeartCoins(int price);
 }
 
 class _AppLocalizationsDelegate

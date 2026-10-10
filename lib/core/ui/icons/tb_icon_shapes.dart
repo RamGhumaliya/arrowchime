@@ -238,6 +238,19 @@ abstract final class TBIconShapes {
           bevel: false,
         ),
     ],
+    TBIconId.back => [
+      IconPart(
+        _poly(const [
+          (0.64, 0.1),
+          (0.3, 0.5),
+          (0.64, 0.9),
+          (0.78, 0.76),
+          (0.5, 0.5),
+          (0.78, 0.24),
+        ]),
+        TBColors.ink500,
+      ),
+    ],
     TBIconId.collection => [
       IconPart(_rrect(0.1, 0.4, 0.9, 0.9, 0.1), TBColors.teal),
       IconPart(_rrect(0.06, 0.16, 0.94, 0.42, 0.1), TBColors.butter),

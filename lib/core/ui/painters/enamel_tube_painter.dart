@@ -37,11 +37,38 @@ abstract final class EnamelTube {
   /// head) with cell size [c].
   static void paint(Canvas canvas, List<Offset> points, double c, Color color) {
     assert(points.isNotEmpty, 'an arrow has at least one cell');
-    final body = _smoothPath(points, _cornerRadius * c);
-    final head = points.last;
     final dir = points.length > 1
         ? _unit(points.last - points[points.length - 2])
         : const Offset(1, 0);
+    paintPath(
+      canvas,
+      smoothPath(points, c),
+      tail: points.first,
+      head: points.last,
+      dir: dir,
+      c: c,
+      color: color,
+    );
+  }
+
+  /// The smooth centre line through [points] (corners rounded to 0.45 c).
+  static Path smoothPath(List<Offset> points, double c) =>
+      _smoothPath(points, _cornerRadius * c);
+
+  /// Paints an arrow along an existing centre-line [body] (any path, e.g. a
+  /// sub-path of a longer travel path while the arrow slides out). [tail] and
+  /// [head] are its end points and [dir] the unit direction the head faces.
+  /// [blurShadow] false draws a hard shadow, much cheaper for arrows in motion.
+  static void paintPath(
+    Canvas canvas,
+    Path body, {
+    required Offset tail,
+    required Offset head,
+    required Offset dir,
+    required double c,
+    required Color color,
+    bool blurShadow = true,
+  }) {
     final headPath = _headPath(head, dir, c);
 
     // 1. Shadow.
@@ -52,7 +79,9 @@ abstract final class EnamelTube {
       ..strokeWidth = _shadowWidth * c
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, _shadowBlur * c);
+      ..maskFilter = blurShadow
+          ? MaskFilter.blur(BlurStyle.normal, _shadowBlur * c)
+          : null;
     canvas
       ..drawPath(body.shift(shadowShift), shadowPaint)
       ..drawPath(
@@ -89,7 +118,7 @@ abstract final class EnamelTube {
       )
       // Tail nock.
       ..drawCircle(
-        points.first,
+        tail,
         _nockRadius * c,
         Paint()
           ..style = PaintingStyle.stroke

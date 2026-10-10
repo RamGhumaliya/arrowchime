@@ -30,7 +30,7 @@ Placeholder: plain vertical gradient in the chapter palette (debug builds add a 
 Landscape crops for tablets: same names with `_land` suffix, 2732×2048.
 
 ## UI icons — 3D set by a human 3D artist (256 px WebP @1x/2x/3x)
-`coin`, `gem`, `heart`, `heart_broken`, `star`, `star_empty`, `chest`, `key`, `ice`, `hint` (bulb), `undo`, `grid`, `fit`, `pause`, `settings` (gear), `shop` (bag), `trophy`, `calendar`, `flame` (streak), `share`, `lock`, `bell` (Arrowchime chime), `quests` (scroll), `collection` (shelf box) → `assets/images/ui/<name>.webp` (+ `2.0x/`, `3.0x/` folders).
+`coin`, `gem`, `heart`, `heart_broken`, `star`, `star_empty`, `chest`, `key`, `ice`, `hint` (bulb), `undo`, `grid`, `fit`, `pause`, `settings` (gear), `shop` (bag), `trophy`, `calendar`, `flame` (streak), `share`, `lock`, `bell` (Arrowchime chime), `quests` (scroll), `collection` (shelf box), `back` (chevron, level top bar) → `assets/images/ui/<name>.webp` (+ `2.0x/`, `3.0x/` folders).
 One material style (soft clay-ceramic), top-left key light, slight 3/4 angle, transparent background. Until delivered, Claude Code paints placeholder icons in code (`lib/core/ui/icons/`).
 
 ## Mechanic sprites
