@@ -34,6 +34,7 @@ abstract final class LevelChecker {
     'handmade',
     'proto',
     'onboarding',
+    'tutorial',
   ];
 
   static bool isBandExempt(Level level) {

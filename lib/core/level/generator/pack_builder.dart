@@ -1,5 +1,6 @@
 import 'package:arrowchime/core/level/generator/chapter_plan.dart';
 import 'package:arrowchime/core/level/generator/generator.dart';
+import 'package:arrowchime/core/level/generator/mechanic_tutorials.dart';
 import 'package:arrowchime/core/level/generator/onboarding.dart';
 import 'package:arrowchime/core/level/models/level.dart';
 import 'package:arrowchime/core/level/prng.dart';
@@ -51,6 +52,14 @@ abstract final class PackBuilder {
     if (chapter == 1 && index <= OnboardingLevels.count) {
       final level = OnboardingLevels.build(index);
       return BuiltLevel(level: level, target: target, attempts: 1);
+    }
+
+    if (MechanicTutorials.at(chapter, index) != null) {
+      return BuiltLevel(
+        level: MechanicTutorials.build(chapter, index),
+        target: target,
+        attempts: 1,
+      );
     }
 
     Level? best;
