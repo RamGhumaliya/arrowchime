@@ -24,7 +24,7 @@ jobs:
           distribution: temurin
           java-version: 17
       - run: flutter pub get
-      - run: dart run build_runner build --delete-conflicting-outputs
+      - run: dart run build_runner build
       - run: dart format --set-exit-if-changed .
       - run: flutter analyze
       - name: Pure-Dart guard (lib/core/level must not import Flutter)
@@ -34,12 +34,18 @@ jobs:
           fi
       - run: flutter test
       - name: Verify shipped levels
+        run: dart run tool/level_check.dart assets/levels/
+      - name: Level generation is deterministic (same seed, identical pack)
         run: |
-          if [ -f tool/level_check.dart ]; then
-            dart run tool/level_check.dart assets/levels/
-          else
-            echo "tool/level_check.dart not present yet (Phase 2)"
-          fi
+          dart run tool/level_gen.dart --chapter 1 --count 60 --seed 1001 --out "$RUNNER_TEMP/ch1.json"
+          diff "$RUNNER_TEMP/ch1.json" assets/levels/ch1.json
+          dart run tool/level_gen.dart --chapter 4 --count 60 --seed 1001 --out "$RUNNER_TEMP/ch4.json"
+          diff "$RUNNER_TEMP/ch4.json" assets/levels/ch4.json
+      - name: Placeholder assets exist at every manifest path
+        run: |
+          dart run tool/gen_placeholder_assets.dart
+          git diff --exit-code --stat -- assets || (echo "assets changed: commit the placeholders"; exit 1)
+          test -z "$(git status --porcelain assets)" || (git status --porcelain assets; exit 1)
       - run: flutter build appbundle --flavor dev -t lib/main_dev.dart
 
   ios-nightly:

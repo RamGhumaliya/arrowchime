@@ -1,7 +1,7 @@
 # PROGRESS — Arrowchime
 
 ## Current phase
-Phase 1 — Core level engine: implemented and re-verified, awaiting review. Phase 0 is committed (`8c98c0b`); Phase 1 is not committed yet.
+Phase 2 — Generator, difficulty, tools: implemented and verified, awaiting review. Phases 0–1 are committed; Phase 2 is not committed yet.
 
 ## Done
 - Flutter pinned with FVM to **3.47.7 stable** (Dart 3.13.5) via `.fvmrc`; the machine's global Flutter is a 3.49 `main` build and is left untouched. Run commands as `fvm flutter ...`.
@@ -44,6 +44,34 @@ Phase 1 — Core level engine: implemented and re-verified, awaiting review. Pha
 - Undo restores the board only (not hearts); the free-undo count / coin cost is economy, not engine. Undo is refused after win/loss.
 - Daily pack JSON shape (`daily_{yyyy}.json`, keyed by date) is not specified in docs/04 beyond that; left for Phase 2.
 
+## Phase 2 — done (generator, difficulty, tools, placeholders)
+- `lib/core/level/generator/`: `GenParams`/`MechanicMix` (freezed), `LevelGenerator` (reverse construction, Mulberry32 only, portal-aware rays), `MechanicsPass` (gates+keys, linked, frozen, rotator generate-and-test; every step solver-verified), `Masks` (heart, ring, diamond, star, cross, circle), `ChapterPlan` (band table, sawtooth, Knot/Boss, mechanic budget, `paramsFor`), `PackBuilder` (bisects difficulty onto the target), `OnboardingLevels` (ch1 L1-10), `DailyKnot` (+ `DailyPack` model).
+- `lib/core/level/difficulty.dart` (docs/04 §5 formula, `WaveStats`), `level_checker.dart`, `pack_loader.dart` (daily packs + one-level-per-line encoders).
+- `lib/core/assets.dart`: `AssetCatalog` of all 305 manifest files + `AssetFormats` (png/wav placeholders, one place to switch to webp/ogg).
+- Tools: `tool/level_gen.dart`, `tool/level_check.dart`, `tool/gen_placeholder_assets.dart` (+ `tool/placeholder/*`), `tool/print_golden_hashes.dart`.
+- Shipped data: `assets/levels/ch1.json` … `ch5.json` (60 levels each, seed 1001), `daily_2026.json` (83 days from 2026-10-10) + `daily_2027.json` (283 days to 2027-10-10) = 366 days.
+- 305 placeholder files (3.4 MB images, 3.6 MB audio): token-coloured gradients, flat 3-tone icon shapes lit top-left, "PLACEHOLDER" labels on branding/thumbs, synthesised WAV tones; asset directories registered in `pubspec.yaml`.
+- Docs updated: `assets/ASSET_MANIFEST.md` (implementation note, fonts = variable TTFs, fragments rect format, level files), `docs/04` (daily format, §9 implementation notes).
+
+### Phase 2 acceptance
+| Criterion | Result |
+|---|---|
+| 1,000 random seeds per chapter → 100% solvable | pass: `generator_test.dart`, all 5 chapters, every mechanic incl. rotators/portals; each level also valid + `meta.solution` replays to a win with no heart lost |
+| Same seed ⇒ identical JSON (golden fixtures) | pass on the Dart VM (9 hash fixtures) and **on the Android emulator** (`integration_test/determinism_test.dart`, 9/9). iOS not run (no Mac). `level_gen` run twice gives byte-identical packs (also a CI step) |
+| `level_check` passes | pass: 8 files, 669 levels, 0.5 s; non-zero exit on failure |
+| Placeholders at every manifest path | pass: 305/305 (`assets_test.dart` checks existence, PNG/WAV validity, pubspec registration, manifest coverage) |
+| Analyzer / format / tests | clean / clean / 434 tests pass; 1,576 of 1,577 level+assets lines covered |
+
+### Phase 2 design decisions (please confirm)
+- **Daily range** (your choice): next 366 days from 2026-10-10, split into `daily_2026.json` + `daily_2027.json`. **All 5 chapters shipped now** (your choice) — the ch2–5 mechanics levels are generator-made and may be re-tuned in Phase 7.
+- Placeholders use `.png` / `.wav` via `AssetFormats` (the manifest explicitly allows this); Rive files are **empty (0 byte) placeholders** and will not load until the real `.riv` exists; shaders are valid GLSL placeholders but are not listed under `flutter: shaders:` yet.
+- `mechanics` in the difficulty score = each mechanic **type** present once (the doc was ambiguous); rotator `trapRatio` band default 0–0.5 (doc gives none); frozen counters `≤ min(position, 5)`.
+- Waves for the score come from greedy whenever greedy can finish the level, so depth does not depend on the solver's path (fixed an early bug where rotator levels scored ≈ 100).
+- The onboarding levels (L1–10) score ≈ 9–31, while L11–L15 target ≈ 14–25: the early curve is not monotone because onboarding levels are exempt from the band and floor out at ≈ 20–30 under this formula. Revisit if you want a smoother start.
+- Daily Knot params by weekday (size 9–12, fill 0.70–0.84, mechanics ramp) are my design; not specified in the docs.
+- `--delete-conflicting-outputs` no longer exists in build_runner (it only warns): CI no longer passes it; CLAUDE.md still lists it.
+- Tool palette colours (`tool/placeholder/palette.dart`) mirror the theme tokens; a test fails if they drift.
+
 ## Re-verification of Phase 0 + 1 (2026-10-10)
 | Check | Result |
 |---|---|
@@ -59,6 +87,7 @@ Phase 1 — Core level engine: implemented and re-verified, awaiting review. Pha
 | `dart run flutter_soloud:skills` | done: 14 skill files in `.agents/skills/` |
 
 ## Next
+- Human review of Phase 2, then Phase 3 (Design system & component library; a design-gate phase).
 - Material/Cupertino migration deferred (human decision) to a later phase, before the November stable deprecation.
 - Human review of Phase 0 + Phase 1, then Phase 2 (generator, difficulty, tools).
 
@@ -72,6 +101,7 @@ Phase 1 — Core level engine: implemented and re-verified, awaiting review. Pha
 - Lint `unnecessary_type_name_in_constructor` (very_good_analysis 11) was auto-fixed to the `const new(...)` constructor shorthand.
 
 ## New dependencies (justification)
+Phase 2: `integration_test` (SDK, dev only): runs the golden determinism hashes on a real device (`flutter test integration_test --flavor dev`). No other new packages; `dart:io` is used only by `tool/` and tests.
 See "Packages added" above; all from docs/05 §1. `very_good_analysis` for lints; `flame_test` for Flame tests; `intl` + `flutter_localizations` for ARB l10n.
 
 ## Design review gate

@@ -47,7 +47,7 @@ Field rules:
 - `color` (for keys and gates) ∈ `amber | jade | rose | azure` (each has a symbol ● ▲ ■ ◆ for colour-blind mode).
 - `meta.solution` = list of arrow ids in a valid removal order (for linked pairs, list the first id only).
 
-Pack files: `assets/levels/ch{N}.json` → `{ "schema": 1, "chapter": N, "levels": [ ... ] }`. Daily: `assets/levels/daily_{yyyy}.json` (pre-baked 366 entries keyed by `yyyy-mm-dd`).
+Pack files: `assets/levels/ch{N}.json` → `{ "schema": 1, "chapter": N, "levels": [ ... ] }`. Daily: `assets/levels/daily_{yyyy}.json` → `{ "schema": 1, "year": 2027, "levels": { "2027-01-01": { level }, ... } }` (keyed by UTC `yyyy-mm-dd`; a file may cover part of a year; daily level ids are `daily_yyyymmdd`, `chapter` 0, `index` = day of the year). Files are written one level per line so diffs stay readable.
 
 ## 2. Engine semantics (pure Dart — must match GDD §2 & §5)
 
@@ -193,3 +193,21 @@ Sawtooth inside a chapter: for level index `i` (1–60): `target = bandMin + (ba
 - Generator: 1,000 random seeds per chapter params → 100% solvable; determinism (same seed → identical JSON) locked by golden fixtures, run on the Dart VM and in an Android + iOS integration test.
 - Solver: hand-made unsolvable fixtures detected; rotator puzzles with known solutions.
 - Pack check runs in CI on every PR.
+
+
+## 9. Implementation notes (Phase 2)
+
+Decisions made while implementing §3–§7; they refine, not replace, the rules above.
+
+- **Generator** (`lib/core/level/generator/`): `LevelGenerator.generate(GenParams, seed)`; every random choice comes from `Mulberry32`. Order: portals (so every ray is portal-aware) → reverse-construction base board → `MechanicsPass`: gates+keys → linked pairs → frozen → rotators. Each step is verified by a solver and skipped silently when it cannot be done validly, so output is always solvable. `meta.solution` is a greedy order for monotone levels and the search order for rotator levels. Mulberry32 means no `dart:math` in `lib/core/level/` (a test enforces it): length skew is an integer (`lenSkew`), masks use only `+ - *`.
+- **Gates**: the gate sits on an empty cell that lies on ≥ 2 rays; the key is an ordinary arrow removed earlier than all of them. One colour per gate (max 4).
+- **Linked**: two arrows adjacent in the solution and both free at that point; only the first id stays in `meta.solution`.
+- **Frozen**: an arrow at tap position `p` gets a counter `1…min(p,5)`.
+- **Rotators**: single-cell arrows (`singleCellShare` makes the generator emit some); generate-and-test up to 200 tries; accepted when the search solver solves it within the state budget and `trapRatio ∈ [trapMin, trapMax]` (default 0–0.5; the doc did not give the band).
+- **Switcher / splitter** are not generated (v1.1); the engine supports them behind flags.
+- **Difficulty** (`difficulty.dart`): formula exactly as §5. `mechanics` adds each mechanic **type** present once. `depth`/`freeRatio`/`minFree` come from the **greedy waves** whenever greedy can finish the level (always for monotone levels), so they do not depend on which solution a solver found; rotator levels greedy cannot finish fall back to replaying the found solution. `density` uses playable cells.
+- **Chapter plan** (`chapter_plan.dart`): the §5 band table, sawtooth `+0 +3 +6 +9 −8`, Knot `+8`, Boss absolute. Board size follows the band linearly (Knot +1, breather −1, Boss max+2), masks on Knots and (ch1) from L12. Mechanic mixes follow the budget in GDD §5. `PackBuilder` bisects an easy↔hard axis (`adapt` ∈ [−3, 3]: fill, windiness, length, board size) over derived seeds until the score is within 2.5 of the target (accepts the closest of 80 attempts; the check allows ±6).
+- **Onboarding** (ch1 L1–10, `onboarding.dart`): L1–L2 hand-authored, L3–L10 generated under tight constraints (arrow count, bends, depth) choosing the easiest of 30 candidates. They are exempt from the band check (`generatorVersion` `onboarding-1.0`), like `handmade`/`proto` levels.
+- **Daily Knot** (`daily.dart`): seed `FNV-1a("arrowchime-daily-v1-yyyy-MM-dd")`; weekday drives size (9–12), fill (0.70–0.84) and mechanics (Mon plain … Sun gates+frozen+link). Not band-checked (not on the chapter curve), but validated and solver-verified.
+- **`tool/level_check.dart`** checks: schema; rules (`validateLevel`); solvable (greedy / search ≤ 200k states); `meta.solution` replays to a win; stored `meta.difficulty` matches the recomputed one (±0.1); score within ±6 of the target for chapter levels (non-exempt); pack-level: unique ids, chapter/index consistency; daily packs: consecutive dates and ids. Exit code 1 on any failure.
+- **Determinism**: `test/core/level/generator/golden_test.dart` locks 9 fixtures by FNV-1a hash of the canonical JSON (and `integration_test/determinism_test.dart` runs the same hashes on a device). A deliberate generator change must bump `LevelGenerator.version` and update the hashes (`dart run tool/print_golden_hashes.dart`).

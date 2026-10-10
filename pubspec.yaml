@@ -34,6 +34,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   freezed: ^4.0.1
+  integration_test:
+    sdk: flutter
   json_serializable: ^6.14.1
   riverpod_generator: ^4.0.9
   very_good_analysis: ^11.0.0
@@ -45,8 +47,27 @@ flutter:
   assets:
     - assets/levels/
     - assets/branding/
+    - assets/audio/music/
+    - assets/audio/notes/celesta/
+    - assets/audio/notes/choir/
+    - assets/audio/notes/harp/
+    - assets/audio/notes/kalimba/
+    - assets/audio/notes/marimba/
+    - assets/audio/notes/musicbox/
+    - assets/audio/notes/piano/
+    - assets/audio/notes/pixel/
+    - assets/audio/notes/santoor/
+    - assets/audio/sfx/
     - assets/images/
-    - assets/audio/
+    - assets/images/chapters/ch1/
+    - assets/images/chapters/ch2/
+    - assets/images/chapters/ch3/
+    - assets/images/chapters/ch4/
+    - assets/images/chapters/ch5/
+    - assets/images/cosmetics/
+    - assets/images/mechanics/
+    - assets/images/ui/
+    - assets/lottie/
     - assets/rive/
     - assets/shaders/
 

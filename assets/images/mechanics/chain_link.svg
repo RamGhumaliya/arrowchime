@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- PLACEHOLDER: replace with the final artwork from the artist. -->
+  <rect x="14" y="40" width="64" height="48" rx="24" fill="none" stroke="#8A6A1F" stroke-width="12"/>
+  <rect x="50" y="40" width="64" height="48" rx="24" fill="none" stroke="#C9952A" stroke-width="12"/>
+  <path d="M26 56 A18 18 0 0 1 44 48" fill="none" stroke="#FFD15C" stroke-width="4" stroke-linecap="round"/>
+</svg>

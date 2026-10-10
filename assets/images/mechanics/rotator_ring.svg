@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- PLACEHOLDER: replace with the final artwork from the artist. -->
+  <circle cx="64" cy="64" r="52" fill="#8A6A1F"/>
+  <circle cx="64" cy="64" r="48" fill="#C9952A"/>
+  <circle cx="64" cy="64" r="32" fill="#121A2B" fill-opacity="0.25"/>
+  <path d="M22 46 A48 48 0 0 1 64 18" fill="none" stroke="#FFD15C" stroke-width="6" stroke-linecap="round"/>
+  <path d="M64 104 L84 84 L44 84 Z" fill="#8A6A1F"/>
+</svg>
