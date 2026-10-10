@@ -53,6 +53,7 @@ Phase 1 — Core level engine: implemented and re-verified, awaiting review. Pha
 | Coverage | 100% lines in `engine/*`, `solver/*`, `prng`, `level_validator`, `pack_loader`; `models/level.dart` 193/194 (tool artefact: closing `),` of a `throw const`) |
 | Platform folders | only `android/` and `ios/` |
 | Android prod + dev release builds (x64) | both build; install side by side (`com.webazonic.arrowchime`, `.dev`); both launch with no crash, task label "Arrowchime" |
+| Android debug on new emulator (Android 15, 4.7 GB free) | `fvm flutter run --flavor dev -t lib/main_dev.dart` installs and launches (DEBUG banner, splash stub with Fredoka), no FATAL in logcat |
 | iOS | not buildable here (no macOS). `project.pbxproj` braces balanced, configs `Debug/Release/Profile-{dev,prod}` present, schemes `dev` + `prod` present. **Needs one Xcode open on a Mac.** |
 | CI workflow | `ci.yml` parses as YAML; not yet run on GitHub |
 | `dart run flutter_soloud:skills` | done: 14 skill files in `.agents/skills/` |
@@ -63,7 +64,6 @@ Phase 1 — Core level engine: implemented and re-verified, awaiting review. Pha
 
 ## Known issues
 - **flutter_soloud removed from pubspec until Phase 5 (audio)** (human decision): its native build fails on this Windows PC (Windows SDK missing from Visual Studio, `stddef.h`), which broke local `flutter test`. Re-add with `flutter pub add flutter_soloud` in Phase 5 (after installing the "Windows 11 SDK" component, or tests must be run on CI/Linux). The 14 agent skill files from `dart run flutter_soloud:skills` are kept in `.agents/skills/`.
-- Emulator `emulator-5554` has ~450 MB free: the 175 MB debug APK cannot install; verified with a release x64 build instead. Free emulator space for `flutter run`.
 - `android/gradle.properties` sets `kotlin.incremental=false` (Kotlin cache failed because project (D:) and pub cache (C:) are on different drives). Slower builds.
 - **Material/Cupertino standalone packages (corrects an earlier note):** 3.47 publishes `material_ui` / `cupertino_ui` 1.x as an opt-in; the in-SDK `material.dart` still works and is formally deprecated in the November stable. Migration = `dart fix --apply --code=migrate_design_widgets`. Not applied yet: the app uses `WidgetsApp.router` + `GlobalMaterialLocalizations` only. Decision pending (see questions to the human).
 - iOS flavor setup is hand-edited in `project.pbxproj`; open once in Xcode to confirm.
