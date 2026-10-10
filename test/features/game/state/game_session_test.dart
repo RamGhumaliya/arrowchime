@@ -68,10 +68,12 @@ void main() {
       expect(state.status, GameStatus.won);
       expect(state.stars, 3);
       expect(state.reward!.coins, 25);
-      expect(c.read(walletProvider), 25);
+      // 25 for the level + 50 for the "First Note" achievement.
+      expect(c.read(walletProvider), 25 + 50);
+      expect(state.outcome!.achievements, ['first_note']);
       // Tapping after the win changes nothing and pays nothing more.
       s.tap(2);
-      expect(c.read(walletProvider), 25);
+      expect(c.read(walletProvider), 75);
       await Future<void>.delayed(Duration.zero);
       expect(seen.whereType<EnginePlayed>(), hasLength(3));
     });

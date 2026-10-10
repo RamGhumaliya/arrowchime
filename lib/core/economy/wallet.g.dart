@@ -8,20 +8,17 @@ part of 'wallet.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Soft-currency balance. In-memory until the save system (Phase 6) persists
-/// it; coins are never negative and a spend either fully succeeds or does
-/// nothing.
+/// Soft-currency balance, kept in the save (`docs/05` §6). Coins are never
+/// negative and a spend either fully succeeds or does nothing.
 
 @ProviderFor(Wallet)
 final walletProvider = WalletProvider._();
 
-/// Soft-currency balance. In-memory until the save system (Phase 6) persists
-/// it; coins are never negative and a spend either fully succeeds or does
-/// nothing.
+/// Soft-currency balance, kept in the save (`docs/05` §6). Coins are never
+/// negative and a spend either fully succeeds or does nothing.
 final class WalletProvider extends $NotifierProvider<Wallet, int> {
-  /// Soft-currency balance. In-memory until the save system (Phase 6) persists
-  /// it; coins are never negative and a spend either fully succeeds or does
-  /// nothing.
+  /// Soft-currency balance, kept in the save (`docs/05` §6). Coins are never
+  /// negative and a spend either fully succeeds or does nothing.
   WalletProvider._()
     : super(
         from: null,
@@ -49,11 +46,10 @@ final class WalletProvider extends $NotifierProvider<Wallet, int> {
   }
 }
 
-String _$walletHash() => r'447e2a40e7f1f6d23a79627ac61c20d531d6e0ff';
+String _$walletHash() => r'be9acff0468098906f1273cc43ddd61fffc3d3a2';
 
-/// Soft-currency balance. In-memory until the save system (Phase 6) persists
-/// it; coins are never negative and a spend either fully succeeds or does
-/// nothing.
+/// Soft-currency balance, kept in the save (`docs/05` §6). Coins are never
+/// negative and a spend either fully succeeds or does nothing.
 
 abstract class _$Wallet extends $Notifier<int> {
   int build();

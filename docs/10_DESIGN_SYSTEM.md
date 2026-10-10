@@ -228,6 +228,103 @@ Shelf badges: Undo = free undos left, then its price; Hint = free hints left, th
 
 Other screens (Shop, Collection, Daily, Settings, Achievements) follow the same kit: header `TBRibbon`, content in `TBPanel.recessed` lists, one primary CTA max. Before building any of them, Claude Code writes its ASCII layout into this section for approval.
 
+### Phase 6 screen layouts (approved by the human, built in Phase 6)
+Differences between these sketches and the built screens: the level strip wraps as many 44 dp pips per row as fit (7 on an iPhone SE) instead of exactly 10, so every pip is a 44 dp tap target; a missed Daily replay costs **100 coins** (`docs/08`), not 20; **Home**: the sketch's "♥ pill 5/5" has no meaning (hearts are per level, there is no global lives system), so Home shows the **player-level pill** there (tap = Achievements & Stats), a small **chapter plaque** under it opens the Chapter Map, and the music of the current chapter plays; the Quests sheet also shows the chest as the single primary button; recessed panels are cream wells, so their text is ink, not cream.
+All screens: portrait 390×844 reference, `s16` side margin (tablet `s32`, content centred ≤ 720 dp), header `TBRibbon` + back `TBIconButton`, content in `TBPanel.recessed`, **at most one primary `TBButton` per screen**. Every string in ARB, every tap target ≥ 44 dp.
+
+```
+CHAPTER MAP  (from Home "Play" long-area or the chapter plaque)
+┌───────────────────────────────────────┐
+│ [‹]      Chapters ribbon      [coins] │
+│                                       │
+│  ┌─────────┐ ┌─────────┐ ┌─────────┐  │  horizontal PageView of TBChapterCards
+│  │ diorama │ │ diorama │ │ silhouette│ │  280×340, centre card focused (tilt 0),
+│  │  frame  │ │  frame  │ │  + lock  │  │  neighbours tilted 4°; snap scrolling
+│  │ 62%     │ │ 18%     │ │          │  │  brass plaque = restoration %
+│  └─────────┘ └─────────┘ └─────────┘  │  locked = desaturated + lock icon
+│   Misty Garden · ★ 112/180            │  name + stars of the focused chapter
+│  ● ○ ○ ○ ○            (page dots)     │
+│  ┌ level strip (TBPanel.recessed) ───┐ │  60 level pips in a wrapped grid, 10 per row:
+│  │ ①②③④⑤⑥⑦⑧⑨⑩  stars under each    │ │  done = brass pip + stars, current = tangerine,
+│  └───────────────────────────────────┘ │  locked = grey; every 10th = Knot pip (hex),
+│        [ PLAY  Level 37 ]             │  60th = Boss pip. PLAY = the one primary CTA.
+└───────────────────────────────────────┘
+
+DAILY KNOT
+┌───────────────────────────────────────┐
+│ [‹]    Daily Knot #142 ribbon  [coins]│
+│  ┌ today card (TBPanel) ─────────────┐│
+│  │ mini board preview (felt tray)    ││  static preview of today's seeded board
+│  │ 14×14 · 41 arrows    best: ♥♥♥ ⚡×4││  best result if already played
+│  └───────────────────────────────────┘│
+│        [ PLAY TODAY ]                 │  the one primary CTA (becomes "Share" when done:
+│        or  [ Share result ] secondary │  then primary = Share)
+│  ┌ calendar, last 30 days (recessed) ┐│  7-column grid of day pips: played = brass,
+│  │ M T W T F S S                     ││  missed = grey (tap → "Replay for 20 coins"
+│  │ ● ● ○ ● ● ● ●  …                  ││  TBSheet), today = tangerine ring
+│  └───────────────────────────────────┘│
+│  streak flame ×7  ·  freeze: 1 left   │  TBPill-style row, flame icon with tier glow
+└───────────────────────────────────────┘
+Share card (rendered off-screen to PNG + text via share_plus):
+  a TBPanel card (360×450 logical, rendered at 3x): ribbon "Arrowchime Daily #142", ♥♥♡ row (hearts as icons),
+  ⚡×4, time, the emoji mini-board (coloured squares) — text version:
+  "Arrowchime Daily #142 ❤️❤️🖤 ⚡x4 ⏱1:52" + emoji grid (emoji only inside this share text, B4 exception).
+
+QUESTS  (TBSheet from Home quests button)
+┌───────────────────────────────────────┐
+│        ┌ ribbon: Daily quests ┐       │
+│  ┌ quest row ────────────────────────┐│  3 rows, each: icon, caption (≤ 6 words),
+│  │ ▣ Clear 5 levels      [▓▓▓░░] 3/5 ││  TBProgressBar, coin reward badge;
+│  └───────────────────────────────────┘│  completed row = "Claim" secondary TBButton
+│  ┌ … Reach Flow ×3 ───────── [Claim] ┐│  claim plays coin burst; all 3 claimed → chest
+│  ┌ … Free 100 arrows ───────  12/100 ┐│  row at the bottom: quest chest (open = primary)
+│            [ Open chest ]             │
+└───────────────────────────────────────┘
+
+ACHIEVEMENTS & STATS
+┌───────────────────────────────────────┐
+│ [‹]   Achievements ribbon    [coins]  │
+│  [ Achievements | Stats ]  TBTabBar   │  two wooden tabs
+│  Achievements: 2-column grid of badge │  each = brass medallion + icon + title;
+│  tiles (TBPanel), locked = silhouette │  progress bar for counters (e.g. 412/1000);
+│  with progress; tap → small TBSheet   │  unlocked shows date
+│  Stats: recessed list rows            │  rows: arrows freed, perfect clears, best Flow,
+│   label ........................ value│  play time, levels cleared, longest streak
+└───────────────────────────────────────┘
+
+SETTINGS
+┌───────────────────────────────────────┐
+│ [‹]      Settings ribbon              │
+│  ┌ Sound (TBPanel.recessed) ─────────┐│  Music  TBSlider + TBToggle
+│  │ Music  ▬▬▬●▬▬▬        [on]        ││  Sound  TBSlider + TBToggle (notes + effects)
+│  │ Sound  ▬▬▬▬▬●▬        [on]        ││  Haptics TBToggle
+│  │ Haptics                [on]       ││
+│  └───────────────────────────────────┘│
+│  ┌ Play ─────────────────────────────┐│  Left-handed (mirrors the shelf), Relaxed mode
+│  │ Left-handed layout     [off]      ││  (no hearts lost, max ★★), Reduce motion
+│  │ Relaxed mode           [off]      ││  (follows the system, can force on),
+│  │ Reduce motion          [system]   ││  Colour-blind palette: 3 chips (Off / Deutan-Protan /
+│  │ Colour-blind palette  < Off >     ││  Tritan) as a TBTabBar-style segmented control
+│  └───────────────────────────────────┘│
+│  ┌ Account & info ──────────────────┐│  Language (system), Account (placeholder until
+│  │ Language · Account · Privacy      ││  Phase 9), Privacy, Restore purchases (Phase 8),
+│  │ Restore purchases · Credits       ││  Credits: rows open sub-sheets; no primary CTA here
+│  └───────────────────────────────────┘│
+└───────────────────────────────────────┘
+
+ONBOARDING OVERLAY (Ch1 L1–10, on the Level screen)
+┌───────────────────────────────────────┐
+│ (normal Level screen)                 │
+│        ┌ caption TBToast-style ─┐     │  caption ≤ 6 words, top of board, e.g.
+│        │ Tap an arrow to free it│     │  "Tap an arrow to free it." (L1),
+│        └────────────────────────┘     │  "Some arrows are blocked." (L2),
+│            ☝ hand cursor              │  "Blocked taps cost a heart." (L3),
+│   (taps/long-presses the target arrow)│  "Hold to peek the path." (L5), "Pinch to zoom." (L8)
+└───────────────────────────────────────┘
+Hand cursor = a 3D ceramic hand placeholder (code-painted), loops a tap or press gesture on a
+solution arrow chosen from the level's `meta.solution`; hidden after the first correct tap.
+```
+
 ## 8. Arrows & board (in-game 3D look)
 
 **Arrow = glossy enamel tube**, drawn in 5 passes on a cached `Picture`:

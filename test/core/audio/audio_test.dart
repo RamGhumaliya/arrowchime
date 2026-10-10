@@ -7,6 +7,7 @@ import 'package:arrowchime/core/audio/melodies.dart';
 import 'package:arrowchime/core/audio/melody_player.dart';
 import 'package:arrowchime/core/audio/sfx.dart';
 import 'package:arrowchime/core/haptics/haptics_service.dart';
+import 'package:arrowchime/core/save/save_controller.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -296,12 +297,17 @@ void main() {
 
     test('the provider wires settings to the buses', () async {
       final c = ProviderContainer(
-        overrides: [audioBackendProvider.overrideWithValue(backend)],
+        overrides: [
+          saveDebounceProvider.overrideWithValue(null),
+          audioBackendProvider.overrideWithValue(backend),
+        ],
       );
       addTearDown(c.dispose);
       final s = c.read(audioServiceProvider);
       await s.init();
       c.read(feedbackSettingsControllerProvider.notifier).setMusicVolume(0);
+      await c.pump(); // Riverpod propagates changes asynchronously
+      expect(c.read(feedbackSettingsControllerProvider).musicVolume, 0);
       expect(backend.busVolume[AudioBus.music], 0);
     });
   });

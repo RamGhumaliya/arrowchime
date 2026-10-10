@@ -1,6 +1,9 @@
 # PROGRESS — Arrowchime
 
 ## Current phase
+**Phase 6 — Meta & progression: built and verified, NOT committed; design gate: the human reviews `docs/screenshots/phase6/` (31 images).** Phases 0–5 are committed (`0d78c7b` is Phase 5).
+
+(Older entry:)
 **Phase 5 — Juice & Arrow Symphony audio: built and verified, NOT committed; it needs a human with ears (see "Phase 5 — for the human").** Phase 4 is committed (`f0aab23`); its design review is still open.
 
 (Older entry:) **Phase 4 — Playable game screen: built and verified; NOT committed. Design review gate (docs/10 §11): the human reviews `docs/screenshots/phase4/` (20 images) and the questions in "Phase 4 — for the human" below before Phase 5.** Phases 0–3 are committed; Phase 4 is a working-tree change waiting for your review and your word to commit.
@@ -144,7 +147,7 @@ Route `/level/chXX/N` now opens the real game (`LevelRef.parse`; a malformed rou
 | G14 pinch / double tap / wheel, 1×–4×, clamped pan | `view_transform` tests + screen gesture test | pass |
 | G15 tap assist ≥ 95% | scripted taps on every cell of the densest board (24×24, cells of 12 dp): **2436 / 2436 = 100%** (taps up to 0.4 cell off-centre) | pass |
 | G16 relaxed mode: no heart lost, max ★★ | `game_goals_test` | pass |
-| Ch1 L1–20 playable | `integration_test/play_chapter1_test.dart` taps every arrow on screen and presses "Next level" 19 times on the Android emulator (Pixel 5, Android 15) | **pass** |
+| Ch1 L1–20 playable | `integration_test/play_chapter1_test.dart` taps every arrow on screen and presses "Next level" 19 times on the Android emulator (Pixel 5, Android 15) and, in Phase 6, on a real RMX2156 phone | **pass** |
 | iOS | not possible here (no Mac) | **not verified** |
 | 60 fps in profile mode on 14×14 | see Performance | **not proven on a real device** |
 | D1 / D2 (B1–B16, tokens only) | `design_rules_test` scans `lib/features/game` | pass |
@@ -156,7 +159,8 @@ Route `/level/chXX/N` now opens the real game (`LevelRef.parse`; a malformed rou
 `integration_test/performance_test.dart` (run with `flutter drive --driver=test_driver/integration_test.dart --target=integration_test/performance_test.dart --profile --flavor dev --dart-define=PERF_LEVEL=1/60`) prints frame times as `FRAMES …` lines; `baseline_test.dart` gives the emulator's floor. On this software-rendered emulator a trivial 40-circle animation costs **2.9 ms raster (p50)**.
 - 14×14 board (Ch1 L60, 77 arrows): build p50 ≈ 2 ms, raster p50 ≈ 15–26 ms while pinching and tapping (46 ms before the work below). 24×24 board (Ch5 L60, 69 arrows): raster p50 ≈ 30 ms (69 ms before).
 - What was done: static art is baked into images once per zoom bucket (`BakedPicture`: tray, grid, every arrow; vector fallback until baked, at most 8 bakes per frame, re-baking waits until a pinch ends); off-screen arrows are not drawn; arrows in flight use a hard shadow instead of a blurred one; particles are pooled.
-- **I cannot claim 60 fps from this.** The emulator rasterises in software, so it only shows relative improvement (about 2×). The first frame after opening a level takes 200–350 ms raster here (all images are baked at once). Someone has to run the command above on a real 2021 mid-range Android phone. If it misses 16.7 ms there, the next lever is one baked layer for all idle arrows.
+- **Real device (RMX2156, Android 12, arm64, profile build, measured in Phase 6):** 14×14 board: build p50 ≈ 1–4 ms; raster p50 **12.5 ms while pinching**, **17.6 ms during a burst of taps** (arrows in flight); 24×24 board: pinching 15.3 ms, taps 20.7 ms. So pinch/zoom/idle stay inside 16.7 ms on a typical mid-range phone, but **a rapid tap burst runs at about 50–55 fps**, slightly short of the 60 fps goal. Next lever: one baked layer for all idle arrows and a cheaper flight (skip the head's blur). Command: `flutter drive --driver=test_driver/integration_test.dart --target=integration_test/performance_test.dart --profile --flavor dev -d <device>`.
+- (Emulator reading from before:) **I cannot claim 60 fps from this.** The emulator rasterises in software, so it only shows relative improvement (about 2×). The first frame after opening a level takes 200–350 ms raster here (all images are baked at once). Someone has to run the command above on a real 2021 mid-range Android phone. If it misses 16.7 ms there, the next lever is one baked layer for all idle arrows.
 
 ### Design review self-review (docs/10 §11 step 3), Phase 4
 | Screen | Issues I found in my own screenshots | Fixed |
@@ -199,6 +203,39 @@ Route `/level/chXX/N` now opens the real game (`LevelRef.parse`; a malformed rou
 2. Real instrument samples, music loops and SFX are human work (docs/07 §5); they drop in at the same paths (a `.ogg` swap is one constant in `lib/core/assets.dart`).
 3. Decisions to confirm: the ×3 "shaker" layer is a quiet tick sample per note (no loop asset exists yet); long arrows (> 8 cells) play their note louder (one sample per note, no long variant yet); the coin **fly to the pill** and the board **folding into a fragment** are not built because Home and the scene thumbnails do not exist yet (Phase 6/7); the Music / Sound / Haptics switches work but have no screen until Settings (Phase 6).
 
+## Phase 6 — Meta & progression (design gate: human review)
+The layouts you approved (docs/10 §7) are built. The app now starts on the **Splash** (logo plate drops, chime, chapter audio loads) and opens **Home**.
+
+**Built**
+- **Save** (`lib/core/save`): `SaveData` (freezed + JSON: stars per level, current level per chapter, coins, XP, streak, Daily results, achievements, today's quests, settings, stats, flags, `schemaVersion`), `SaveMigrations` (v1 → v2), `SaveRepository` on `hive_ce` writing **two alternating slots with a write counter** (a kill in the middle of a write can only damage the slot being written; the previous good save is read), `SaveController` (Riverpod; writes 500 ms after the last change, and when the app goes to the background / is closed). Wallet, game settings, audio settings and Reduce Motion now live in the save and survive a restart.
+- **Rules as pure functions** (`lib/core/meta`, 100% tested): `Progression` (a win: stars kept at their best, next level, stats, quests, achievements; first clear pays in full, a replay pays only the **extra stars** of a better result (no coin farming); chapters open in order, levels one by one; restoration per chapter; Daily Knot results and the 30-day calendar), `Streak` (local-date streak, weekly free freeze capped at 2, freeze consumption, edge cases of docs/09 §4), `PlayerLevel` (a level-up about every 8 levels early: 240 XP, +30 per step; 100 coins each), `Quests` (3 a day from a pool of 6, seeded by the date, never two of the same kind; claim once; chest), `Achievements` (30, coins 50–500), `DailyShare` (the exact share text), `MetaActions` (claim, chest, buy freeze for 200, pay 100 for a missed Daily).
+- **Screens** (`lib/features`): Splash, **Home** (scene + 3-layer cloud parallax placeholder, player-level / coin / settings pills, chapter plaque, Daily plaque, streak flame that grows at 3/7/30/100 days, PLAY · Level n at 72% width, wooden shelf Shop / Collection / Quests), **Chapter Map** (pager of `TBChapterCard`s, 60 level pips with stars, locked chapters, one PLAY), **Daily Knot** (today's board preview, PLAY TODAY → Share once done, 30-day calendar, replay a missed day for 100 coins, streak and freezes, share card picture + text via `share_plus`), **Quests** sheet, **Achievements & Stats** (two tabs), **Settings** (Music / Sound / Haptics with sliders, Left-handed, Relaxed mode, Reduce motion system/on, colour-blind palette off / red-green / blue-yellow, account rows as "coming soon", credits), **Ch1 onboarding** (caption of at most 6 words + code-painted hand cursor looping tap / hold / pinch on the solution's first arrow, only on uncleared levels 1–10; gone after the first tap).
+- The level screen records every win in the save (coins, XP, stars, stats, streak, quests, achievements) and the win sheet shows level-ups and unlocked achievements; Daily levels (`/daily/play/:date`, only today or the last 30 days) are recorded by UTC date. Colour-blind palettes (Okabe-Ito for red-green, another set for blue-yellow) recolour the arrows; gates and keys keep their symbols.
+
+**Verified**: analyzer and format clean; the full suite passes (new: save, migrations, atomic-write recovery, Hive persistence across a reopen, controller debounce, streak edge cases, quests, achievements, progression, share text, and widget tests of every new screen driven by taps: Home, Quests sheet, Chapter Map, Daily incl. share / replay / freeze, Achievements & Stats, Settings, onboarding, a win saved to the save, a Daily win recorded).
+
+**Acceptance (Phase 6 prompt)**
+| Item | Result |
+|---|---|
+| Progress survives app kill | tested: save → new container loads it; Hive store reopened; a half-written slot falls back to the previous save |
+| Streak edge cases (docs/09 §4) | tested: 23:59 → 00:01 = +1; skip with a freeze keeps and consumes it; skip without resets; two missed days need two freezes; weekly freeze; clock moved back |
+| Daily Knot identical on Android and iOS | the level comes from the baked pack or the same generator (Phase 2 determinism hashes); the iOS side is **not run** (no Mac) |
+| Design gate for every new screen | 31 screenshots in `docs/screenshots/phase6/` (iPhone SE, Pro Max, Android tablet landscape) |
+
+### Design review self-review (docs/10 §11 step 3), Phase 6
+| Screen | Issue found in my own screenshots | Fixed |
+|---|---|---|
+| Settings, Stats, Calendar | Cream text on the cream "recessed" wells was invisible (the recessed panel is a cream well, not a dark inset) | Y (ink text) |
+| Chapter Map | Cards were wider than their pager pages and overlapped on a phone | Y (page width follows the card width) |
+| Every screen | The Flutter DEBUG banner cut across the top-right corner | Y (off) |
+| Home | The sketch's "♥ pill 5/5" does not exist in the game design (hearts are per level) | decided: player-level pill; **please confirm** |
+| Home / Chapter Map | The scene is still the placeholder diorama (restoration shows only as colour), and the clouds are plain soft circles | known: art is human work (docs/06) |
+
+### Phase 6 — for the human
+1. **Review `docs/screenshots/phase6/`** (home, home_new, chapters, daily, daily_done, quests, achievements, stats, settings, onboarding at three sizes, plus the splash).
+2. Confirm the decisions above: the player-level pill instead of the heart pill, no coin farming on replays, the quest pool and reward numbers, the player-level curve (240 XP + 30 per level), achievement coins, Streak Freeze price 200 and the free weekly freeze capped at 2.
+3. Not built (waits for later phases): Shop and Collection (stubs), the account / privacy / restore rows (Phase 8–9), cloud sync (Phase 9), the "fragment flies to the scene" and coin fly-to-pill effects (need the real chapter scene art), Home music at −4 dB.
+
 ## Re-verification of Phase 0 + 1 (2026-10-10)
 | Check | Result |
 |---|---|
@@ -214,6 +251,7 @@ Route `/level/chXX/N` now opens the real game (`LevelRef.parse`; a malformed rou
 | `dart run flutter_soloud:skills` | done: 14 skill files in `.agents/skills/` |
 
 ## Next
+- **Human review of Phase 6** (`docs/screenshots/phase6/`) and your word to commit it; then Phase 7 (mechanics content, all 300 levels checked, Level Lab).
 - **Human listening test of Phase 5** (see "Phase 5 — for the human"), then Phase 6 (meta & progression: Save, Home, chapter map, Settings, Daily). The Phase 4 design review is still open.
 - Human review of Phase 3 is still on record (screenshots in `docs/screenshots/phase3/`).
 - Human review of Phase 2 is still open (nothing blocks Phase 3 work).
@@ -221,6 +259,7 @@ Route `/level/chXX/N` now opens the real game (`LevelRef.parse`; a malformed rou
 - Human review of Phase 0 + Phase 1, then Phase 2 (generator, difficulty, tools).
 
 ## Known issues
+- **Phase 6:** Home, chapter scenes and the hand cursor are placeholders; Shop / Collection are stubs; account rows say "coming soon"; the first Daily of a day not in the baked pack is generated on the device (a few hundred ms); the iOS side of everything is unrun.
 - **Phase 5:** nothing has been *listened* to by a human; the sound files are still placeholder sine tones; the coin fly-to-pill, the board-folds-into-a-fragment and parallax effects wait for Home / chapter scenes (Phase 6/7); Music, Sound and Haptics sliders exist as state but have no Settings screen yet (Phase 6).
 - **Phase 4:** 60 fps is not proven on a real device (emulator only); iOS not built; wallet / settings are not persisted yet (Phase 6); the rewarded-ad button is a stub; no audio/haptics yet; the first frame of a level bakes all images (~0.2 s on the emulator).
 - ~~flutter_soloud removed until Phase 5~~: **re-added in Phase 5.** The Windows 11 SDK is installed now, `flutter test` works with it, and the Android build and run work. The 14 agent skill files are in `.agents/skills/`.
@@ -232,6 +271,7 @@ Route `/level/chXX/N` now opens the real game (`LevelRef.parse`; a malformed rou
 - Lint `unnecessary_type_name_in_constructor` (very_good_analysis 11) was auto-fixed to the `const new(...)` constructor shorthand.
 
 ## New dependencies (justification)
+Phase 6: none new (`hive_ce` / `hive_ce_flutter` for the save, `share_plus` for the Daily share, both from docs/05 §1).
 Phase 5: `flutter_soloud` (docs/05 §5, re-added), `audio_session` (iOS ambient + mix-with-others and Android game audio focus, which docs/05 §5 requires and SoLoud does not expose), `fake_async` (dev: drives the cascade / double-haptic timers in tests).
 Phase 4: none. (`integration_test` was already there; `test_driver/integration_test.dart` is the standard 3-line driver for `flutter drive --profile`.)
 Phase 2: `integration_test` (SDK, dev only): runs the golden determinism hashes on a real device (`flutter test integration_test --flavor dev`). No other new packages; `dart:io` is used only by `tool/` and tests.

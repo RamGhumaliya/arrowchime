@@ -1,9 +1,11 @@
+import 'package:arrowchime/core/save/save_controller.dart';
+import 'package:arrowchime/core/save/save_data.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'feedback_settings.g.dart';
 
 /// Music, Sound (notes + effects) and Haptics preferences (`docs/07` §4).
-/// In memory until the save system (Phase 6) persists them.
 class FeedbackSettings {
   const new({
     this.musicOn = true,
@@ -36,23 +38,37 @@ class FeedbackSettings {
   );
 }
 
+/// Backed by the save (`SaveData.settings`), so the choices survive a restart.
 @Riverpod(keepAlive: true)
 class FeedbackSettingsController extends _$FeedbackSettingsController {
   @override
-  FeedbackSettings build() => const FeedbackSettings();
+  FeedbackSettings build() {
+    final s = ref.watch(saveControllerProvider.select((d) => d.settings));
+    return FeedbackSettings(
+      musicOn: s.musicOn,
+      soundOn: s.soundOn,
+      hapticsOn: s.hapticsOn,
+      musicVolume: s.musicVolume,
+      soundVolume: s.soundVolume,
+    );
+  }
+
+  void _set(SaveSettings Function(SaveSettings s) change) => ref
+      .read(saveControllerProvider.notifier)
+      .update((d) => d.copyWith(settings: change(d.settings)));
 
   void setMusicOn({required bool value}) =>
-      state = state.copyWith(musicOn: value);
+      _set((s) => s.copyWith(musicOn: value));
 
   void setSoundOn({required bool value}) =>
-      state = state.copyWith(soundOn: value);
+      _set((s) => s.copyWith(soundOn: value));
 
   void setHapticsOn({required bool value}) =>
-      state = state.copyWith(hapticsOn: value);
+      _set((s) => s.copyWith(hapticsOn: value));
 
   void setMusicVolume(double value) =>
-      state = state.copyWith(musicVolume: value.clamp(0.0, 1.0));
+      _set((s) => s.copyWith(musicVolume: value.clamp(0.0, 1.0)));
 
   void setSoundVolume(double value) =>
-      state = state.copyWith(soundVolume: value.clamp(0.0, 1.0));
+      _set((s) => s.copyWith(soundVolume: value.clamp(0.0, 1.0)));
 }

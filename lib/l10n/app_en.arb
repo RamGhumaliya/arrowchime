@@ -125,5 +125,420 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chapterName1": "Misty Garden",
+  "chapterName2": "Clockwork Town",
+  "chapterName3": "Lantern Bazaar",
+  "chapterName4": "Frost Peaks",
+  "chapterName5": "Starlight Observatory",
+  "homePlay": "PLAY · Level {n}",
+  "@homePlay": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "homeDaily": "Daily Knot",
+  "homeDailyReady": "Play today",
+  "homeDailyDone": "Done today",
+  "homeStreak": "{count}-day streak",
+  "@homeStreak": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeStreakNone": "No streak yet",
+  "homeChapterPlaque": "{name} · {percent}%",
+  "@homeChapterPlaque": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "homePlayerLevel": "Level {n}",
+  "@homePlayerLevel": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "homeShop": "Shop",
+  "homeCollection": "Collection",
+  "homeQuests": "Quests",
+  "homeSettings": "Settings",
+  "homeAchievements": "Achievements",
+  "mapTitle": "Chapters",
+  "mapStars": "{stars} / {max} stars",
+  "@mapStars": {
+    "placeholders": {
+      "stars": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "mapPlay": "PLAY · Level {n}",
+  "@mapPlay": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "mapLocked": "Finish the chapter before it.",
+  "mapPercent": "{percent}% restored",
+  "@mapPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "mapChapterSemantics": "{name}, {percent}% restored",
+  "@mapChapterSemantics": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "mapChapterLocked": "{name}, locked",
+  "@mapChapterLocked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapLevelPip": "Level {n}, {stars} stars",
+  "@mapLevelPip": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "stars": {
+        "type": "int"
+      }
+    }
+  },
+  "mapLevelNext": "Level {n}, next",
+  "@mapLevelNext": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "mapLevelLocked": "Level {n}, locked",
+  "@mapLevelLocked": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyTitle": "Daily Knot #{n}",
+  "@dailyTitle": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyInfo": "{size}×{size} · {arrows} arrows",
+  "@dailyInfo": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      },
+      "arrows": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyBest": "Best",
+  "dailyPlay": "PLAY TODAY",
+  "dailyShare": "Share result",
+  "dailyCalendar": "Last 30 days",
+  "dailyFreezes": "Freezes: {n}",
+  "@dailyFreezes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyBuyFreeze": "Buy a freeze · {price}",
+  "@dailyBuyFreeze": {
+    "placeholders": {
+      "price": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyReplayTitle": "Replay a missed day",
+  "dailyReplayBody": "Costs {price} coins.",
+  "@dailyReplayBody": {
+    "placeholders": {
+      "price": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyReplayAction": "Replay · {price}",
+  "@dailyReplayAction": {
+    "placeholders": {
+      "price": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyShared": "Result ready to share.",
+  "dailyDayPlayed": "{date}, played",
+  "@dailyDayPlayed": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dailyDayMissed": "{date}, missed",
+  "@dailyDayMissed": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dailyDayToday": "{date}, today",
+  "@dailyDayToday": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dailyLoading": "Tying today’s knot…",
+  "weekday1": "M",
+  "weekday2": "T",
+  "weekday3": "W",
+  "weekday4": "T",
+  "weekday5": "F",
+  "weekday6": "S",
+  "weekday7": "S",
+  "dailyHearts": "{count} hearts left",
+  "@dailyHearts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "winDone": "Done",
+  "winShare": "Share",
+  "questsTitle": "Daily quests",
+  "questClaim": "Claim",
+  "questChestOpen": "Open chest",
+  "questChestDone": "Chest opened",
+  "questProgress": "{n}/{total}",
+  "@questProgress": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "questReward": "+{n}",
+  "@questReward": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "quest_clear5": "Clear 5 levels",
+  "quest_clear10": "Clear 10 levels",
+  "quest_flow3": "Reach Flow ×3",
+  "quest_free100": "Free 100 arrows",
+  "quest_perfect3": "Get 3 perfect clears",
+  "quest_daily1": "Play the Daily Knot",
+  "achTitle": "Achievements",
+  "achTabAchievements": "Achievements",
+  "achTabStats": "Stats",
+  "achUnlocked": "Unlocked {date}",
+  "@achUnlocked": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "achProgress": "{n} / {total}",
+  "@achProgress": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "statArrows": "Arrows freed",
+  "statLevels": "Levels cleared",
+  "statPerfect": "Perfect clears",
+  "statFlow": "Best Flow",
+  "statTime": "Play time",
+  "statStreak": "Longest streak",
+  "statDailies": "Daily Knots",
+  "statStars": "Stars",
+  "statPlayerLevel": "Player level",
+  "statTimeValue": "{h}h {m}m",
+  "@statTimeValue": {
+    "placeholders": {
+      "h": {
+        "type": "int"
+      },
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "statDays": "{n} days",
+  "@statDays": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ach_first_note": "First Note",
+  "achDesc_first_note": "Clear your first level.",
+  "ach_levels_10": "Warming Up",
+  "achDesc_levels_10": "Clear 10 levels.",
+  "ach_levels_50": "In Tune",
+  "achDesc_levels_50": "Clear 50 levels.",
+  "ach_levels_100": "Composer",
+  "achDesc_levels_100": "Clear 100 levels.",
+  "ach_levels_200": "Virtuoso",
+  "achDesc_levels_200": "Clear 200 levels.",
+  "ach_levels_300": "Grand Finale",
+  "achDesc_levels_300": "Clear all 300 levels.",
+  "ach_untangler": "Untangler",
+  "achDesc_untangler": "Free 1,000 arrows.",
+  "ach_arrows_5000": "Knot Breaker",
+  "achDesc_arrows_5000": "Free 5,000 arrows.",
+  "ach_perfect_pitch": "Perfect Pitch",
+  "achDesc_perfect_pitch": "Get 10 three-star clears in a row.",
+  "ach_perfect_25": "Flawless",
+  "achDesc_perfect_25": "Get 25 three-star clears.",
+  "ach_perfect_100": "Crystal Clear",
+  "achDesc_perfect_100": "Get 100 three-star clears.",
+  "ach_flow_3": "In the Groove",
+  "achDesc_flow_3": "Reach Flow ×3.",
+  "ach_maestro": "Maestro",
+  "achDesc_maestro": "Reach Flow ×5.",
+  "ach_chapter_1": "Garden Restored",
+  "achDesc_chapter_1": "Restore Misty Garden.",
+  "ach_chapter_2": "Clockwork Wakes",
+  "achDesc_chapter_2": "Restore Clockwork Town.",
+  "ach_chapter_3": "Lanterns Lit",
+  "achDesc_chapter_3": "Restore Lantern Bazaar.",
+  "ach_chapter_4": "The Thaw",
+  "achDesc_chapter_4": "Restore Frost Peaks.",
+  "ach_chapter_5": "Stargazer",
+  "achDesc_chapter_5": "Restore Starlight Observatory.",
+  "ach_streak_3": "Three in a Row",
+  "achDesc_streak_3": "Play 3 days in a row.",
+  "ach_streak_7": "Week Warrior",
+  "achDesc_streak_7": "Play 7 days in a row.",
+  "ach_streak_30": "Habit",
+  "achDesc_streak_30": "Play 30 days in a row.",
+  "ach_streak_100": "Devoted",
+  "achDesc_streak_100": "Play 100 days in a row.",
+  "ach_daily_1": "Daily Knot",
+  "achDesc_daily_1": "Finish a Daily Knot.",
+  "ach_daily_7": "Regular",
+  "achDesc_daily_7": "Finish 7 Daily Knots.",
+  "ach_daily_30": "Calendar Keeper",
+  "achDesc_daily_30": "Finish 30 Daily Knots.",
+  "ach_night_owl": "Night Owl",
+  "achDesc_night_owl": "Finish a Daily Knot after midnight.",
+  "ach_stars_100": "Star Collector",
+  "achDesc_stars_100": "Collect 100 stars.",
+  "ach_stars_300": "Constellation",
+  "achDesc_stars_300": "Collect 300 stars.",
+  "ach_stars_600": "Galaxy",
+  "achDesc_stars_600": "Collect 600 stars.",
+  "ach_quest_chest": "Treasure",
+  "achDesc_quest_chest": "Open a quest chest.",
+  "toastLevelUp": "Level {n}! +{coins} coins",
+  "@toastLevelUp": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "coins": {
+        "type": "int"
+      }
+    }
+  },
+  "toastAchievement": "Achievement: {title}",
+  "@toastAchievement": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsTitle": "Settings",
+  "settingsSound": "Sound",
+  "settingsMusic": "Music",
+  "settingsSoundFx": "Sound effects",
+  "settingsHaptics": "Haptics",
+  "settingsPlay": "Play",
+  "settingsLeftHanded": "Left-handed layout",
+  "settingsRelaxed": "Relaxed mode",
+  "settingsRelaxedNote": "No hearts lost; two stars at most.",
+  "settingsReduceMotion": "Reduce motion",
+  "settingsReduceSystem": "System",
+  "settingsReduceOn": "On",
+  "settingsColorBlind": "Colour-blind palette",
+  "cbOff": "Off",
+  "cbDeutan": "Red-green",
+  "cbTritan": "Blue-yellow",
+  "settingsAccount": "Account & info",
+  "settingsLanguage": "Language",
+  "settingsLanguageValue": "English",
+  "settingsAccountRow": "Account",
+  "settingsPrivacy": "Privacy",
+  "settingsRestore": "Restore purchases",
+  "settingsCredits": "Credits",
+  "settingsComingSoon": "Coming soon.",
+  "settingsCreditsBody": "Arrowchime is made by Webazonic. Music and art by the Arrowchime team.",
+  "settingsOn": "On",
+  "settingsOff": "Off",
+  "obTap": "Tap an arrow to free it.",
+  "obBlocked": "Some arrows are blocked.",
+  "obHearts": "Blocked taps cost a heart.",
+  "obBend": "Arrows bend. Tap any part.",
+  "obPeek": "Hold to peek the path.",
+  "obZoom": "Pinch to zoom, drag to pan.",
+  "obKnot": "A knot! Take your time."
 }

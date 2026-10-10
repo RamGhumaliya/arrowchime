@@ -6,6 +6,10 @@ import 'package:arrowchime/core/economy/wallet.dart';
 import 'package:arrowchime/core/level/engine/events.dart';
 import 'package:arrowchime/core/level/engine/game_engine.dart';
 import 'package:arrowchime/core/level/solver/hint.dart';
+import 'package:arrowchime/core/meta/date_key.dart';
+import 'package:arrowchime/core/meta/progression.dart';
+import 'package:arrowchime/core/save/save_controller.dart';
+import 'package:arrowchime/core/save/save_data.dart';
 import 'package:arrowchime/features/game/model/flow_tracker.dart';
 import 'package:arrowchime/features/game/state/game_settings.dart';
 import 'package:arrowchime/features/game/state/level_ref.dart';
@@ -39,6 +43,8 @@ class GameSession extends _$GameSession {
   int _freeHintsLeft = Pricing.freeHintsPerLevel;
   int? _hintArrowId;
   LevelReward? _reward;
+  WinOutcome? _outcome;
+  Duration _startedAt = Duration.zero;
 
   /// Animations to play, in order. Each event is sent after [state] already
   /// reflects it, so listeners can read the new Flow multiplier, hearts, ...
@@ -57,6 +63,7 @@ class GameSession extends _$GameSession {
     );
     _flow = FlowTracker(now: ref.read(flowClockProvider));
     _hints = HintService(_engine);
+    _startedAt = ref.read(flowClockProvider)();
     ref.onDispose(_events.close);
     return _snapshot();
   }
@@ -79,6 +86,7 @@ class GameSession extends _$GameSession {
     blockedTaps: _engine.stats.blockedTaps,
     hintArrowId: _hintArrowId,
     reward: _reward,
+    outcome: _outcome,
   );
 
   /// The player tapped arrow [arrowId].
@@ -99,13 +107,42 @@ class GameSession extends _$GameSession {
   /// Pays the win reward exactly once (G4).
   void _pay() {
     if (_reward != null) return;
-    final reward = Rewards.forWin(
-      stars: _engine.stars,
-      index: _id.index,
-      flowMultiplier: _flow.bestMultiplier,
-    );
-    _reward = reward;
-    ref.read(walletProvider.notifier).add(reward.coins);
+    final seconds = (ref.read(flowClockProvider)() - _startedAt).inSeconds;
+    final now = ref.read(clockProvider)();
+    final today = DateKey.of(now);
+    final WinOutcome outcome;
+    final daily = _id.daily;
+    if (daily != null) {
+      outcome = Progression.recordDaily(
+        ref.read(saveControllerProvider),
+        daily,
+        DailyResult(
+          stars: _engine.stars,
+          heartsLeft: _engine.hearts,
+          bestFlow: _flow.bestMultiplier,
+          seconds: seconds,
+        ),
+        today: today,
+        localHour: now.hour,
+      );
+    } else {
+      outcome = Progression.recordWin(
+        ref.read(saveControllerProvider),
+        WinReport(
+          chapter: _id.chapter,
+          index: _id.index,
+          stars: _engine.stars,
+          bestFlow: _flow.bestMultiplier,
+          arrowsFreed: _engine.stats.freedTaps,
+          blockedTaps: _engine.stats.blockedTaps,
+          seconds: seconds,
+        ),
+        today: today,
+      );
+    }
+    ref.read(saveControllerProvider.notifier).update((_) => outcome.data);
+    _outcome = outcome;
+    _reward = LevelReward(coins: outcome.coins, xp: outcome.xp);
   }
 
   /// Undoes the last removal: free twice, then [Pricing.undo] coins.
@@ -157,6 +194,8 @@ class GameSession extends _$GameSession {
     _freeHintsLeft = Pricing.freeHintsPerLevel;
     _hintArrowId = null;
     _reward = null;
+    _outcome = null;
+    _startedAt = ref.read(flowClockProvider)();
     state = _snapshot();
     _events.add(const BoardReset());
   }

@@ -1,10 +1,10 @@
 import 'package:arrowchime/app/app.dart';
 import 'package:arrowchime/app/router.dart';
-import 'package:arrowchime/app/stub_screen.dart';
 import 'package:arrowchime/features/game/flame/arrow_game.dart';
 import 'package:arrowchime/features/game/state/level_ref.dart';
 import 'package:arrowchime/features/game/state/level_repository.dart';
 import 'package:flame/game.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -22,7 +22,7 @@ void main() {
     await tester.pumpWidget(const ProviderScope(child: ArrowchimeApp()));
     await tester.pump(const Duration(milliseconds: 500));
     // Jump straight to level 1 (the home screen is a stub until Phase 7).
-    final context = tester.element(find.byType(StubScreen).first);
+    final context = tester.element(find.byType(Navigator).first);
     final container = ProviderScope.containerOf(context);
     GoRouter.of(context).go(AppRoutes.levelPath('ch1', 1));
     await tester.pump(const Duration(seconds: 1));

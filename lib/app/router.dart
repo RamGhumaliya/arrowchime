@@ -1,7 +1,14 @@
 import 'package:arrowchime/app/stub_screen.dart';
+import 'package:arrowchime/core/meta/date_key.dart';
+import 'package:arrowchime/features/achievements/achievements_screen.dart';
+import 'package:arrowchime/features/chapter_map/chapter_map_screen.dart';
+import 'package:arrowchime/features/daily/daily_screen.dart';
 import 'package:arrowchime/features/design_gallery/design_gallery_screen.dart';
 import 'package:arrowchime/features/game/game_screen.dart';
 import 'package:arrowchime/features/game/state/level_ref.dart';
+import 'package:arrowchime/features/home/home_screen.dart';
+import 'package:arrowchime/features/settings/settings_screen.dart';
+import 'package:arrowchime/features/splash/splash_screen.dart';
 import 'package:arrowchime/l10n/gen/app_localizations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +21,7 @@ abstract final class AppRoutes {
   static const chapterMap = '/chapters';
   static const level = '/level/:chapter/:index';
   static const daily = '/daily';
+  static const dailyPlay = '/daily/play/:date';
   static const shop = '/shop';
   static const collection = '/collection';
   static const achievements = '/achievements';
@@ -23,31 +31,34 @@ abstract final class AppRoutes {
 
   static String levelPath(String chapter, int index) =>
       '/level/$chapter/$index';
+
+  static String dailyPlayPath(String date) => '/daily/play/$date';
 }
 
-GoRouter createRouter() {
+/// A Daily Knot may be played for today or a missed day of the last 30 days.
+bool _validDailyDate(String? date, DateTime now) {
+  if (date == null || !RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(date)) {
+    return false;
+  }
+  final ago = DateKey.daysBetween(date, DateKey.utc(now));
+  return ago >= 0 && ago < 30;
+}
+
+GoRouter createRouter({String initialLocation = AppRoutes.splash}) {
   return GoRouter(
+    initialLocation: initialLocation,
     routes: [
       GoRoute(
         path: AppRoutes.splash,
-        builder: (context, state) => StubScreen(
-          label: AppLocalizations.of(context).routeSplash,
-          // Until Home exists (Phase 6/7): a way into the game in dev builds.
-          actionLabel: kReleaseMode
-              ? null
-              : AppLocalizations.of(context).devPlay,
-          onAction: () => context.go(AppRoutes.levelPath('ch1', 1)),
-        ),
+        builder: (context, state) => const SplashScreen(),
       ),
       GoRoute(
         path: AppRoutes.home,
-        builder: (context, state) =>
-            StubScreen(label: AppLocalizations.of(context).routeHome),
+        builder: (context, state) => const HomeScreen(),
       ),
       GoRoute(
         path: AppRoutes.chapterMap,
-        builder: (context, state) =>
-            StubScreen(label: AppLocalizations.of(context).routeChapterMap),
+        builder: (context, state) => const ChapterMapScreen(),
       ),
       GoRoute(
         path: AppRoutes.level,
@@ -69,8 +80,17 @@ GoRouter createRouter() {
       ),
       GoRoute(
         path: AppRoutes.daily,
-        builder: (context, state) =>
-            StubScreen(label: AppLocalizations.of(context).routeDaily),
+        builder: (context, state) => const DailyScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.dailyPlay,
+        builder: (context, state) {
+          final date = state.pathParameters['date'];
+          if (!_validDailyDate(date, DateTime.now())) {
+            return StubScreen(label: AppLocalizations.of(context).routeDaily);
+          }
+          return GameScreen(levelRef: LevelRef.dailyOf(date!));
+        },
       ),
       GoRoute(
         path: AppRoutes.shop,
@@ -84,13 +104,11 @@ GoRouter createRouter() {
       ),
       GoRoute(
         path: AppRoutes.achievements,
-        builder: (context, state) =>
-            StubScreen(label: AppLocalizations.of(context).routeAchievements),
+        builder: (context, state) => const AchievementsScreen(),
       ),
       GoRoute(
         path: AppRoutes.settings,
-        builder: (context, state) =>
-            StubScreen(label: AppLocalizations.of(context).routeSettings),
+        builder: (context, state) => const SettingsScreen(),
       ),
       // Debug-only tooling (B1 exception: Level Lab / Design Gallery).
       if (kDebugMode) ...[

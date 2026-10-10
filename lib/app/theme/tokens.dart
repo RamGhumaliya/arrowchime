@@ -391,3 +391,37 @@ abstract final class TBFeedback {
   /// Last three arrows: the camera eases in by 3%.
   static const double lastThreeZoom = 1.03;
 }
+
+/// Arrow palettes for colour-blind players (`docs/03` §8). Both sets keep every
+/// colour distinguishable by lightness as well as hue; gates and keys carry a
+/// symbol in every mode, so colour is never the only signal.
+abstract final class TBColorBlind {
+  /// Red-green (deutan / protan): the Okabe-Ito palette.
+  static const List<Color> deutan = [
+    Color(0xFFE69F00),
+    Color(0xFF56B4E9),
+    Color(0xFF009E73),
+    Color(0xFFF0E442),
+    Color(0xFF0072B2),
+    Color(0xFFD55E00),
+    Color(0xFFCC79A7),
+  ];
+
+  /// Blue-yellow (tritan): hues that stay apart without blue-yellow contrast.
+  static const List<Color> tritan = [
+    Color(0xFFD81B60),
+    Color(0xFF00897B),
+    Color(0xFF5E35B1),
+    Color(0xFFF4511E),
+    Color(0xFF546E7A),
+    Color(0xFFC0CA33),
+    Color(0xFF8D6E63),
+  ];
+
+  /// The palette for [mode] (`off` returns `null`: use the chapter's colours).
+  static List<Color>? of(String mode) => switch (mode) {
+    'deutan' => deutan,
+    'tritan' => tritan,
+    _ => null,
+  };
+}

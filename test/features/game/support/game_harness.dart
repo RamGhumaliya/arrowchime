@@ -4,6 +4,7 @@ import 'package:arrowchime/core/audio/audio_service.dart';
 import 'package:arrowchime/core/haptics/haptics_service.dart';
 import 'package:arrowchime/core/level/models/level.dart';
 import 'package:arrowchime/core/level/pack_loader.dart';
+import 'package:arrowchime/core/save/save_controller.dart';
 import 'package:arrowchime/features/game/game_screen.dart';
 import 'package:arrowchime/features/game/state/game_session.dart';
 import 'package:arrowchime/features/game/state/level_ref.dart';
@@ -27,6 +28,7 @@ Level shippedLevel(LevelRef id) {
 /// Overrides that keep tests silent and let them see what was played.
 List<Override> feedbackOverrides(FakeAudioBackend audio, FakeHaptics haptics) =>
     [
+      saveDebounceProvider.overrideWithValue(null),
       audioBackendProvider.overrideWithValue(audio),
       hapticsProvider.overrideWithValue(haptics),
     ];

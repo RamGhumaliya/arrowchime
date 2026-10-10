@@ -8,13 +8,16 @@ part of 'feedback_settings.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
+/// Backed by the save (`SaveData.settings`), so the choices survive a restart.
 
 @ProviderFor(FeedbackSettingsController)
 final feedbackSettingsControllerProvider =
     FeedbackSettingsControllerProvider._();
 
+/// Backed by the save (`SaveData.settings`), so the choices survive a restart.
 final class FeedbackSettingsControllerProvider
     extends $NotifierProvider<FeedbackSettingsController, FeedbackSettings> {
+  /// Backed by the save (`SaveData.settings`), so the choices survive a restart.
   FeedbackSettingsControllerProvider._()
     : super(
         from: null,
@@ -43,7 +46,9 @@ final class FeedbackSettingsControllerProvider
 }
 
 String _$feedbackSettingsControllerHash() =>
-    r'0c9b757c9435f66fc90150f201f900a3f0bc26ef';
+    r'6fb80c28c49251d40458b0df9bb443c68cfee934';
+
+/// Backed by the save (`SaveData.settings`), so the choices survive a restart.
 
 abstract class _$FeedbackSettingsController
     extends $Notifier<FeedbackSettings> {

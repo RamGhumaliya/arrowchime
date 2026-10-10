@@ -1,11 +1,13 @@
-import 'package:arrowchime/app/app.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../features/game/support/game_harness.dart';
+import '../features/meta/meta_harness.dart';
+
 void main() {
-  testWidgets('app boots to the splash stub', (tester) async {
-    await tester.pumpWidget(const ProviderScope(child: ArrowchimeApp()));
-    await tester.pumpAndSettle();
-    expect(find.text('Arrowchime'), findsOneWidget);
+  testWidgets('the app boots to the splash, then opens Home', (tester) async {
+    await pumpApp(tester, location: '/');
+    expect(find.text('Arrowchime'), findsWidgets);
+    await settle(tester, frames: 40);
+    expect(find.text('PLAY · Level 1'), findsWidgets);
   });
 }

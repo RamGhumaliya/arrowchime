@@ -137,6 +137,94 @@ final class LevelPackFamily extends $Family
   String toString() => r'levelPackProvider';
 }
 
+/// The Daily Knot of a UTC date: from the pre-baked `daily_{year}.json` when
+/// it has the day, else generated on the device with the same code (so the
+/// level is identical either way, `docs/04` §6).
+
+@ProviderFor(dailyLevel)
+final dailyLevelProvider = DailyLevelFamily._();
+
+/// The Daily Knot of a UTC date: from the pre-baked `daily_{year}.json` when
+/// it has the day, else generated on the device with the same code (so the
+/// level is identical either way, `docs/04` §6).
+
+final class DailyLevelProvider
+    extends $FunctionalProvider<AsyncValue<Level>, Level, FutureOr<Level>>
+    with $FutureModifier<Level>, $FutureProvider<Level> {
+  /// The Daily Knot of a UTC date: from the pre-baked `daily_{year}.json` when
+  /// it has the day, else generated on the device with the same code (so the
+  /// level is identical either way, `docs/04` §6).
+  DailyLevelProvider._({
+    required DailyLevelFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: _noRetry,
+         name: r'dailyLevelProvider',
+         isAutoDispose: false,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$dailyLevelHash();
+
+  @override
+  String toString() {
+    return r'dailyLevelProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<Level> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<Level> create(Ref ref) {
+    final argument = this.argument as String;
+    return dailyLevel(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is DailyLevelProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$dailyLevelHash() => r'0f80392165d7b1c2e9a51355882936013d5d93e0';
+
+/// The Daily Knot of a UTC date: from the pre-baked `daily_{year}.json` when
+/// it has the day, else generated on the device with the same code (so the
+/// level is identical either way, `docs/04` §6).
+
+final class DailyLevelFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<Level>, String> {
+  DailyLevelFamily._()
+    : super(
+        retry: _noRetry,
+        name: r'dailyLevelProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: false,
+      );
+
+  /// The Daily Knot of a UTC date: from the pre-baked `daily_{year}.json` when
+  /// it has the day, else generated on the device with the same code (so the
+  /// level is identical either way, `docs/04` §6).
+
+  DailyLevelProvider call(String dateKey) =>
+      DailyLevelProvider._(argument: dateKey, from: this);
+
+  @override
+  String toString() => r'dailyLevelProvider';
+}
+
 /// A single level of a chapter pack.
 
 @ProviderFor(level)
@@ -191,7 +279,7 @@ final class LevelProvider
   }
 }
 
-String _$levelHash() => r'cebaaa6d68e7f52f5ce1b1fd2746841d6e0e3f38';
+String _$levelHash() => r'f043597b99434f61d90249d7acb15fd7735ca478';
 
 /// A single level of a chapter pack.
 

@@ -4,6 +4,7 @@
 import 'package:arrowchime/core/economy/rewards.dart';
 import 'package:arrowchime/core/level/engine/game_engine.dart';
 import 'package:arrowchime/core/level/models/level.dart';
+import 'package:arrowchime/core/meta/progression.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'session_state.freezed.dart';
@@ -31,6 +32,10 @@ abstract class SessionState with _$SessionState {
 
     /// Set once the level is won (already paid into the wallet).
     LevelReward? reward,
+
+    /// What the win changed in the save (level-ups, achievements, first
+    /// clear); `null` until won.
+    WinOutcome? outcome,
   }) = _SessionState;
 
   const SessionState._();

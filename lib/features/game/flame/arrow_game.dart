@@ -31,6 +31,7 @@ class ArrowGame extends FlameGame {
     required this.reduceMotion,
     this.showFps = false,
     this.pixelRatio = 1,
+    this.colorBlind = 'off',
     this.onWon,
     this.onLost,
   }) : geometry = BoardGeometry(engine.level) {
@@ -51,6 +52,9 @@ class ArrowGame extends FlameGame {
 
   /// Device pixels per logical pixel (sizes the baked images).
   final double pixelRatio;
+
+  /// Palette mode: `off`, `deutan` or `tritan`.
+  final String colorBlind;
 
   /// The last arrow has left and the pause is over: show the win sheet.
   final void Function()? onWon;
@@ -126,7 +130,7 @@ class ArrowGame extends FlameGame {
     final comp = ArrowComponent(
       arrow: arrow,
       geometry: geometry,
-      color: ArrowVisuals.arrowColor(arrow, theme),
+      color: ArrowVisuals.arrowColor(arrow, theme, colorBlind: colorBlind),
       reduceMotion: reduceMotion,
       context: boardContext,
       onExited: (c) => _leaving.remove(c.arrow.id),
@@ -204,7 +208,7 @@ class ArrowGame extends FlameGame {
     particles.burst(
       head.dx,
       head.dy,
-      ArrowVisuals.arrowColor(comp.arrow, theme),
+      ArrowVisuals.arrowColor(comp.arrow, theme, colorBlind: colorBlind),
       count: reduceMotion ? 0 : 6,
       speed: geometry.cell * 2,
       size: geometry.cell * 0.07,

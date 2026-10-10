@@ -1,12 +1,12 @@
 import 'dart:ui';
 
 import 'package:arrowchime/app/app.dart';
-import 'package:arrowchime/app/stub_screen.dart';
 import 'package:arrowchime/features/game/flame/arrow_game.dart';
 import 'package:arrowchime/features/game/state/level_ref.dart';
 import 'package:arrowchime/features/game/state/level_repository.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -24,7 +24,7 @@ void main() {
   testWidgets('dense board frame times', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: ArrowchimeApp()));
     await tester.pump(const Duration(milliseconds: 500));
-    final context = tester.element(find.byType(StubScreen).first);
+    final context = tester.element(find.byType(Navigator).first);
     final container = ProviderScope.containerOf(context);
     final parts = const String.fromEnvironment(
       'PERF_LEVEL',

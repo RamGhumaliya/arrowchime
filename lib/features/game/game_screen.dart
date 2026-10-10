@@ -10,6 +10,9 @@ import 'package:arrowchime/core/economy/pricing.dart';
 import 'package:arrowchime/core/economy/wallet.dart';
 import 'package:arrowchime/core/haptics/haptics_service.dart';
 import 'package:arrowchime/core/level/generator/chapter_plan.dart';
+import 'package:arrowchime/core/meta/player_level.dart';
+import 'package:arrowchime/core/meta/progression.dart';
+import 'package:arrowchime/core/save/save_controller.dart';
 import 'package:arrowchime/core/ui/components/tb_button.dart';
 import 'package:arrowchime/core/ui/components/tb_chapter_card.dart';
 import 'package:arrowchime/core/ui/components/tb_flow_meter.dart';
@@ -32,6 +35,9 @@ import 'package:arrowchime/features/game/state/level_ref.dart';
 import 'package:arrowchime/features/game/state/level_repository.dart';
 import 'package:arrowchime/features/game/state/session_event.dart';
 import 'package:arrowchime/features/game/state/session_state.dart';
+import 'package:arrowchime/features/onboarding/onboarding_overlay.dart';
+import 'package:arrowchime/features/onboarding/onboarding_plan.dart';
+import 'package:arrowchime/features/shared/achievement_text.dart';
 import 'package:arrowchime/l10n/gen/app_localizations.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/widgets.dart';
@@ -160,6 +166,7 @@ class _GameViewState extends ConsumerState<_GameView> {
       theme: widget.theme,
       reduceMotion: TBMotionScope.reduced(context),
       pixelRatio: MediaQuery.devicePixelRatioOf(context),
+      colorBlind: ref.read(gameSettingsControllerProvider).colorBlind,
       // ignore: avoid_redundant_argument_values, set by --dart-define
       showFps: _showFps,
       onWon: _showWin,
@@ -255,8 +262,24 @@ class _GameViewState extends ConsumerState<_GameView> {
 
   // --- results --------------------------------------------------------------
 
+  /// A level-up and the achievements this win unlocked, as sheet lines.
+  List<String> _bonusLines(AppLocalizations l10n, SessionState state) {
+    final outcome = state.outcome;
+    if (outcome == null) return const [];
+    return [
+      if (outcome.levelUps > 0)
+        l10n.toastLevelUp(
+          PlayerLevel.of(outcome.data.xp),
+          outcome.levelUps * PlayerLevel.levelUpCoins,
+        ),
+      for (final id in outcome.achievements)
+        l10n.toastAchievement(achievementTitle(l10n, id)),
+    ];
+  }
+
   void _showWin() {
     if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
     final state = ref.read(gameSessionProvider(widget.levelRef));
     final reward = state.reward;
     if (reward == null) return;
@@ -272,12 +295,16 @@ class _GameViewState extends ConsumerState<_GameView> {
           reward: reward,
           animate: !TBMotionScope.reduced(context),
           onCoinTick: _feedback?.coinTick,
+          nextLabel: id.isDaily ? l10n.winDone : null,
+          bonusLines: _bonusLines(l10n, state),
           onNext: () {
             Navigator.of(context).pop();
             context.go(
-              id.index < 60
-                  ? AppRoutes.levelPath(id.chapterSlug, id.index + 1)
-                  : AppRoutes.chapterMap,
+              id.isDaily
+                  ? AppRoutes.daily
+                  : (id.index < 60
+                        ? AppRoutes.levelPath(id.chapterSlug, id.index + 1)
+                        : AppRoutes.chapterMap),
             );
           },
           onReplay: () {
@@ -363,12 +390,27 @@ class _GameViewState extends ConsumerState<_GameView> {
       color: widget.theme.arrowColors.first,
       multiplier: state.flowMultiplier,
     );
+    final save = ref.watch(saveControllerProvider);
+    final step = OnboardingPlan.stepFor(
+      chapter: id.chapter,
+      index: id.index,
+      cleared: save.starsOf(Progression.levelId(id.chapter, id.index)) > 0,
+      daily: id.isDaily,
+    );
+    final solution = state.level.meta.solution
+        .where(game.engine.remainingIds.contains)
+        .firstOrNull;
+    final showHint =
+        step != null && solution != null && state.isPlaying && state.taps == 0;
     final board = _Board(
       game: game,
       remaining: state.remaining,
       onTap: _tap,
       onTouchDown: _touchDown,
       onTouchUp: () => game.pressArrow(null),
+      overlay: showHint
+          ? OnboardingOverlay(step: step, game: game, targetArrowId: solution)
+          : null,
     );
 
     Widget shelf(Axis axis) => ValueListenableBuilder<bool>(
@@ -444,6 +486,7 @@ class _Board extends StatelessWidget {
     required this.onTap,
     required this.onTouchDown,
     required this.onTouchUp,
+    this.overlay,
   });
 
   final ArrowGame game;
@@ -451,6 +494,9 @@ class _Board extends StatelessWidget {
   final bool Function(Offset position) onTap;
   final void Function(Offset position) onTouchDown;
   final VoidCallback onTouchUp;
+
+  /// Drawn over the board, ignoring touches (the Chapter 1 hint).
+  final Widget? overlay;
 
   @override
   Widget build(BuildContext context) {
@@ -467,7 +513,13 @@ class _Board extends StatelessWidget {
           onDoubleTapEmpty: game.toggleZoom,
           onTouchDown: onTouchDown,
           onTouchUp: onTouchUp,
-          child: GameWidget(game: game),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              GameWidget(game: game),
+              ?overlay,
+            ],
+          ),
         ),
       ),
     );

@@ -21,6 +21,8 @@ class WinSheet extends StatelessWidget {
     required this.onReplay,
     this.animate = true,
     this.onCoinTick,
+    this.nextLabel,
+    this.bonusLines = const [],
     super.key,
   });
 
@@ -33,6 +35,12 @@ class WinSheet extends StatelessWidget {
 
   /// Called for each clink of the coin count-up (0-based).
   final void Function(int index)? onCoinTick;
+
+  /// Label of the primary button (default "Next level"; Daily: "Done").
+  final String? nextLabel;
+
+  /// Extra lines under the rewards: a level-up, achievements unlocked.
+  final List<String> bonusLines;
 
   @override
   Widget build(BuildContext context) {
@@ -68,9 +76,17 @@ class WinSheet extends StatelessWidget {
             text: l10n.winXp(reward.xp),
             color: TBColors.sky,
           ),
+          for (final line in bonusLines) ...[
+            const SizedBox(height: TBSpacing.s8),
+            TBText.body(
+              line,
+              color: TBColors.ink900,
+              textAlign: TextAlign.center,
+            ),
+          ],
           const SizedBox(height: TBSpacing.s24),
           TBButton.primary(
-            label: l10n.winNext,
+            label: nextLabel ?? l10n.winNext,
             onPressed: onNext,
             expand: true,
           ),

@@ -15,10 +15,14 @@ abstract final class ArrowVisuals {
   };
 
   /// Colour of [arrow] on a board themed [theme].
-  static Color arrowColor(Arrow arrow, ChapterTheme theme) {
+  static Color arrowColor(
+    Arrow arrow,
+    ChapterTheme theme, {
+    String colorBlind = 'off',
+  }) {
     final key = arrow.color;
     if (key != null) return gateColor(key);
-    final colors = theme.arrowColors;
+    final colors = TBColorBlind.of(colorBlind) ?? theme.arrowColors;
     return colors[(arrow.skinHint ?? arrow.id) % colors.length];
   }
 
