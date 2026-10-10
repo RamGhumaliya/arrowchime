@@ -157,8 +157,20 @@ abstract final class TBMotion {
     damping: 22,
   );
 
+  /// Sheets enter with a slight overshoot (docs/10 §5 `TBSheet`).
+  static const Curve sheetCurve = _EaseOutBack(0.8);
+
   /// Stagger between list items.
   static const Duration stagger = Duration(milliseconds: 40);
+
+  /// Stars stamp in one by one, this far apart (GDD §4 "Star award").
+  static const Duration starStagger = Duration(milliseconds: 180);
+
+  /// Toasts auto-hide after this long.
+  static const Duration toast = Duration(seconds: 2);
+
+  /// Idle loop of the progress highlight band.
+  static const Duration shimmer = Duration(milliseconds: 1600);
 
   /// With Reduce Motion everything becomes a 160 ms fade.
   static const Duration reducedMotionFade = Duration(milliseconds: 160);
@@ -191,4 +203,101 @@ abstract final class TBSizes {
 
   /// Shortest side at/above which a device is treated as a tablet.
   static const double tabletShortestSide = 600;
+
+  // Component dimensions (docs/10 §5). Only values the spec does not fix are
+  // chosen here; each is documented in docs/10 §3.6.
+  static const double pillHeight = 40;
+  static const double pillIconOverlap = 0.30;
+  static const double pillPlusButton = 34;
+  static const double badgeHeight = 22;
+  static const double toggleWidth = 64;
+  static const double toggleHeight = 36;
+  static const double toggleKnob = 30;
+  static const double sliderTrack = 14;
+  static const double sliderKnob = 32;
+  static const double progressHeight = 20;
+  static const double flowMeterHeight = 28;
+  static const double starRowStar = 52;
+  static const double ribbonHeight = 56;
+  static const double ribbonFold = 14;
+  static const double tabHeight = 56;
+  static const double toastHeight = 48;
+  static const double sheetHandle = 4;
+  static const double chapterCardWidth = 280;
+  static const double chapterCardHeight = 340;
+  static const double chapterFrame = 14;
+  static const double focusRing = 3;
+  static const double tiltDegrees = 4;
+
+  // Responsive limits: wide screens centre the content instead of stretching.
+  static const double sheetMaxWidth = 560;
+  static const double contentMaxWidth = 720;
+  static const double grainDot = 1.2;
+}
+
+/// Derived material colours (docs/10 §2 "Materials"). The palette in §3.1 has
+/// no wood or brass, so they are mixed from palette colours; no new hues.
+abstract final class TBMaterials {
+  /// Lacquered wood: `tangerineLip` toned down into the night blue.
+  static final Color woodFace = Color.lerp(
+    TBColors.tangerineLip,
+    TBColors.ink700,
+    0.55,
+  )!;
+  static final Color woodLip = Color.lerp(woodFace, TBColors.ink900, 0.45)!;
+  static final Color woodHighlight = Color.lerp(
+    woodFace,
+    TBColors.cream100,
+    0.25,
+  )!;
+
+  /// Brushed brass: butter lip as the base, butter as the highlight.
+  static const Color brassFace = TBColors.butterLip;
+  static final Color brassLight = Color.lerp(
+    TBColors.butter,
+    TBColors.cream100,
+    0.35,
+  )!;
+  static final Color brassDark = Color.lerp(
+    TBColors.butterLip,
+    TBColors.ink900,
+    0.45,
+  )!;
+
+  /// Crystal / ice face (translucent).
+  static const Color crystalFace = TBColors.sky;
+}
+
+/// Geometry of the Toybox 3D material recipes (docs/10 §2, §5).
+abstract final class TBBevel {
+  /// Inner top-left highlight stroke on ceramic.
+  static const double innerHighlight = 1.5;
+
+  /// Opacity of that highlight (white 45%).
+  static const double innerHighlightOpacity = 0.45;
+
+  /// Specular streak: thickness and opacity (white 55–70%).
+  static const double specularThickness = 3;
+  static const double specularOpacity = TBLight.specularMax;
+
+  /// Paper / panel bottom bevel and top rim light.
+  static const double panelBevel = 4;
+  static const double rimLight = 2;
+
+  /// Grain: 2% opacity noise on paper and wood.
+  static const double grainOpacity = 0.02;
+
+  /// How much lighter the top of a ceramic face is (+8%).
+  static const double faceTopLightness = 0.08;
+
+  /// Disabled ceramic loses this much saturation (80%).
+  static const double disabledDesaturation = 0.8;
+
+  /// Recessed surfaces: inner shadow offset and blur.
+  static const double innerShadowOffset = 3;
+  static const double innerShadowBlur = 4;
+
+  /// Brass and wood frame thicknesses.
+  static const double plaqueRim = 3;
+  static const double woodRim = 6;
 }

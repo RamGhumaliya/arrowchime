@@ -1,4 +1,5 @@
 import 'package:arrowchime/app/router.dart';
+import 'package:arrowchime/features/design_gallery/design_gallery_screen.dart';
 import 'package:arrowchime/l10n/gen/app_localizations.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -14,7 +15,6 @@ void main() {
     AppRoutes.collection: 'Collection',
     AppRoutes.achievements: 'Achievements',
     AppRoutes.settings: 'Settings',
-    AppRoutes.designGallery: 'Design Gallery',
     AppRoutes.levelLab: 'Level Lab',
   };
 
@@ -38,6 +38,31 @@ void main() {
       expect(find.text(entry.value), findsOneWidget);
     });
   }
+
+  testWidgets('the design gallery route shows the gallery (debug only)', (
+    tester,
+  ) async {
+    final router = createRouter();
+    addTearDown(router.dispose);
+    tester.view
+      ..physicalSize = const Size(375, 800)
+      ..devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      WidgetsApp.router(
+        routerConfig: router,
+        color: const Color(0xFF000000),
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+      ),
+    );
+    router.go(AppRoutes.designGallery);
+    await tester.pumpAndSettle();
+    expect(find.byType(DesignGalleryScreen), findsOneWidget);
+  });
 
   testWidgets('level route reads chapter and index', (tester) async {
     final router = createRouter();

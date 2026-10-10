@@ -1,7 +1,7 @@
 # PROGRESS — Arrowchime
 
 ## Current phase
-Phase 2 — Generator, difficulty, tools: implemented and verified, awaiting review. Phases 0–1 are committed; Phase 2 is not committed yet.
+**Phase 3 — Design system & component library: built, polished for responsiveness, committed. Design review gate (docs/10 §11): the human reviews `docs/screenshots/phase3/` (their go-ahead for Phase 4).** Phases 0–3 are committed.
 
 ## Done
 - Flutter pinned with FVM to **3.47.7 stable** (Dart 3.13.5) via `.fvmrc`; the machine's global Flutter is a 3.49 `main` build and is left untouched. Run commands as `fvm flutter ...`.
@@ -72,6 +72,51 @@ Phase 2 — Generator, difficulty, tools: implemented and verified, awaiting rev
 - `--delete-conflicting-outputs` no longer exists in build_runner (it only warns): CI no longer passes it; CLAUDE.md still lists it.
 - Tool palette colours (`tool/placeholder/palette.dart`) mirror the theme tokens; a test fails if they drift.
 
+## Phase 3 — Design system & component library (design gate: human review)
+Built exactly per `docs/10`:
+- `lib/core/ui/painters/`: `ceramic` (buttons), `paper` (panels/sheets, raised + recessed), `inset` (recessed wells), `wood` (shelf, tab bar, tray rim, felt), `brass`, `crystal`, `knob`, `enamel_tube` (the 5-pass arrow of §8: shadow, dark rim, body, light band, specular on up/left runs, rounded head, nock), `shade` (three-tone helper, deterministic grain).
+- `lib/core/ui/components/`: `TBText` (sticker treatment once), `TBButton` primary/secondary/tertiary, `TBIconButton` (+ `TBBadge`), `TBPill`, `TBPanel` raised/recessed, `TBRibbon`, `TBSheet` (+ `showTBSheet`), `TBToggle`, `TBSlider`, `TBTabBar`, `TBStarRow`, `TBProgressBar`, `TBToast` (+ `showTBToast`), `TBChapterCard`, `TBFlowMeter`, `TBTray`.
+- `lib/core/ui/icons/`: 24 code-painted 3-tone placeholder icons (`TBIcon`), names equal the asset manifest (a test checks it).
+- `lib/features/design_gallery/` (debug route `/design-gallery`): 8 pages (Foundations, Buttons, Panels, HUD, Controls, Chapters, Icons, Materials); every component with all its states on cream, ink and one chapter background.
+- Press physics: face down 4 dp, lip 6 -> 2 dp, shadow e2 -> e1, haptic, mTap/mRelease with overshoot; Reduce Motion = 160 ms fade, no overshoot. Verified from rasterised pixels.
+- Tokens added (and documented in docs/10 §3.6 and §3.8): `TBMaterials`, `TBBevel`, component sizes, motion extras.
+
+### Phase 3 acceptance
+| Criterion | Result |
+|---|---|
+| Golden tests for every component state at 1x and 3x (D6) | 172 goldens in `test/core/ui/goldens/` (86 cases x 2), all 24 icons included |
+| Screenshots iPhone SE (375 wide) + Pro Max (430 wide) + Android tablet landscape (1280x800) in `docs/screenshots/phase3/` | 19 images: 8 pages x 2 phone sizes + 3 tablet pages (Buttons, HUD, Chapters), made by `design_gallery_screenshots_test.dart` at 2x |
+| B1–B16, D2 | automated scan `design_rules_test.dart` (17 tests) passes; B6/B9/B11–B15 reviewed by eye below |
+| D3 light direction / D4 pressed states | pixel tests: highlight top-left, shadow down-right, lip 6/2 dp; every pressable has a pressed golden |
+| Accessibility (docs/09 §7) | iOS 44 dp tap-target and labelled-tap-target guidelines pass on the Buttons, HUD and Controls pages; semantics tests for every component; Reduce Motion paths tested |
+| Runs on device | debug build launched straight into `/design-gallery` on the Android emulator (`--route=/design-gallery`): renders with Fredoka/Nunito, no exceptions |
+| Responsive (docs/09 §7, docs/03 §9) | 120-combination sweep (8 pages x 5 viewports from 320x568 to 1280x800 x 3 text scales) + 20 targeted tests: no overflow, tablets centre content (720 dp) and cap sheets (560 dp), 32 dp tablet margin, text scale up to 2x |
+| Analyzer / format / tests | clean / clean / 889 tests pass (455 UI tests) |
+
+### Design review self-review (docs/10 §11 step 3)
+| Screen (page) | Issues I found in my own screenshots | Fixed |
+|---|---|---|
+| All pages | The ink900 surface vanished against the ink900 page background | Y (page is ink700) |
+| Buttons | Pressed state looked right; but Flutter's `onTapDown` is delayed ~100 ms, so a real press would feel mushy | Y (raw pointer events) |
+| Panels (sheet) | 3 stars overflowed the SE-width sheet by 1 px | Y (star 52 dp) |
+| HUD | ×N badge overflowed the flow-meter box; unlit segments nearly invisible | Y |
+| Controls | Toggle/pressables exposed an unlabeled duplicate semantics node (caught by the labeled-tap-target guideline) | Y (`ExcludeSemantics`) |
+| Icons | Coin's engraved ring was a fat disc | Y |
+| Foundations | r12/r20/r32 samples all looked like pills (32 dp high) | Y (square samples) |
+| Materials / Chapters | none blocking: enamel tube, tray, wood, brass, crystal, chapter diorama frames read as intended | n/a |
+| Process | `dart fix` once inserted `material.dart`/`cupertino.dart` imports into painters (B1) | Y (removed; the scanner test now guards it) |
+
+Still open, for the human to judge: **(a)** (done: `star_empty` is now ink500, more visible on dark); **(b)** the chapter card scenes and all icons are code placeholders and say so in debug; **(c)** B6/B9/B11–B13 rely on my eye, and **D9 (stranger test with 3 people) needs humans**; **(d)** component sizes the spec does not fix (pill 40, toggle 64x36, slider 14/32, star 52, ribbon 56, tab 56, card 280x340) are my choices, listed in docs/10 §3.6: please confirm or change.
+
+### Responsiveness pass (polish requested after the first review)
+Found by the new sweep and fixed: the star row overflowed narrow boxes (now scales down); the tab bar clipped labels at larger text scales (grows taller, labels scale down); the gallery header squeezed the content at 1.5x text on a 320 px phone (the whole page now scrolls); the ×N brass badge's specular line stuck out of the badge; the slider's tap area was 40 dp (now 44, caught by the a11y guideline test); my first text-scale fix wrongly inflated the 44 dp tertiary button (now components grow only by the *extra* the text scale adds, nominal sizes unchanged); the tablet screenshot test measured page height from a centred offset (dead space). Added: `TBLayout` (`isTablet`, `screenMargin`, `extraLine`), `TBCentered`, button/pill/ribbon/tab overflow handling, centred capped sheets, tablet margins. Polish: the "empty" star is ink500 (visible on dark surfaces), the broken heart already was. Rules are in docs/10 §3.7.
+
+### Phase 3 notes
+- Goldens use a 1% tolerance (`test/flutter_test_config.dart`) because they are authored on Windows and CI runs on Linux; fonts are loaded from `assets/fonts/` in tests.
+- Gallery labels are developer text (debug-only, not in ARB).
+- `TBHaptics` is a thin hook over `HapticFeedback`; the real `HapticsService` replaces it in Phase 5.
+- After switching Dart SDKs, `flutter run` can fail with "Invalid kernel binary format version" from a stale build-hook cache: delete `.dart_tool/hooks_runner`.
+
 ## Re-verification of Phase 0 + 1 (2026-10-10)
 | Check | Result |
 |---|---|
@@ -87,7 +132,8 @@ Phase 2 — Generator, difficulty, tools: implemented and verified, awaiting rev
 | `dart run flutter_soloud:skills` | done: 14 skill files in `.agents/skills/` |
 
 ## Next
-- Human review of Phase 2, then Phase 3 (Design system & component library; a design-gate phase).
+- **Human design review of Phase 3** (`docs/screenshots/phase3/`), then Phase 4 (Playable game screen, also a design-gate phase).
+- Human review of Phase 2 is still open (nothing blocks Phase 3 work).
 - Material/Cupertino migration deferred (human decision) to a later phase, before the November stable deprecation.
 - Human review of Phase 0 + Phase 1, then Phase 2 (generator, difficulty, tools).
 
@@ -105,7 +151,4 @@ Phase 2: `integration_test` (SDK, dev only): runs the golden determinism hashes 
 See "Packages added" above; all from docs/05 §1. `very_good_analysis` for lints; `flame_test` for Flame tests; `intl` + `flutter_localizations` for ARB l10n.
 
 ## Design review gate
-No UI phase completed; nothing awaiting review (stub screens only).
-
-| Screen | Issues found | Fixed (Y/N) |
-|---|---|---|
+**Phase 3 is committed; the human reviews `docs/screenshots/phase3/` (19 images, incl. tablet) before Phase 4 starts.** Self-review and the responsiveness pass are in the Phase 3 section above.

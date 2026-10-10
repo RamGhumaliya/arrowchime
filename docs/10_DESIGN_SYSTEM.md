@@ -95,6 +95,27 @@ Chapter palettes (backgrounds/arrows) live in `ChapterTheme` and are defined in 
 | `mCelebrate` | 360–600 ms | spring (stiffness 380, damping 22) | Stars, plaques, chests |
 Stagger lists by 40 ms. Nothing linear except progress fills. Reduce Motion → fades of 160 ms only.
 
+### 3.6 Derived tokens added in Phase 3
+The spec fixes the palette (§3.1) but not the wood/brass of the materials in §2 or the size of the smaller components, so Phase 3 added them to `lib/app/theme/tokens.dart` (no new hues, nothing literal in components):
+
+| Token group | Contents |
+|---|---|
+| `TBMaterials` | `woodFace/woodLip/woodHighlight` = `tangerineLip` toned into `ink700`/`ink900` and `cream100`; `brassFace/brassLight/brassDark` from `butterLip`/`butter`; `crystalFace` = `sky` |
+| `TBBevel` | inner highlight 1.5 dp @ 45%, specular 3 dp @ 70%, panel bevel 4 dp, rim light 2 dp, grain 2%, ceramic top +8% lightness, disabled desaturation 80%, inner-shadow offset 3 / blur 4, brass rim 3 dp, wood rim 6 dp |
+| `TBSizes` (additions) | pill 40, pill icon overlap 30%, "+" mini button 34, badge 22, toggle 64x36 (knob 30), slider groove 14 / knob 32, progress 20, flow meter 28, star 52, ribbon 56 (fold 14), tab 56, toast 48, chapter card 280x340 (frame 14), focus ring 3, chapter tilt 4 deg |
+| `TBMotion` (additions) | `sheetCurve` (ease-out-back, overshoot 0.8), `starStagger` 180 ms, `toast` 2 s, `shimmer` 1.6 s |
+
+### 3.7 Responsive rules (Phase 3)
+- **Breakpoint:** shortest side >= 600 dp is a tablet (`TBLayout.isTablet`). Side margin 16 dp on phones, 32 dp on tablets (`TBLayout.screenMargin`).
+- **Wide screens centre, they do not stretch:** content is capped at 720 dp (`TBCentered`, `TBSizes.contentMaxWidth`); bottom sheets at 560 dp (`TBSizes.sheetMaxWidth`). Chapter cards keep their size.
+- **Text scale (docs/09 §7, tested at 1.0 / 1.3 / 1.5 / 2.0):** components with fixed heights grow by exactly the extra line height of the scaled text (`TBLayout.extraLine`), so nominal sizes are unchanged at 1x (buttons 64/52/44, ribbon 56, pill 40, tab bar). Button labels, pill values and ribbon/tab titles ellipsise or scale down instead of overflowing; the star row scales down in narrow boxes.
+- **Tap targets** stay >= 44 dp at every scale (sliders and toggles included).
+- **Pages scroll as a whole** (no fixed headers that a large text scale could squeeze out).
+- `test/core/ui/responsive_test.dart` renders all 8 gallery pages at 320x568, 375x667, 430x932, 768x1024 and 1280x800 at 1.0 / 1.3 / 1.5 text scale (120 combinations) and fails on any overflow.
+
+### 3.8 Press physics (measured by tests)
+A pressed ceramic control reacts to the **raw pointer-down** (Flutter's `onTapDown` is delayed ~100 ms and would feel mushy): face down 4 dp, lip 6 -> 2 dp, shadow `e2` -> `e1`, selection haptic, `mTap` (90 ms easeOut). Release uses `mRelease` (160 ms, overshoot 1.4: the face pops up a hair above rest). Reduce Motion: 160 ms, no overshoot. `test/core/ui/painters_icons_test.dart` rasterises the painter and checks the lip rows (6 / 2) and face offset (0 / 4) in pixels.
+
 ## 4. Typography
 
 | Style | Font | Size / weight | Treatment |
@@ -127,6 +148,10 @@ All components live in `lib/core/ui/components/`, are custom-painted, and ship w
 | `TBToast` | Small floating plaque from top, auto-hide 2 s. |
 | `TBChapterCard` | Diorama window: chapter scene thumbnail inside a thick wooden frame, restoration % on a brass plaque, slight perspective tilt (rotateX 4°) that relaxes to 0 when focused. |
 | `TBFlowMeter` | Segmented glass tube along the top of the board; segments light up with chapter colour; ×N badge pops. |
+| `TBTray` | The board tray of §8 as a widget: chapter felt colour, fabric noise, inner shadow, 6 dp wooden rim. Used by the game screen (Phase 4). |
+| `TBText` | The six text styles; sticker treatment (stroke + hard shadow) implemented once. |
+| `TBIcon` | 24 placeholder 3D icons painted in code (3-tone + specular), names = `assets/ASSET_MANIFEST.md`. Replaced by the artist's WebP set. |
+| `TBBadge` | Butter count/price pill (part of `TBIconButton`). |
 
 Every component reads tokens only — no literal colours, sizes or durations inside component code.
 
@@ -207,6 +232,9 @@ Claude Code must:
 2. Produce screenshots via golden tests or `integration_test` on **two sizes**: iPhone SE (375×667) and iPhone 15 Pro Max (430×932), plus one Android tablet landscape for game screens. Save under `docs/screenshots/<phase>/`.
 3. Self-review every screenshot against §1 (B1–B16) and §2–§8, and write a table in `docs/PROGRESS.md`: screen · issues found · fixed (Y/N).
 4. **Stop and ask the human** to review the screenshots before starting the next phase.
+
+### 11.1 Automated checks (Phase 3)
+`test/core/ui/design_rules_test.dart` scans the sources for B1 (Material/Cupertino), B3 (blur/glass), B4 (Material icons, emoji), B5 (fonts), B7 (ad-hoc shadows), B8 (ad-hoc radii), B10, B16 and D2 (literal colours / durations / EdgeInsets in components and features). `components_golden_test.dart` holds 172 goldens (every state at 1x and 3x, D6); `design_gallery_screenshots_test.dart` writes the review screenshots to `docs/screenshots/phase3/`. Goldens compare with a 1% pixel tolerance (`test/flutter_test_config.dart`) because anti-aliasing differs between Windows, macOS and Linux.
 
 ## 12. Design checklist (copy into each UI PR)
 - [ ] Only tokens used (no literal colours/sizes/durations)

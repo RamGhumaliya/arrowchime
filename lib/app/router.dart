@@ -1,4 +1,5 @@
 import 'package:arrowchime/app/stub_screen.dart';
+import 'package:arrowchime/features/design_gallery/design_gallery_screen.dart';
 import 'package:arrowchime/l10n/gen/app_localizations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
@@ -78,9 +79,7 @@ GoRouter createRouter() {
       if (kDebugMode) ...[
         GoRoute(
           path: AppRoutes.designGallery,
-          builder: (context, state) => StubScreen(
-            label: AppLocalizations.of(context).routeDesignGallery,
-          ),
+          builder: (context, state) => const DesignGalleryScreen(),
         ),
         GoRoute(
           path: AppRoutes.levelLab,
