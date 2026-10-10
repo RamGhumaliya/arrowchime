@@ -7,6 +7,7 @@ import 'package:arrowchime/features/design_gallery/design_gallery_screen.dart';
 import 'package:arrowchime/features/game/game_screen.dart';
 import 'package:arrowchime/features/game/state/level_ref.dart';
 import 'package:arrowchime/features/home/home_screen.dart';
+import 'package:arrowchime/features/level_lab/level_lab_screen.dart';
 import 'package:arrowchime/features/settings/settings_screen.dart';
 import 'package:arrowchime/features/splash/splash_screen.dart';
 import 'package:arrowchime/l10n/gen/app_localizations.dart';
@@ -118,8 +119,7 @@ GoRouter createRouter({String initialLocation = AppRoutes.splash}) {
         ),
         GoRoute(
           path: AppRoutes.levelLab,
-          builder: (context, state) =>
-              StubScreen(label: AppLocalizations.of(context).routeLevelLab),
+          builder: (context, state) => const LevelLabScreen(),
         ),
       ],
     ],

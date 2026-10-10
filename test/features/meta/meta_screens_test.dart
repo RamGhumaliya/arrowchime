@@ -510,6 +510,31 @@ void main() {
       });
     }
 
+    for (final (chapter, level, caption) in [
+      (2, 1, 'Arrows turn after each tap.'),
+      (3, 1, 'Free the key arrow first.'),
+      (4, 1, 'Ice thaws as arrows leave.'),
+      (5, 1, 'Chained arrows leave together.'),
+      (5, 20, 'Portals carry arrows across.'),
+    ]) {
+      testWidgets('mechanic tutorial ch$chapter L$level shows its hint', (
+        tester,
+      ) async {
+        await pumpApp(
+          tester,
+          location: AppRoutes.levelPath('ch$chapter', level),
+          save: SaveData(
+            currentLevel: {
+              for (var c = 1; c <= 5; c++) '$c': c < chapter ? 61 : level,
+            },
+          ),
+        );
+        await settle(tester, frames: 12);
+        expect(find.text(caption), findsWidgets);
+        expect(find.byType(OnboardingOverlay), findsOneWidget);
+      });
+    }
+
     testWidgets('level 6 is practice: no hint', (tester) async {
       await pumpApp(
         tester,

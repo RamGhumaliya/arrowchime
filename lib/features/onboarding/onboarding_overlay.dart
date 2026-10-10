@@ -64,6 +64,11 @@ class _OnboardingOverlayState extends State<OnboardingOverlay>
     OnboardingCaption.peek => l10n.obPeek,
     OnboardingCaption.zoom => l10n.obZoom,
     OnboardingCaption.knot => l10n.obKnot,
+    OnboardingCaption.rotator => l10n.obRotator,
+    OnboardingCaption.gate => l10n.obGate,
+    OnboardingCaption.frozen => l10n.obFrozen,
+    OnboardingCaption.link => l10n.obLink,
+    OnboardingCaption.portal => l10n.obPortal,
   };
 
   @override

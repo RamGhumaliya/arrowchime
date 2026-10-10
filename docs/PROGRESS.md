@@ -1,6 +1,9 @@
 # PROGRESS — Arrowchime
 
 ## Current phase
+**Phase 7 — Mechanics content & Level Lab: built and verified, NOT committed.** Phase 6 is committed (`87f2120`); its design review is still open.
+
+(Older entry:)
 **Phase 6 — Meta & progression: built and verified, NOT committed; design gate: the human reviews `docs/screenshots/phase6/` (31 images).** Phases 0–5 are committed (`0d78c7b` is Phase 5).
 
 (Older entry:)
@@ -236,6 +239,26 @@ The layouts you approved (docs/10 §7) are built. The app now starts on the **Sp
 2. Confirm the decisions above: the player-level pill instead of the heart pill, no coin farming on replays, the quest pool and reward numbers, the player-level curve (240 XP + 30 per level), achievement coins, Streak Freeze price 200 and the free weekly freeze capped at 2.
 3. Not built (waits for later phases): Shop and Collection (stubs), the account / privacy / restore rows (Phase 8–9), cloud sync (Phase 9), the "fragment flies to the scene" and coin fly-to-pill effects (need the real chapter scene art), Home music at −4 dB.
 
+## Phase 7 — Mechanics content & Level Lab
+**Built**
+- **Tutorials, one per mechanic** (`MechanicTutorials`, `lib/core/level/generator/mechanic_tutorials.dart`): the level where each mechanic first appears is now a small board (7–8 cells, 6–12 arrows) with **only that mechanic**: rotator (Ch2 L1), gate + key (Ch3 L1), frozen (Ch4 L1), linked pair (Ch5 L1), portal (Ch5 L20). Before, Ch3 L1 had no gate at all, Ch4 L1 mixed ice and a rotator and Ch5 L20 mixed a link and a portal. Generated with a deterministic seed search, solver-verified, marked `tutorial-1.0` (exempt from the difficulty band like the onboarding levels). Packs ch2–ch5 were regenerated (`level_gen --seed 1001`); only those five levels changed.
+- Each tutorial shows a caption of at most 6 words and the hand cursor on its first play ("Arrows turn after each tap.", "Free the key arrow first." (the hand points at the key), "Ice thaws as arrows leave.", "Chained arrows leave together.", "Portals carry arrows across."), only until the level is cleared.
+- **Mechanic rendering** (docs/10 §8) was built in Phase 4 (brass gear ring, wooden gate with brass keyhole badge and colour symbol, brass key fob, crystal ice with counter sticker, ceramic portal ring with a code-drawn swirl, brass chain links); this phase adds a **Mechanics page to the Design Gallery** (5 boards on the real Flame renderer, each on cream / ink / chapter surfaces, plus both colour-blind palettes): `docs/screenshots/phase3/mechanics_*.png`.
+- **Level Lab** (debug builds only; Material widgets allowed there, docs/10 B1 exception, so it is not scanned by the design-rules test): reachable from Settings → Developer. Browse a chapter's 60 levels (size, arrows, score vs target, mechanics, approved tick), view a level on the real board with the **solution order drawn on the arrow heads**, difficulty, depth, seed and generator version, **Play** it in the real game screen (through `levelOverridesProvider`; counts as a real play in the debug save), **Regenerate** it (next seed; plan-fixed levels regenerate to themselves), **Approve / Unapprove** (`meta.approved`), **Check** (the real `LevelChecker`), **Export pack** (pack JSON with the edits to the clipboard) and an **FPS overlay** switch.
+
+**Acceptance (Phase 7 prompt)**
+| Item | Result |
+|---|---|
+| All 300 levels pass `level_check` | `dart run tool/level_check.dart assets/levels/` → 8 files, 669 levels (300 chapter levels + 366 Daily + 3 samples), all passed |
+| Each mechanic has tests + tutorial | `mechanic_tutorials_test` (single-mechanic, small, solvable, deterministic, shipped pack equals the generator output), engine tests per mechanic (Phase 1), widget tests for every tutorial hint, animation tests per mechanic (Phase 4) |
+| Mechanics screenshots in the Design Gallery | yes (new Mechanics page) |
+| Boss levels "hand-tuned" | **not done**: I cannot play-test; the 5 boss levels (L60) are generated and solver-verified like the rest. Use the Level Lab to look at them and regenerate or approve |
+
+### Phase 7 — for the human
+1. Open the Level Lab (Settings → Developer in a debug build) and look through the packs, especially the five tutorials and the boss levels (L60); **Approve** the ones you like. "Approved" is stored only in the exported JSON (copy it with Export pack and commit it).
+2. The tutorials are generated, not hand-made; if one feels wrong, Regenerate and tell me.
+3. Open points: ceramic portal "swirl shader + fallback": the swirl is code-drawn (animated arcs); a real fragment shader is art/engineering work for later.
+
 ## Re-verification of Phase 0 + 1 (2026-10-10)
 | Check | Result |
 |---|---|
@@ -251,6 +274,7 @@ The layouts you approved (docs/10 §7) are built. The app now starts on the **Sp
 | `dart run flutter_soloud:skills` | done: 14 skill files in `.agents/skills/` |
 
 ## Next
+- **Phase 7 review** (Level Lab look-through, tutorials), then Phase 8 (Shop, cosmetics, ads, IAP; it asks you RevenueCat or in_app_purchase first).
 - **Human review of Phase 6** (`docs/screenshots/phase6/`) and your word to commit it; then Phase 7 (mechanics content, all 300 levels checked, Level Lab).
 - **Human listening test of Phase 5** (see "Phase 5 — for the human"), then Phase 6 (meta & progression: Save, Home, chapter map, Settings, Daily). The Phase 4 design review is still open.
 - Human review of Phase 3 is still on record (screenshots in `docs/screenshots/phase3/`).

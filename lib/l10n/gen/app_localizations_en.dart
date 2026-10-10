@@ -753,4 +753,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get obKnot => 'A knot! Take your time.';
+
+  @override
+  String get obRotator => 'Arrows turn after each tap.';
+
+  @override
+  String get obGate => 'Free the key arrow first.';
+
+  @override
+  String get obFrozen => 'Ice thaws as arrows leave.';
+
+  @override
+  String get obLink => 'Chained arrows leave together.';
+
+  @override
+  String get obPortal => 'Portals carry arrows across.';
+
+  @override
+  String get settingsDeveloper => 'Developer (debug builds)';
 }

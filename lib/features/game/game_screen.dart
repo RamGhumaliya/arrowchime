@@ -10,6 +10,8 @@ import 'package:arrowchime/core/economy/pricing.dart';
 import 'package:arrowchime/core/economy/wallet.dart';
 import 'package:arrowchime/core/haptics/haptics_service.dart';
 import 'package:arrowchime/core/level/generator/chapter_plan.dart';
+import 'package:arrowchime/core/level/generator/mechanic_tutorials.dart';
+import 'package:arrowchime/core/level/models/arrow.dart';
 import 'package:arrowchime/core/meta/player_level.dart';
 import 'package:arrowchime/core/meta/progression.dart';
 import 'package:arrowchime/core/save/save_controller.dart';
@@ -397,9 +399,19 @@ class _GameViewState extends ConsumerState<_GameView> {
       cleared: save.starsOf(Progression.levelId(id.chapter, id.index)) > 0,
       daily: id.isDaily,
     );
-    final solution = state.level.meta.solution
-        .where(game.engine.remainingIds.contains)
+    final remaining = game.engine.remainingIds;
+    var solution = state.level.meta.solution
+        .where(remaining.contains)
         .firstOrNull;
+    if (step?.mechanic == Mechanic.gateKey) {
+      // The gate tutorial points at the key arrow.
+      solution =
+          state.level.arrows
+              .where((a) => a.kind == ArrowKind.key && remaining.contains(a.id))
+              .map((a) => a.id)
+              .firstOrNull ??
+          solution;
+    }
     final showHint =
         step != null && solution != null && state.isPlaying && state.taps == 0;
     final board = _Board(

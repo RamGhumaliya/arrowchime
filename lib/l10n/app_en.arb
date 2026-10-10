@@ -540,5 +540,11 @@
   "obBend": "Arrows bend. Tap any part.",
   "obPeek": "Hold to peek the path.",
   "obZoom": "Pinch to zoom, drag to pan.",
-  "obKnot": "A knot! Take your time."
+  "obKnot": "A knot! Take your time.",
+  "obRotator": "Arrows turn after each tap.",
+  "obGate": "Free the key arrow first.",
+  "obFrozen": "Ice thaws as arrows leave.",
+  "obLink": "Chained arrows leave together.",
+  "obPortal": "Portals carry arrows across.",
+  "settingsDeveloper": "Developer (debug builds)"
 }

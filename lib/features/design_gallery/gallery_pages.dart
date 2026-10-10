@@ -1,5 +1,7 @@
 import 'package:arrowchime/app/theme/chapter_theme.dart';
 import 'package:arrowchime/app/theme/tokens.dart';
+import 'package:arrowchime/core/level/generator/mechanic_tutorials.dart';
+import 'package:arrowchime/core/level/models/level.dart';
 import 'package:arrowchime/core/ui/components/tb_button.dart';
 import 'package:arrowchime/core/ui/components/tb_chapter_card.dart';
 import 'package:arrowchime/core/ui/components/tb_flow_meter.dart';
@@ -24,6 +26,7 @@ import 'package:arrowchime/core/ui/painters/enamel_tube_painter.dart';
 import 'package:arrowchime/core/ui/painters/paper_painter.dart';
 import 'package:arrowchime/core/ui/painters/wood_painter.dart';
 import 'package:arrowchime/features/design_gallery/gallery_widgets.dart';
+import 'package:arrowchime/features/game/preview/board_preview.dart';
 import 'package:flutter/widgets.dart';
 
 /// The pages of the Design Gallery (`docs/10` §11). Each page is a column of
@@ -37,7 +40,8 @@ enum GalleryGroup {
   controls('Controls'),
   chapters('Chapters'),
   icons('Icons'),
-  materials('Materials');
+  materials('Materials'),
+  mechanics('Mechanics');
 
   new(this.label);
 
@@ -52,6 +56,7 @@ enum GalleryGroup {
     GalleryGroup.chapters => const _Chapters(),
     GalleryGroup.icons => const _Icons(),
     GalleryGroup.materials => const _Materials(),
+    GalleryGroup.mechanics => const _Mechanics(),
   };
 }
 
@@ -875,4 +880,106 @@ class _ShelfSample extends CustomPainter {
 
   @override
   bool shouldRepaint(_ShelfSample old) => false;
+}
+
+// --- Mechanics --------------------------------------------------------------
+
+/// The five mechanics on their tutorial boards, exactly as the game draws them
+/// (`docs/10` §8), then the same board in both colour-blind palettes.
+class _Mechanics extends StatelessWidget {
+  const new();
+
+  static const double _board = 240;
+
+  static final Map<Mechanic, Level> _levels = {
+    for (final e in MechanicTutorials.slots.entries)
+      e.value: MechanicTutorials.build(e.key.$1, e.key.$2),
+  };
+
+  static const _notes = <Mechanic, (String, String)>{
+    Mechanic.rotator: (
+      'Rotator',
+      'Brass gear ring on the head; turns 90° clockwise after every other arrow leaves.',
+    ),
+    Mechanic.gateKey: (
+      'Gate + key',
+      'Lacquered wooden gate with a brass badge and a colour symbol; the key arrow has a brass fob on its tail.',
+    ),
+    Mechanic.frozen: (
+      'Frozen',
+      'Crystal ice block with the counter sticker; thaws as other arrows leave.',
+    ),
+    Mechanic.link: (
+      'Linked pair',
+      'Small brass chain links join the two arrows; both must be free.',
+    ),
+    Mechanic.portal: (
+      'Portal',
+      'Ceramic ring with a swirling inner; a ray entering one comes out of the other.',
+    ),
+  };
+
+  Widget _preview(Level level, ChapterTheme theme, {String palette = 'off'}) =>
+      SizedBox(
+        width: _board,
+        height: _board,
+        child: BoardPreview(level: level, theme: theme, colorBlind: palette),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    final themes = [
+      ChapterTheme.clockworkTown,
+      ChapterTheme.lanternBazaar,
+      ChapterTheme.frostPeaks,
+      ChapterTheme.starlightObservatory,
+      ChapterTheme.starlightObservatory,
+    ];
+    const mechanics = Mechanic.values;
+    return _column([
+      for (var i = 0; i < mechanics.length; i++)
+        GalleryItem(
+          title: _notes[mechanics[i]]!.$1,
+          note: _notes[mechanics[i]]!.$2,
+          builder: (context, surface) =>
+              _preview(_levels[mechanics[i]]!, themes[i]),
+        ),
+      GalleryItem(
+        title: 'Colour-blind palettes',
+        note:
+            'Red-green (Okabe-Ito) and blue-yellow; gates and keys keep '
+            'their circle / triangle / square / diamond symbols.',
+        builder: (context, surface) => StateWrap(
+          children: [
+            StateLabel(
+              'red-green',
+              surface: surface,
+              child: SizedBox(
+                width: _board / 1.5,
+                height: _board / 1.5,
+                child: BoardPreview(
+                  level: _levels[Mechanic.gateKey]!,
+                  theme: ChapterTheme.lanternBazaar,
+                  colorBlind: 'deutan',
+                ),
+              ),
+            ),
+            StateLabel(
+              'blue-yellow',
+              surface: surface,
+              child: SizedBox(
+                width: _board / 1.5,
+                height: _board / 1.5,
+                child: BoardPreview(
+                  level: _levels[Mechanic.gateKey]!,
+                  theme: ChapterTheme.lanternBazaar,
+                  colorBlind: 'tritan',
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ]);
+  }
 }

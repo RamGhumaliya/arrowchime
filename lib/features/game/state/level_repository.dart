@@ -5,6 +5,7 @@ import 'package:arrowchime/core/meta/date_key.dart';
 import 'package:arrowchime/features/game/state/level_ref.dart';
 import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'level_repository.g.dart';
@@ -44,9 +45,26 @@ Future<Level> dailyLevel(Ref ref, String dateKey) async {
   return await compute(DailyKnot.levelFor, DateKey.parse(dateKey));
 }
 
+/// Levels that replace the shipped ones (Level Lab: regenerated or edited
+/// levels played in the real game screen). Empty in normal play.
+class LevelOverrides extends Notifier<Map<LevelRef, Level>> {
+  @override
+  Map<LevelRef, Level> build() => const {};
+
+  // ignore: named for what it does
+  void set(LevelRef id, Level level) => state = {...state, id: level};
+}
+
+final NotifierProvider<LevelOverrides, Map<LevelRef, Level>>
+levelOverridesProvider = NotifierProvider<LevelOverrides, Map<LevelRef, Level>>(
+  LevelOverrides.new,
+);
+
 /// A single level of a chapter pack.
 @Riverpod(keepAlive: true, retry: _noRetry)
 Future<Level> level(Ref ref, LevelRef id) async {
+  final replaced = ref.watch(levelOverridesProvider.select((m) => m[id]));
+  if (replaced != null) return replaced;
   final daily = id.daily;
   if (daily != null) {
     return await ref.watch(dailyLevelProvider(daily).future);

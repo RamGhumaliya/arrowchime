@@ -1413,6 +1413,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A knot! Take your time.'**
   String get obKnot;
+
+  /// No description provided for @obRotator.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrows turn after each tap.'**
+  String get obRotator;
+
+  /// No description provided for @obGate.
+  ///
+  /// In en, this message translates to:
+  /// **'Free the key arrow first.'**
+  String get obGate;
+
+  /// No description provided for @obFrozen.
+  ///
+  /// In en, this message translates to:
+  /// **'Ice thaws as arrows leave.'**
+  String get obFrozen;
+
+  /// No description provided for @obLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Chained arrows leave together.'**
+  String get obLink;
+
+  /// No description provided for @obPortal.
+  ///
+  /// In en, this message translates to:
+  /// **'Portals carry arrows across.'**
+  String get obPortal;
+
+  /// No description provided for @settingsDeveloper.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer (debug builds)'**
+  String get settingsDeveloper;
 }
 
 class _AppLocalizationsDelegate

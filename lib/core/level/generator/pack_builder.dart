@@ -35,6 +35,9 @@ abstract final class PackBuilder {
   /// A level this close to its target is accepted immediately.
   static const double acceptError = 2.5;
 
+  /// The base seed of the shipped packs (`level_gen --seed 1001`).
+  static const int defaultBaseSeed = 1001;
+
   /// Seeds tried per level at most.
   static const int maxAttempts = 80;
 

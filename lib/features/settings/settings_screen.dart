@@ -13,6 +13,7 @@ import 'package:arrowchime/core/ui/support/tb_pressable.dart';
 import 'package:arrowchime/features/game/state/game_settings.dart';
 import 'package:arrowchime/features/shared/screen_frame.dart';
 import 'package:arrowchime/l10n/gen/app_localizations.dart';
+import 'package:flutter/foundation.dart' show kReleaseMode;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -133,6 +134,22 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ],
           ),
+          if (!kReleaseMode) ...[
+            const SizedBox(height: TBSpacing.s16),
+            _Group(
+              title: l10n.settingsDeveloper,
+              children: [
+                _ActionRow(
+                  label: l10n.routeLevelLab,
+                  onTap: () => context.push(AppRoutes.levelLab),
+                ),
+                _ActionRow(
+                  label: l10n.routeDesignGallery,
+                  onTap: () => context.push(AppRoutes.designGallery),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );

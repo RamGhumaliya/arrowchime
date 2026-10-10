@@ -279,7 +279,7 @@ final class LevelProvider
   }
 }
 
-String _$levelHash() => r'f043597b99434f61d90249d7acb15fd7735ca478';
+String _$levelHash() => r'1a220094b9864b4f031d0878f4c5a4561f9cadcb';
 
 /// A single level of a chapter pack.
 

@@ -5,11 +5,17 @@ import 'package:flutter_test/flutter_test.dart';
 /// Automatic design checks (`docs/10` §1 BANNED list, `docs/09` D1/D2): scans
 /// the source of the design system and the player-facing features.
 void main() {
+  // The Level Lab is a debug-only developer tool: Material widgets are allowed
+  // there (docs/10 B1 exception), so it is not scanned.
+  bool notLab(File f) =>
+      !f.path.replaceAll(String.fromCharCode(92), '/').contains('/level_lab/');
+
   List<File> dartFiles(String dir) =>
       Directory(dir)
           .listSync(recursive: true)
           .whereType<File>()
           .where((f) => f.path.endsWith('.dart'))
+          .where(notLab)
           .where((f) => !f.path.endsWith('.freezed.dart'))
           .where((f) => !f.path.endsWith('.g.dart'))
           .toList();
@@ -27,7 +33,7 @@ void main() {
   ];
 
   String read(File f) => f.readAsStringSync();
-  String rel(File f) => f.path.replaceAll(r'\', '/');
+  String rel(File f) => f.path.replaceAll(String.fromCharCode(92), '/');
 
   void expectNone(
     Iterable<File> files,

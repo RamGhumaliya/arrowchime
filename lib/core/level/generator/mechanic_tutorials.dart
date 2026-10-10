@@ -32,22 +32,21 @@ abstract final class MechanicTutorials {
   static Mechanic? at(int chapter, int index) => slots[(chapter, index)];
 
   static ({GenParams params, int minArrows, int maxArrows}) _spec(Mechanic m) {
-    GenParams p(int size, MechanicMix mix, {double singles = 0}) => GenParams(
-      width: size,
-      height: size,
-      targetFill: 0.8,
-      lenMin: 2,
-      lenMax: 4,
-      windiness: 0.4,
-      singleCellShare: singles,
-      maxFailures: 3000,
-      mix: mix,
-      maxArrows: 12,
-      trapMax: 1,
-    );
+    GenParams p(int size, MechanicMix mix, {double singles = 0, int cap = 9}) =>
+        GenParams(
+          width: size,
+          height: size,
+          targetFill: 0.8,
+          lenMax: 4,
+          singleCellShare: singles,
+          maxFailures: 3000,
+          mix: mix,
+          maxArrows: cap,
+          trapMax: 1,
+        );
     return switch (m) {
       Mechanic.rotator => (
-        params: p(7, const MechanicMix(rotators: 1), singles: 0.15),
+        params: p(7, const MechanicMix(rotators: 1), singles: 0.15, cap: 12),
         minArrows: 6,
         maxArrows: 12,
       ),
@@ -107,8 +106,9 @@ abstract final class MechanicTutorials {
           !mechanicsOf(level).contains(mechanic)) {
         continue;
       }
-      if (best == null ||
-          (level.meta.difficulty ?? 0) < (best.meta.difficulty ?? 0)) {
+      final current = best;
+      if (current == null ||
+          (level.meta.difficulty ?? 0) < (current.meta.difficulty ?? 0)) {
         best = level;
       }
       if (attempt > 120 && best != null) break;
