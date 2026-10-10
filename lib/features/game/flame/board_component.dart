@@ -50,6 +50,9 @@ class BoardComponent extends Component {
     maxDimension: 3072,
   );
   bool gridVisible = false;
+
+  /// Flow multiplier 1-5: from ×2 the felt's edge glows warmer.
+  int flowTier = 1;
   double _time = 0;
 
   final Set<GateColor> _openGates = {};
@@ -114,6 +117,7 @@ class BoardComponent extends Component {
   @override
   void render(Canvas canvas) {
     _tray.paint(canvas, context);
+    _paintFlowGlow(canvas);
     if (gridVisible) _grid.paint(canvas, context);
     _paintLinks(canvas);
     _paintPortals(canvas);
@@ -176,6 +180,21 @@ class BoardComponent extends Component {
     for (var y = 0; y <= level.height; y++) {
       line(Offset(g.left, g.top + y * _c), Offset(g.right, g.top + y * _c));
     }
+  }
+
+  void _paintFlowGlow(Canvas canvas) {
+    if (flowTier < 2) return;
+    final rim = RRect.fromRectAndRadius(
+      geometry.trayRect.deflate(TBBevel.woodRim + _c * 0.1),
+      Radius.circular(_c * 0.4),
+    );
+    canvas.drawRRect(
+      rim,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = _c * 0.28
+        ..color = TBColors.tangerine.withValues(alpha: 0.10 * (flowTier - 1)),
+    );
   }
 
   void _paintLinks(Canvas canvas) {

@@ -353,3 +353,41 @@ abstract final class TBGesture {
   /// A finger that moved further than this (dp) is a drag, not a tap.
   static const double slop = 8;
 }
+
+/// Timings of sound and haptic feedback (`docs/07` §1, `docs/03` §4).
+abstract final class TBFeedback {
+  /// Board clear: remaining melody notes 90 ms apart.
+  static const Duration cascadeStep = Duration(milliseconds: 90);
+
+  /// Pause between the cascade and the flourish.
+  static const Duration flourishGap = Duration(milliseconds: 150);
+
+  /// Notes of the 2-bar flourish.
+  static const Duration flourishStep = Duration(milliseconds: 110);
+
+  /// Stars stamp in one by one.
+  static const Duration starStep = Duration(milliseconds: 180);
+
+  /// Blocked tap: a second pulse after the first.
+  static const Duration doublePulse = Duration(milliseconds: 90);
+
+  /// Flow ×5 keeps the music bright this long.
+  static const Duration brightFor = Duration(milliseconds: 1500);
+
+  /// Offset of a layered sound (shaker tick) behind its note.
+  static const Duration layerDelay = Duration(milliseconds: 60);
+
+  /// The key jingle follows the gate door.
+  static const Duration keyDelay = Duration(milliseconds: 120);
+
+  /// Music returns to full level after the flourish.
+  static const Duration duckRestore = Duration(milliseconds: 600);
+
+  /// Touch-down press feedback on an arrow (60 ms) and its size.
+  static const double pressSeconds = 0.06;
+  static const double pressScale = 1.06;
+  static const double pressBrighten = 0.10;
+
+  /// Last three arrows: the camera eases in by 3%.
+  static const double lastThreeZoom = 1.03;
+}

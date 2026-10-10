@@ -4,8 +4,12 @@ import 'package:arrowchime/app/router.dart';
 import 'package:arrowchime/app/theme/chapter_theme.dart';
 import 'package:arrowchime/app/theme/tokens.dart';
 import 'package:arrowchime/core/ads/rewarded_ads.dart';
+import 'package:arrowchime/core/audio/audio_service.dart';
+import 'package:arrowchime/core/audio/sfx.dart';
 import 'package:arrowchime/core/economy/pricing.dart';
 import 'package:arrowchime/core/economy/wallet.dart';
+import 'package:arrowchime/core/haptics/haptics_service.dart';
+import 'package:arrowchime/core/level/generator/chapter_plan.dart';
 import 'package:arrowchime/core/ui/components/tb_button.dart';
 import 'package:arrowchime/core/ui/components/tb_chapter_card.dart';
 import 'package:arrowchime/core/ui/components/tb_flow_meter.dart';
@@ -17,6 +21,7 @@ import 'package:arrowchime/core/ui/support/tb_layout.dart';
 import 'package:arrowchime/core/ui/support/tb_motion_scope.dart';
 import 'package:arrowchime/features/game/dialogs/fail_sheet.dart';
 import 'package:arrowchime/features/game/dialogs/win_sheet.dart';
+import 'package:arrowchime/features/game/feedback/game_feedback.dart';
 import 'package:arrowchime/features/game/flame/arrow_game.dart';
 import 'package:arrowchime/features/game/hud/game_shelf.dart';
 import 'package:arrowchime/features/game/hud/game_top_bar.dart';
@@ -131,6 +136,7 @@ class _GameViewState extends ConsumerState<_GameView> {
   static const bool _showFps = bool.fromEnvironment('SHOW_FPS');
 
   ArrowGame? _game;
+  GameFeedback? _feedback;
   StreamSubscription<SessionEvent>? _events;
   Timer? _flowTimer;
 
@@ -159,11 +165,28 @@ class _GameViewState extends ConsumerState<_GameView> {
       onWon: _showWin,
       onLost: _showFail,
     );
+    if (_feedback == null) {
+      final session = _session;
+      final lengths = {
+        for (final a in session.engine.level.arrows) a.id: a.body.length,
+      };
+      _feedback = GameFeedback(
+        audio: ref.read(audioServiceProvider),
+        haptics: ref.read(hapticsProvider),
+        chapter: widget.levelRef.chapter,
+        levelIndex: widget.levelRef.index,
+        arrowLength: (id) => lengths[id] ?? 1,
+        isBoss: ChapterPlan.isBoss(widget.levelRef.index),
+        onLastThree: _game!.nudgeZoom,
+      );
+      unawaited(_feedback!.start());
+    }
   }
 
   @override
   void dispose() {
     unawaited(_events?.cancel());
+    unawaited(_feedback?.dispose());
     _flowTimer?.cancel();
     super.dispose();
   }
@@ -174,8 +197,16 @@ class _GameViewState extends ConsumerState<_GameView> {
     switch (e) {
       case EnginePlayed():
         game.playEvents(e.events);
+        final state = ref.read(gameSessionProvider(widget.levelRef));
+        game.setFlow(state.flowMultiplier);
+        _feedback?.played(
+          e.events,
+          flow: state.flowMultiplier,
+          remaining: state.remaining,
+        );
       case BoardReset():
         game.resetBoard();
+        _feedback?.reset();
       case HeartGranted():
         game.resumeAfterLoss();
       case HintGiven():
@@ -184,6 +215,13 @@ class _GameViewState extends ConsumerState<_GameView> {
   }
 
   // --- input ----------------------------------------------------------------
+
+  void _touchDown(Offset position) {
+    final id = _game?.arrowAt(position);
+    if (id == null) return;
+    _game?.pressArrow(id);
+    _feedback?.touchDown();
+  }
 
   bool _tap(Offset position) {
     final id = _game?.arrowAt(position);
@@ -223,6 +261,7 @@ class _GameViewState extends ConsumerState<_GameView> {
     final reward = state.reward;
     if (reward == null) return;
     final id = widget.levelRef;
+    _feedback?.starsAwarded(state.stars);
     unawaited(
       showTBSheet<void>(
         context,
@@ -232,6 +271,7 @@ class _GameViewState extends ConsumerState<_GameView> {
           stars: state.stars,
           reward: reward,
           animate: !TBMotionScope.reduced(context),
+          onCoinTick: _feedback?.coinTick,
           onNext: () {
             Navigator.of(context).pop();
             context.go(
@@ -299,6 +339,7 @@ class _GameViewState extends ConsumerState<_GameView> {
       before,
       after,
     ) {
+      game.setFlow(after);
       if (after > (before ?? 1) && after >= 2) _toast(l10n.gameFlowNice);
     });
 
@@ -312,14 +353,23 @@ class _GameViewState extends ConsumerState<_GameView> {
       hearts: state.hearts,
       totalHearts: state.initialHearts,
       coins: coins,
-      onBack: () => _leave(context),
+      onBack: () {
+        ref.read(audioServiceProvider).sfx(Sfx.uiBack);
+        _leave(context);
+      },
     );
     final flow = TBFlowMeter(
       fill: state.flowFill,
       color: widget.theme.arrowColors.first,
       multiplier: state.flowMultiplier,
     );
-    final board = _Board(game: game, remaining: state.remaining, onTap: _tap);
+    final board = _Board(
+      game: game,
+      remaining: state.remaining,
+      onTap: _tap,
+      onTouchDown: _touchDown,
+      onTouchUp: () => game.pressArrow(null),
+    );
 
     Widget shelf(Axis axis) => ValueListenableBuilder<bool>(
       valueListenable: game.atFit,
@@ -388,11 +438,19 @@ class _GameViewState extends ConsumerState<_GameView> {
 }
 
 class _Board extends StatelessWidget {
-  const new({required this.game, required this.remaining, required this.onTap});
+  const new({
+    required this.game,
+    required this.remaining,
+    required this.onTap,
+    required this.onTouchDown,
+    required this.onTouchUp,
+  });
 
   final ArrowGame game;
   final int remaining;
   final bool Function(Offset position) onTap;
+  final void Function(Offset position) onTouchDown;
+  final VoidCallback onTouchUp;
 
   @override
   Widget build(BuildContext context) {
@@ -407,6 +465,8 @@ class _Board extends StatelessWidget {
           onPeekStart: game.peekAt,
           onPeekEnd: game.endPeek,
           onDoubleTapEmpty: game.toggleZoom,
+          onTouchDown: onTouchDown,
+          onTouchUp: onTouchUp,
           child: GameWidget(game: game),
         ),
       ),

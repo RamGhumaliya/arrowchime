@@ -20,6 +20,7 @@ class WinSheet extends StatelessWidget {
     required this.onNext,
     required this.onReplay,
     this.animate = true,
+    this.onCoinTick,
     super.key,
   });
 
@@ -29,6 +30,9 @@ class WinSheet extends StatelessWidget {
   final VoidCallback onNext;
   final VoidCallback onReplay;
   final bool animate;
+
+  /// Called for each clink of the coin count-up (0-based).
+  final void Function(int index)? onCoinTick;
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +57,10 @@ class WinSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: TBSpacing.s16),
-          _RewardRow(
-            icon: TBIconId.coin,
-            text: l10n.winCoins(reward.coins),
-            color: TBColors.butter,
+          _CoinCountUp(
+            coins: reward.coins,
+            animate: animate,
+            onTick: onCoinTick,
           ),
           const SizedBox(height: TBSpacing.s8),
           _RewardRow(
@@ -98,6 +102,69 @@ class _RewardRow extends StatelessWidget {
         const SizedBox(width: TBSpacing.s8),
         TBText.counter(text, color: color),
       ],
+    );
+  }
+}
+
+/// "+N coins" counting up from 0 with a clink every fifth of the way, each a
+/// little higher (`docs/03` §4). Reduce Motion / no animation: the final text.
+class _CoinCountUp extends StatefulWidget {
+  const new({required this.coins, required this.animate, required this.onTick});
+
+  final int coins;
+  final bool animate;
+  final void Function(int index)? onTick;
+
+  @override
+  State<_CoinCountUp> createState() => _CoinCountUpState();
+}
+
+class _CoinCountUpState extends State<_CoinCountUp>
+    with SingleTickerProviderStateMixin {
+  static const int _clinks = 5;
+
+  late final AnimationController _c = AnimationController(
+    vsync: this,
+    duration: TBMotion.celebrateMax,
+  );
+  int _ticked = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.animate && widget.coins > 0) {
+      _c
+        ..addListener(_maybeTick)
+        ..forward();
+    } else {
+      _c.value = 1;
+    }
+  }
+
+  void _maybeTick() {
+    final due = (_c.value * _clinks).floor();
+    while (_ticked < due) {
+      widget.onTick?.call(_ticked++);
+    }
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _c,
+      builder: (context, _) => _RewardRow(
+        icon: TBIconId.coin,
+        text: AppLocalizations.of(
+          context,
+        ).winCoins((widget.coins * Curves.easeOut.transform(_c.value)).round()),
+        color: TBColors.butter,
+      ),
     );
   }
 }

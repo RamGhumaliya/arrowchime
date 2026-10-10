@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:arrowchime/app/theme/chapter_theme.dart';
+import 'package:arrowchime/app/theme/tokens.dart';
 import 'package:arrowchime/core/level/engine/events.dart';
 import 'package:arrowchime/core/level/engine/game_engine.dart';
 import 'package:arrowchime/core/level/models/arrow.dart';
@@ -228,6 +229,32 @@ void main() {
       expect(game.view.multiplier, closeTo(2.5, 1e-9));
       game.fitBoard();
       expect(game.view.multiplier, 1);
+    }, reduceMotion: true);
+  });
+
+  group('feedback visuals', () {
+    gameTest('press, flow glow and the last-three zoom nudge', freeTrio, (
+      game,
+    ) async {
+      game.pressArrow(0);
+      run(game, 0.2);
+      game.pressArrow(null);
+      run(game, 0.2);
+      game
+        ..setFlow(3)
+        ..nudgeZoom();
+      run(game, 0.5);
+      expect(game.view.multiplier, closeTo(TBFeedback.lastThreeZoom, 1e-6));
+      game
+        ..zoomBy(const Offset(100, 100), 2)
+        ..nudgeZoom(); // ignored while zoomed in
+      expect(game.view.multiplier, greaterThan(2));
+    });
+
+    gameTest('Reduce Motion: press is instant', freeTrio, (game) async {
+      game.pressArrow(1);
+      run(game, 0.01);
+      game.pressArrow(null);
     }, reduceMotion: true);
   });
 

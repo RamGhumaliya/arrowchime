@@ -106,6 +106,12 @@ abstract class AppLocalizations {
   /// **'Coming soon.'**
   String get stubComingSoon;
 
+  /// No description provided for @devPlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Play Chapter 1'**
+  String get devPlay;
+
   /// No description provided for @routeSplash.
   ///
   /// In en, this message translates to:

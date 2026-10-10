@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:arrowchime/app/feedback_bridge.dart';
 import 'package:arrowchime/app/router.dart';
 import 'package:arrowchime/app/theme/tokens.dart';
 import 'package:arrowchime/l10n/gen/app_localizations.dart';
@@ -40,8 +41,9 @@ class _ArrowchimeAppState extends State<ArrowchimeApp> {
         GlobalMaterialLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      builder: (context, child) =>
-          _OrientationPolicy(child: child ?? const SizedBox.shrink()),
+      builder: (context, child) => FeedbackBridge(
+        child: _OrientationPolicy(child: child ?? const SizedBox.shrink()),
+      ),
     );
   }
 }

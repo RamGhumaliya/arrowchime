@@ -22,6 +22,8 @@ class BoardGestures extends StatefulWidget {
     required this.onPeekEnd,
     required this.onDoubleTapEmpty,
     required this.child,
+    this.onTouchDown,
+    this.onTouchUp,
     super.key,
   });
 
@@ -32,6 +34,10 @@ class BoardGestures extends StatefulWidget {
   final void Function(Offset position) onPeekStart;
   final VoidCallback onPeekEnd;
   final void Function(Offset position) onDoubleTapEmpty;
+
+  /// A single finger lands / lets go (press feedback on the arrow below).
+  final void Function(Offset position)? onTouchDown;
+  final VoidCallback? onTouchUp;
   final Widget child;
 
   @override
@@ -61,6 +67,7 @@ class _BoardGesturesState extends State<BoardGestures> {
     if (_pointers.length == 1) {
       _downAt = e.localPosition;
       _moved = false;
+      widget.onTouchDown?.call(e.localPosition);
       _holdTimer?.cancel();
       _holdTimer = Timer(TBGesture.peekHold, () {
         if (!_moved && _pointers.length == 1 && _downAt != null) {
@@ -69,6 +76,7 @@ class _BoardGesturesState extends State<BoardGestures> {
         }
       });
     } else {
+      widget.onTouchUp?.call();
       _cancelHold();
       _moved = true;
       _lastSpread = _spread();
@@ -96,6 +104,7 @@ class _BoardGesturesState extends State<BoardGestures> {
       if ((e.localPosition - origin).distance > TBGesture.slop) {
         _moved = true;
         _cancelHold();
+        widget.onTouchUp?.call();
       }
     }
     if (_moved && !_peeking) widget.onPan(e.localPosition - previous);
@@ -106,6 +115,7 @@ class _BoardGesturesState extends State<BoardGestures> {
     _pointers.remove(e.pointer);
     final peeking = _peeking;
     _cancelHold();
+    widget.onTouchUp?.call();
     if (peeking) {
       _peeking = false;
       widget.onPeekEnd();
@@ -136,6 +146,7 @@ class _BoardGesturesState extends State<BoardGestures> {
   void _cancel(PointerCancelEvent e) {
     _pointers.remove(e.pointer);
     _cancelHold();
+    widget.onTouchUp?.call();
     if (_peeking) {
       _peeking = false;
       widget.onPeekEnd();

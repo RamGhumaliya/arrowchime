@@ -16,6 +16,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stubComingSoon => 'Coming soon.';
 
   @override
+  String get devPlay => 'Play Chapter 1';
+
+  @override
   String get routeSplash => 'Arrowchime';
 
   @override

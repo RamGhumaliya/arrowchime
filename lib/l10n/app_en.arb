@@ -2,6 +2,7 @@
   "@@locale": "en",
   "appTitle": "Arrowchime",
   "stubComingSoon": "Coming soon.",
+  "devPlay": "Play Chapter 1",
   "routeSplash": "Arrowchime",
   "routeHome": "Home",
   "routeChapterMap": "Chapters",

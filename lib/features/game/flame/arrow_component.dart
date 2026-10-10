@@ -67,6 +67,8 @@ class ArrowComponent extends Component {
   double _flashT = -1;
   double _hintT = -1;
   bool _hinted = false;
+  bool _pressing = false;
+  double _press = 0;
 
   double get _c => geometry.cell;
 
@@ -96,6 +98,12 @@ class ArrowComponent extends Component {
   }
 
   void clearHint() => _hinted = false;
+
+  /// A finger is down on this arrow: it grows 6% and brightens (60 ms).
+  void press({required bool down}) {
+    _pressing = down;
+    if (reduceMotion) _press = down ? 1 : 0;
+  }
 
   /// Blocked tap: lurch forward then recoil.
   void bump() {
@@ -156,6 +164,13 @@ class ArrowComponent extends Component {
       if (_flashT > TBGameMotion.flash) _flashT = -1;
     }
     if (_hinted) _hintT += dt;
+    final target = _pressing ? 1.0 : 0.0;
+    if (_press != target) {
+      final step = dt / TBFeedback.pressSeconds;
+      _press = _press < target
+          ? math.min(target, _press + step)
+          : math.max(target, _press - step);
+    }
   }
 
   @override
@@ -166,16 +181,25 @@ class ArrowComponent extends Component {
       return;
     }
     final offset = _dynamicOffset();
-    if (offset != Offset.zero) {
+    final moved = offset != Offset.zero || _press > 0;
+    if (moved) {
       canvas
         ..save()
         ..translate(offset.dx, offset.dy);
+      if (_press > 0) {
+        final k = 1 + (TBFeedback.pressScale - 1) * _press;
+        final c = _baked.bounds.center;
+        canvas
+          ..translate(c.dx, c.dy)
+          ..scale(k)
+          ..translate(-c.dx, -c.dy);
+      }
     }
     if (_baked.bounds.overlaps(context.visible)) {
       _baked.paint(canvas, context);
       _paintGlow(canvas);
     }
-    if (offset != Offset.zero) canvas.restore();
+    if (moved) canvas.restore();
   }
 
   Offset _dynamicOffset() {
@@ -202,6 +226,17 @@ class ArrowComponent extends Component {
   }
 
   void _paintGlow(Canvas canvas) {
+    if (_press > 0) {
+      canvas.drawPath(
+        _bodyPath,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = _c * 0.4
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round
+          ..color = TBShade.white(TBFeedback.pressBrighten * _press),
+      );
+    }
     if (_flashT >= 0) {
       // Two pulses over the flash time.
       final pulse = math

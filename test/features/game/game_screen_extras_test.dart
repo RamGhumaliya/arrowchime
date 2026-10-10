@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../core/level/support/fixtures.dart';
+import '../../support/fakes.dart';
 import 'support/game_harness.dart';
 
 class _FailingBundle extends CachingAssetBundle {
@@ -48,7 +49,10 @@ void main() {
     tester,
   ) async {
     final c = ProviderContainer(
-      overrides: [levelBundleProvider.overrideWithValue(_FailingBundle())],
+      overrides: [
+        levelBundleProvider.overrideWithValue(_FailingBundle()),
+        ...feedbackOverrides(FakeAudioBackend(), FakeHaptics()),
+      ],
     );
     addTearDown(c.dispose);
     await pumpGameWith(tester, c, id: id);
@@ -62,7 +66,10 @@ void main() {
       required bool left,
     }) async {
       final c = ProviderContainer(
-        overrides: [levelProvider(id).overrideWith((ref) => freeTrio())],
+        overrides: [
+          levelProvider(id).overrideWith((ref) => freeTrio()),
+          ...feedbackOverrides(FakeAudioBackend(), FakeHaptics()),
+        ],
       );
       addTearDown(c.dispose);
       c

@@ -306,6 +306,23 @@ class ArrowGame extends FlameGame {
     _resultTimer = -1;
   }
 
+  /// A finger is down on [arrowId] (null: lifted).
+  void pressArrow(int? arrowId) {
+    for (final entry in arrows.entries) {
+      entry.value.press(down: entry.key == arrowId);
+    }
+  }
+
+  /// Flow multiplier: the felt edge glows warmer from ×2.
+  // ignore: use_setters_to_change_properties, called as a method from events
+  void setFlow(int multiplier) => board.flowTier = multiplier;
+
+  /// Last three arrows: ease in by 3%.
+  void nudgeZoom() {
+    if (view.multiplier > 1.01) return;
+    _animateTo(TBFeedback.lastThreeZoom, view.center);
+  }
+
   /// Hint: pulse arrow [arrowId] until the next tap.
   void showHint(int arrowId) => arrows[arrowId]?.showHint();
 

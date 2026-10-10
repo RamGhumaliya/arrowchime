@@ -30,8 +30,14 @@ GoRouter createRouter() {
     routes: [
       GoRoute(
         path: AppRoutes.splash,
-        builder: (context, state) =>
-            StubScreen(label: AppLocalizations.of(context).routeSplash),
+        builder: (context, state) => StubScreen(
+          label: AppLocalizations.of(context).routeSplash,
+          // Until Home exists (Phase 6/7): a way into the game in dev builds.
+          actionLabel: kReleaseMode
+              ? null
+              : AppLocalizations.of(context).devPlay,
+          onAction: () => context.go(AppRoutes.levelPath('ch1', 1)),
+        ),
       ),
       GoRoute(
         path: AppRoutes.home,

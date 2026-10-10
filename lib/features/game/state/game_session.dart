@@ -40,7 +40,8 @@ class GameSession extends _$GameSession {
   int? _hintArrowId;
   LevelReward? _reward;
 
-  /// Animations to play, in order.
+  /// Animations to play, in order. Each event is sent after [state] already
+  /// reflects it, so listeners can read the new Flow multiplier, hearts, ...
   Stream<SessionEvent> get events => _events.stream;
 
   GameEngine get engine => _engine;
@@ -91,8 +92,8 @@ class GameSession extends _$GameSession {
       if (e is BlockedTap) _flow.onBlocked();
     }
     if (events.any((e) => e is LevelWon)) _pay();
-    _events.add(EnginePlayed(events));
     state = _snapshot();
+    _events.add(EnginePlayed(events));
   }
 
   /// Pays the win reward exactly once (G4).
@@ -121,8 +122,8 @@ class GameSession extends _$GameSession {
     final events = _engine.undo();
     _flow.onBlocked();
     _hintArrowId = null;
-    _events.add(EnginePlayed(events));
     state = _snapshot();
+    _events.add(EnginePlayed(events));
     return result;
   }
 
@@ -143,8 +144,8 @@ class GameSession extends _$GameSession {
       }
     }
     _hintArrowId = id;
-    _events.add(HintGiven(id));
     state = _snapshot();
+    _events.add(HintGiven(id));
     return result;
   }
 
@@ -156,16 +157,16 @@ class GameSession extends _$GameSession {
     _freeHintsLeft = Pricing.freeHintsPerLevel;
     _hintArrowId = null;
     _reward = null;
-    _events.add(const BoardReset());
     state = _snapshot();
+    _events.add(const BoardReset());
   }
 
   /// A lost level continues with one more heart (fail sheet, after an ad).
   void grantHeart() {
     if (_engine.status == GameStatus.won) return;
     _engine.addHeart();
-    _events.add(const HeartGranted());
     state = _snapshot();
+    _events.add(const HeartGranted());
   }
 
   /// "+1 heart" for [Pricing.heart] coins.

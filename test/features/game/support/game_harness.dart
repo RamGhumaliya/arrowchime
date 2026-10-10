@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:arrowchime/core/audio/audio_service.dart';
+import 'package:arrowchime/core/haptics/haptics_service.dart';
 import 'package:arrowchime/core/level/models/level.dart';
 import 'package:arrowchime/core/level/pack_loader.dart';
 import 'package:arrowchime/features/game/game_screen.dart';
@@ -10,9 +12,11 @@ import 'package:arrowchime/l10n/gen/app_localizations.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../core/ui/support/ui_harness.dart';
+import '../../../support/fakes.dart';
 
 /// A level of a shipped chapter pack, read from disk.
 Level shippedLevel(LevelRef id) {
@@ -20,11 +24,20 @@ Level shippedLevel(LevelRef id) {
   return PackLoader.parsePack(text, validate: false).levels[id.index - 1];
 }
 
+/// Overrides that keep tests silent and let them see what was played.
+List<Override> feedbackOverrides(FakeAudioBackend audio, FakeHaptics haptics) =>
+    [
+      audioBackendProvider.overrideWithValue(audio),
+      hapticsProvider.overrideWithValue(haptics),
+    ];
+
 class GameHarness {
-  new(this.container, this.id);
+  new(this.container, this.id, {this.audio, this.haptics});
 
   final ProviderContainer container;
   final LevelRef id;
+  final FakeAudioBackend? audio;
+  final FakeHaptics? haptics;
 
   GameSession get session => container.read(gameSessionProvider(id).notifier);
 }
@@ -38,9 +51,12 @@ Future<GameHarness> pumpGame(
   double dpr = 2,
   bool disableAnimations = false,
 }) {
+  final audio = FakeAudioBackend();
+  final haptics = FakeHaptics();
   final container = ProviderContainer(
     overrides: [
       levelProvider(id).overrideWith((ref) => level ?? shippedLevel(id)),
+      ...feedbackOverrides(audio, haptics),
     ],
   );
   addTearDown(container.dispose);
@@ -51,6 +67,8 @@ Future<GameHarness> pumpGame(
     size: size,
     dpr: dpr,
     disableAnimations: disableAnimations,
+    audio: audio,
+    haptics: haptics,
   );
 }
 
@@ -63,6 +81,8 @@ Future<GameHarness> pumpGameWith(
   Size size = const Size(390, 844),
   double dpr = 2,
   bool disableAnimations = false,
+  FakeAudioBackend? audio,
+  FakeHaptics? haptics,
 }) async {
   tester.view
     ..devicePixelRatio = dpr
@@ -92,7 +112,7 @@ Future<GameHarness> pumpGameWith(
     ),
   );
   await settle(tester);
-  return GameHarness(container, id);
+  return GameHarness(container, id, audio: audio, haptics: haptics);
 }
 
 /// Lets the level load, the Flame game boot and a few frames run. The Flame

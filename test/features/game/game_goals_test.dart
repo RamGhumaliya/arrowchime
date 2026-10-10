@@ -1,5 +1,8 @@
 import 'dart:ui';
 
+import 'package:arrowchime/core/assets.dart';
+import 'package:arrowchime/core/audio/chapter_sound.dart';
+import 'package:arrowchime/core/audio/melodies.dart';
 import 'package:arrowchime/core/economy/wallet.dart';
 import 'package:arrowchime/core/level/engine/game_engine.dart';
 import 'package:arrowchime/features/game/flame/arrow_game.dart';
@@ -11,6 +14,7 @@ import 'package:arrowchime/features/game/state/level_ref.dart';
 import 'package:arrowchime/features/game/state/level_repository.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -66,6 +70,33 @@ void main() {
     await tester.tapAt(at);
     await settle(tester);
     expect(h.container.read(gameSessionProvider(id)).remaining, 2);
+  });
+
+  testWidgets('a tap on the board is heard and felt (Phase 5)', (tester) async {
+    final h = await pumpGame(tester, id: id, level: freeTrio());
+    final game = gameOf(tester);
+    final arrow = game.engine.level.arrows.first;
+    final at = screenOf(tester, game, game.geometry.center(arrow.body.last));
+    final press = await tester.startGesture(at);
+    await tester.pump(const Duration(milliseconds: 80));
+    expect(h.haptics!.log, ['selection']);
+    expect(h.audio!.sfxNames, contains('arrow_touch'));
+    await press.up();
+    await settle(tester);
+    final first = chapterMelodies[1]![id.index - 1].first;
+    expect(h.audio!.noteNames.first, ChapterSound.of(1).notes[first]);
+    expect(h.haptics!.log, contains('light'));
+    expect(h.audio!.loads, contains(AssetCatalog.musicPath(1)));
+  });
+
+  testWidgets('leaving the level stops the music and frees the notes', (
+    tester,
+  ) async {
+    final h = await pumpGame(tester, id: id, level: freeTrio());
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump();
+    expect(h.audio!.stopped, isNotEmpty);
+    expect(h.audio!.unloads, isNotEmpty);
   });
 
   testWidgets('G13: holding peeks the path and costs nothing', (tester) async {
