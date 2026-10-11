@@ -8,6 +8,7 @@ import 'package:arrowchime/core/level/models/cell.dart';
 import 'package:arrowchime/core/level/models/direction.dart';
 import 'package:arrowchime/core/ui/icons/tb_icon.dart';
 import 'package:arrowchime/core/ui/icons/tb_icon_id.dart';
+import 'package:arrowchime/core/ui/painters/arrow_skin.dart';
 import 'package:arrowchime/core/ui/painters/brass_painter.dart';
 import 'package:arrowchime/core/ui/painters/crystal_painter.dart';
 import 'package:arrowchime/core/ui/painters/enamel_tube_painter.dart';
@@ -32,6 +33,7 @@ class ArrowComponent extends Component {
     required this.color,
     required this.reduceMotion,
     required this.context,
+    this.skin = ArrowSkin.candy,
     this.onExited,
   }) : _dir = arrow.dir,
        _frozen = arrow.frozen ?? 0 {
@@ -50,6 +52,9 @@ class ArrowComponent extends Component {
 
   /// Shared per-frame facts: what is on screen, the zoom bucket, bake budget.
   final BoardRenderContext context;
+
+  /// The equipped arrow skin.
+  final ArrowSkin skin;
 
   /// Called once when the exit animation has finished.
   final void Function(ArrowComponent)? onExited;
@@ -136,6 +141,9 @@ class ArrowComponent extends Component {
     }
     _exit = _Exit.fly(this, paths);
   }
+
+  /// Where the head is while flying off (for the trail), else `null`.
+  Offset? get flightHead => _exit?.lastHead;
 
   /// World position of the head, for particles.
   Offset get headPoint => _points.last;
@@ -292,6 +300,7 @@ class ArrowComponent extends Component {
       dir: Offset(_dir.dx.toDouble(), _dir.dy.toDouble()),
       c: _c,
       color: color,
+      skin: skin,
     );
     switch (arrow.kind) {
       case ArrowKind.rotator:
@@ -430,6 +439,9 @@ class _Exit {
   final bool fade;
   double t = 0;
 
+  /// Head position at the last painted frame.
+  Offset? lastHead;
+
   void paint(Canvas canvas, ArrowComponent a) {
     final p = (t / duration).clamp(0.0, 1.0);
     if (fade) {
@@ -442,7 +454,7 @@ class _Exit {
     final eased = Curves.easeIn.transform(p) * runs.length;
     final index = math.min(eased.floor(), runs.length - 1);
     final local = (eased - index).clamp(0.0, 1.0);
-    runs[index].paint(canvas, a, local);
+    lastHead = runs[index].paint(canvas, a, local);
   }
 }
 
@@ -459,7 +471,7 @@ class _Run {
   final bool emerge;
   final bool fadeAtEnd;
 
-  void paint(Canvas canvas, ArrowComponent a, double u) {
+  Offset? paint(Canvas canvas, ArrowComponent a, double u) {
     final total = metric.length;
     final double from;
     final double to;
@@ -471,7 +483,7 @@ class _Run {
       from = u * (total - bodyLen);
       to = from + bodyLen;
     }
-    if (to - from < 1) return;
+    if (to - from < 1) return null;
     final body = metric.extractPath(from, to);
     final tail = metric.getTangentForOffset(from)!;
     final head = metric.getTangentForOffset(to)!;
@@ -486,8 +498,10 @@ class _Run {
       dir: head.vector,
       c: a.geometry.cell,
       color: a.color,
+      skin: a.skin,
       blurShadow: false,
     );
     if (fadeAtEnd) canvas.restore();
+    return head.position;
   }
 }

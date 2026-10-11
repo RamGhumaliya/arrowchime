@@ -1,4 +1,14 @@
+import 'dart:math' as math;
+
 import 'package:arrowchime/core/assets.dart';
+
+/// A sample and the speed to play it at.
+class NoteVoice {
+  const new(this.asset, this.speed);
+
+  final String asset;
+  final double speed;
+}
 
 /// Instrument and scale of one chapter (`docs/07` §1 "Scales per chapter").
 ///
@@ -36,6 +46,54 @@ class ChapterSound {
 
   /// Asset path of the sample for note index [i].
   String assetOf(int i) => AssetCatalog.notePath(instrument, notes[i]);
+
+  /// The note [i] played by the cosmetic [instrument] (`piano`, `marimba`,
+  /// `eightbit`, `choir`; `null` / `auto` = this chapter's own instrument).
+  ///
+  /// The cosmetic instruments only have a C-major-pentatonic sample set, so a
+  /// note of another scale plays the nearest sample, transposed by the
+  /// playback speed.
+  NoteVoice voiceOf(int i, {String? instrument}) {
+    final folder = _folder(instrument);
+    if (folder == null) return NoteVoice(assetOf(i), 1);
+    final available = AudioCatalog.instrumentNotes[folder]!;
+    final target = _semitone(notes[i]);
+    var best = available.first;
+    for (final n in available) {
+      if ((_semitone(n) - target).abs() < (_semitone(best) - target).abs()) {
+        best = n;
+      }
+    }
+    return NoteVoice(
+      AssetCatalog.notePath(folder, best),
+      math.pow(2, (target - _semitone(best)) / 12).toDouble(),
+    );
+  }
+
+  /// Every sample [voiceOf] may use with [instrument] (for preloading).
+  Set<String> voiceAssets({String? instrument}) => {
+    for (var i = 0; i < notes.length; i++)
+      voiceOf(i, instrument: instrument).asset,
+  };
+
+  static String? _folder(String? instrument) => switch (instrument) {
+    null || 'auto' || '' => null,
+    'eightbit' => 'pixel',
+    final other =>
+      AudioCatalog.instrumentNotes.containsKey(other) ? other : null,
+  };
+
+  /// Semitones above C0 of a note name like `C4` or `Fs5` (`s` = sharp).
+  static int _semitone(String name) {
+    const base = {'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11};
+    var i = 1;
+    var s = base[name[0]]!;
+    if (name[i] == 's') {
+      s++;
+      i++;
+    }
+    return 12 * int.parse(name.substring(i)) + s;
+  }
 
   /// Every sample of this chapter (for preloading).
   List<String> get assets => [

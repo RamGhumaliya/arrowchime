@@ -7,12 +7,14 @@ import 'package:arrowchime/core/level/engine/events.dart';
 import 'package:arrowchime/core/level/engine/game_engine.dart';
 import 'package:arrowchime/core/level/models/arrow.dart';
 import 'package:arrowchime/core/level/models/direction.dart';
+import 'package:arrowchime/core/ui/painters/arrow_skin.dart';
 import 'package:arrowchime/core/ui/painters/shade.dart';
 import 'package:arrowchime/features/game/flame/arrow_component.dart';
 import 'package:arrowchime/features/game/flame/arrow_visuals.dart';
 import 'package:arrowchime/features/game/flame/baked_picture.dart';
 import 'package:arrowchime/features/game/flame/board_component.dart';
 import 'package:arrowchime/features/game/flame/particle_pool.dart';
+import 'package:arrowchime/features/game/flame/trail_style.dart';
 import 'package:arrowchime/features/game/input/tap_resolver.dart';
 import 'package:arrowchime/features/game/model/board_geometry.dart';
 import 'package:arrowchime/features/game/model/view_transform.dart';
@@ -32,6 +34,8 @@ class ArrowGame extends FlameGame {
     this.showFps = false,
     this.pixelRatio = 1,
     this.colorBlind = 'off',
+    this.skin = ArrowSkin.candy,
+    this.trail = TrailStyle.none,
     this.onWon,
     this.onLost,
   }) : geometry = BoardGeometry(engine.level) {
@@ -55,6 +59,10 @@ class ArrowGame extends FlameGame {
 
   /// Palette mode: `off`, `deutan` or `tritan`.
   final String colorBlind;
+
+  /// Equipped cosmetics: arrow skin and the particle trail.
+  final ArrowSkin skin;
+  final TrailStyle trail;
 
   /// The last arrow has left and the pause is over: show the win sheet.
   final void Function()? onWon;
@@ -131,6 +139,7 @@ class ArrowGame extends FlameGame {
       arrow: arrow,
       geometry: geometry,
       color: ArrowVisuals.arrowColor(arrow, theme, colorBlind: colorBlind),
+      skin: skin,
       reduceMotion: reduceMotion,
       context: boardContext,
       onExited: (c) => _leaving.remove(c.arrow.id),
@@ -205,13 +214,20 @@ class ArrowGame extends FlameGame {
     resolver.occupied.removeWhere((_, v) => v.arrowId == e.arrowId);
     comp.exit(e.paths);
     final head = comp.headPoint;
+    final tint = ArrowVisuals.arrowColor(
+      comp.arrow,
+      theme,
+      colorBlind: colorBlind,
+    );
     particles.burst(
       head.dx,
       head.dy,
-      ArrowVisuals.arrowColor(comp.arrow, theme, colorBlind: colorBlind),
-      count: reduceMotion ? 0 : 6,
+      trail.color(tint, 0),
+      count: reduceMotion ? 0 : trail.burst,
       speed: geometry.cell * 2,
       size: geometry.cell * 0.07,
+      shape: trail.shape,
+      fall: trail.fall,
     );
     // It stays in the tree until its flight is over, but is no longer
     // addressable; `_leaving` lets the win sheet wait for it.
@@ -219,6 +235,39 @@ class ArrowGame extends FlameGame {
   }
 
   final Map<int, ArrowComponent> _leaving = {};
+  double _trailClock = 0;
+  int _trailCount = 0;
+
+  /// A trail cosmetic drops a particle behind every arrow in flight.
+  void _emitTrails(double dt) {
+    if (trail.perEmit == 0 || reduceMotion) return;
+    _trailClock += dt;
+    if (_trailClock < _trailEvery) return;
+    _trailClock = 0;
+    for (final comp in _leaving.values) {
+      final at = comp.flightHead;
+      if (at == null) continue;
+      final tint = ArrowVisuals.arrowColor(
+        comp.arrow,
+        theme,
+        colorBlind: colorBlind,
+      );
+      particles.burst(
+        at.dx,
+        at.dy,
+        trail.color(tint, _trailCount++),
+        count: trail.perEmit,
+        speed: geometry.cell * 0.6,
+        size: geometry.cell * 0.07,
+        life: 0.7,
+        shape: trail.shape,
+        fall: trail.fall,
+      );
+    }
+  }
+
+  /// Seconds between trail particles.
+  static const double _trailEvery = 0.03;
 
   void _blocked(BlockedTap e) {
     arrows[e.arrowId]?.bump();
@@ -440,6 +489,7 @@ class ArrowGame extends FlameGame {
   @override
   void update(double dt) {
     boardContext.bakesLeft = _bakesPerFrame;
+    _emitTrails(dt);
     if (boardContext.interacting) {
       _quiet += dt;
       if (_quiet >= _settleTime && _tween == null) {

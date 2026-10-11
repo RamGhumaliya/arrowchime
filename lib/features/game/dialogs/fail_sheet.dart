@@ -31,7 +31,10 @@ class FailSheet extends StatelessWidget {
   final int heartPrice;
   final bool canAffordHeart;
   final VoidCallback onRetry;
-  final VoidCallback onHeartAd;
+
+  /// `null` when no rewarded ad can be shown (cap reached or not loaded): the
+  /// button then says so instead of vanishing.
+  final VoidCallback? onHeartAd;
   final VoidCallback onHeartCoins;
 
   static const double _thumbnailHeight = 120;
@@ -63,7 +66,7 @@ class FailSheet extends StatelessWidget {
           ),
           const SizedBox(height: TBSpacing.s8),
           TBButton.secondary(
-            label: l10n.failHeartAd,
+            label: onHeartAd == null ? l10n.adUnavailable : l10n.failHeartAd,
             onPressed: onHeartAd,
             expand: true,
           ),

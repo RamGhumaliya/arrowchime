@@ -546,5 +546,130 @@
   "obFrozen": "Ice thaws as arrows leave.",
   "obLink": "Chained arrows leave together.",
   "obPortal": "Portals carry arrows across.",
-  "settingsDeveloper": "Developer (debug builds)"
+  "settingsDeveloper": "Developer (debug builds)",
+  "adUnavailable": "Ad not available",
+  "winDoubleCoins": "×2 coins · ad",
+  "hintNoCoinsTitle": "Not enough coins",
+  "hintWatchAd": "Watch ad for a free hint",
+  "dailyUnlockAd": "Unlock with an ad",
+  "shopTitle": "Shop",
+  "shopStarterTitle": "Starter Bundle",
+  "shopStarterLeft": "{time} left",
+  "@shopStarterLeft": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "shopChipRemoveAds": "Remove Ads",
+  "shopChipCoins": "{n} coins",
+  "@shopChipCoins": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "shopChipSkin": "Neon skin",
+  "shopRemoveAdsTitle": "Remove Ads",
+  "shopRemoveAdsNote": "No interstitials, ever. {n} coins too.",
+  "@shopRemoveAdsNote": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "shopOwned": "Owned",
+  "shopCoinsSection": "Coins",
+  "shopCoinsAmount": "{n}",
+  "@shopCoinsAmount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "shopBestValue": "Best value",
+  "shopArtPack": "Chapter Art Pack",
+  "shopArtPackNote": "A skin, a trail and an instrument.",
+  "shopRestore": "Restore purchases",
+  "shopThanks": "Thank you!",
+  "shopFailed": "The purchase didn’t go through.",
+  "shopRestored": "Purchases restored.",
+  "shopUnavailable": "The store isn’t available right now.",
+  "shopBuyShort": "Buy",
+  "shopBuy": "Buy {price}",
+  "@shopBuy": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "shopPriceLoading": "…",
+  "starterNotNow": "Not now",
+  "collectionTitle": "Collection",
+  "collTabArrows": "Arrows",
+  "collTabTrails": "Trails",
+  "collTabBoards": "Boards",
+  "collTabInstruments": "Instruments",
+  "collEquip": "Equip",
+  "collEquipped": "Equipped",
+  "collOwned": "Owned",
+  "collBuy": "Buy · {price}",
+  "@collBuy": {
+    "placeholders": {
+      "price": {
+        "type": "int"
+      }
+    }
+  },
+  "collLockChapter": "Restore {name}",
+  "@collLockChapter": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "collLockStars": "{n} stars in one chapter",
+  "@collLockStars": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "collLockBundle": "Comes in a bundle",
+  "collPreviewHint": "Tap the board to replay.",
+  "cos_arrow_candy": "Enamel Candy",
+  "cos_arrow_bamboo": "Bamboo",
+  "cos_arrow_brass": "Brass",
+  "cos_arrow_silk": "Lantern Silk",
+  "cos_arrow_crystal": "Crystal",
+  "cos_arrow_galaxy": "Galaxy",
+  "cos_arrow_neon": "Neon Tube",
+  "cos_arrow_paper": "Paper-craft",
+  "cos_arrow_pixel": "Pixel",
+  "cos_trail_none": "No trail",
+  "cos_trail_sparkle": "Sparkle",
+  "cos_trail_petals": "Petals",
+  "cos_trail_snow": "Snow",
+  "cos_trail_ribbons": "Ribbons",
+  "cos_board_auto": "Chapter felt",
+  "cos_board_night": "Night felt",
+  "cos_board_sunset": "Sunset felt",
+  "cos_board_constellation": "Constellation",
+  "cos_board_aurora": "Aurora",
+  "cos_instrument_auto": "Chapter instrument",
+  "cos_instrument_piano": "Piano",
+  "cos_instrument_marimba": "Marimba",
+  "cos_instrument_eightbit": "8-bit",
+  "cos_instrument_choir": "Choir",
+  "attTitle": "A quick note",
+  "attBody": "Allowing tracking keeps ads relevant and the game free. You can change this later in Settings.",
+  "attContinue": "Continue",
+  "attLater": "Maybe later"
 }

@@ -1,6 +1,6 @@
-import 'package:arrowchime/core/economy/pricing.dart';
 import 'package:arrowchime/core/economy/rewards.dart';
 import 'package:arrowchime/core/economy/wallet.dart';
+import 'package:arrowchime/core/remote_config/app_config.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -34,7 +34,7 @@ void main() {
         ..add(-5);
       expect(c.read(walletProvider), 0);
       wallet.add(100);
-      expect(wallet.trySpend(Pricing.heart), isTrue);
+      expect(wallet.trySpend(AppConfig.defaults().heartPrice), isTrue);
       expect(c.read(walletProvider), 0);
       expect(wallet.trySpend(1), isFalse);
       expect(wallet.trySpend(-1), isFalse);

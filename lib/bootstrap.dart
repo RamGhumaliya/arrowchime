@@ -1,6 +1,7 @@
 import 'package:arrowchime/app/app.dart';
 import 'package:arrowchime/core/save/save_controller.dart';
 import 'package:arrowchime/core/save/save_repository.dart';
+import 'package:arrowchime/core/ui/painters/glow_shader.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,6 +13,7 @@ enum Flavor { dev, prod }
 Future<void> bootstrap(Flavor flavor) async {
   WidgetsFlutterBinding.ensureInitialized();
   final store = await HiveSaveStore.openInApp();
+  await GlowShader.load();
   runApp(
     ProviderScope(
       overrides: [

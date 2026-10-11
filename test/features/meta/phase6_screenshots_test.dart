@@ -26,6 +26,8 @@ void main() {
     },
     currentLevel: {'1': 38},
     coins: 1240,
+    ads: const AdState(starterShownDate: '2026-10-10'),
+    flags: const {'secondSession': true},
     xp: 800,
     streak: const StreakState(
       count: 8,

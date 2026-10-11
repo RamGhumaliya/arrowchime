@@ -1,4 +1,5 @@
 import 'package:arrowchime/app/theme/tokens.dart';
+import 'package:arrowchime/core/ui/painters/arrow_skin.dart';
 import 'package:arrowchime/core/ui/painters/shade.dart';
 import 'package:flutter/rendering.dart';
 
@@ -35,7 +36,13 @@ abstract final class EnamelTube {
 
   /// Paints an arrow whose body runs through [points] (cell centres, tail →
   /// head) with cell size [c].
-  static void paint(Canvas canvas, List<Offset> points, double c, Color color) {
+  static void paint(
+    Canvas canvas,
+    List<Offset> points,
+    double c,
+    Color color, {
+    ArrowSkin skin = ArrowSkin.candy,
+  }) {
     assert(points.isNotEmpty, 'an arrow has at least one cell');
     final dir = points.length > 1
         ? _unit(points.last - points[points.length - 2])
@@ -48,6 +55,7 @@ abstract final class EnamelTube {
       dir: dir,
       c: c,
       color: color,
+      skin: skin,
     );
   }
 
@@ -68,7 +76,10 @@ abstract final class EnamelTube {
     required double c,
     required Color color,
     bool blurShadow = true,
+    ArrowSkin skin = ArrowSkin.candy,
   }) {
+    final inkColor = color;
+    final tint = skin.body(color);
     final headPath = _headPath(head, dir, c);
 
     // 1. Shadow.
@@ -89,17 +100,19 @@ abstract final class EnamelTube {
         shadowPaint..style = PaintingStyle.fill,
       );
 
+    skin.paintGlow(canvas, body, c, inkColor);
+
     // 2. Dark rim.
-    final rim = TBShade.lighten(color, _rimDelta);
+    final rim = TBShade.lighten(tint, _rimDelta);
     canvas
       ..drawPath(body, _stroke(rim, _rimWidth * c))
       ..drawPath(headPath, _headRim(rim, c))
       // 3. Body.
-      ..drawPath(body, _stroke(color, _bodyWidth * c))
-      ..drawPath(headPath, Paint()..color = color);
+      ..drawPath(body, _stroke(tint, _bodyWidth * c))
+      ..drawPath(headPath, Paint()..color = tint);
 
     // 4. Light band, nudged towards the key light.
-    final band = TBShade.lighten(color, _bandDelta);
+    final band = TBShade.lighten(tint, _bandDelta);
     final bandShift = Offset(-0.03 * c, -0.05 * c);
     canvas
       ..drawPath(body.shift(bandShift), _stroke(band, _bandWidth * c))
@@ -107,6 +120,8 @@ abstract final class EnamelTube {
         headPath.shift(bandShift * 1.5),
         Paint()..color = band.withValues(alpha: 0.55),
       );
+
+    skin.paintDetail(canvas, body, c, inkColor);
 
     // 5. Specular, only where the body runs up or left.
     final specShift = Offset(-0.06 * c, -0.09 * c);
@@ -211,11 +226,16 @@ abstract final class EnamelTube {
 
 /// Paints an arrow preview (cells on a grid) scaled to fit its box.
 class EnamelTubePainter extends CustomPainter {
-  const new({required this.cells, required this.color});
+  const new({
+    required this.cells,
+    required this.color,
+    this.skin = ArrowSkin.candy,
+  });
 
   /// Grid cells `(x, y)`, tail → head.
   final List<(int, int)> cells;
   final Color color;
+  final ArrowSkin skin;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -244,10 +264,11 @@ class EnamelTubePainter extends CustomPainter {
       ],
       c,
       color,
+      skin: skin,
     );
   }
 
   @override
   bool shouldRepaint(EnamelTubePainter old) =>
-      old.color != color || old.cells != cells;
+      old.color != color || old.cells != cells || old.skin != skin;
 }

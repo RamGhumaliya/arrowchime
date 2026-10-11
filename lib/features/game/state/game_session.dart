@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:arrowchime/core/economy/pricing.dart';
 import 'package:arrowchime/core/economy/rewards.dart';
 import 'package:arrowchime/core/economy/wallet.dart';
 import 'package:arrowchime/core/level/engine/events.dart';
@@ -8,6 +7,7 @@ import 'package:arrowchime/core/level/engine/game_engine.dart';
 import 'package:arrowchime/core/level/solver/hint.dart';
 import 'package:arrowchime/core/meta/date_key.dart';
 import 'package:arrowchime/core/meta/progression.dart';
+import 'package:arrowchime/core/remote_config/app_config.dart';
 import 'package:arrowchime/core/save/save_controller.dart';
 import 'package:arrowchime/core/save/save_data.dart';
 import 'package:arrowchime/features/game/model/flow_tracker.dart';
@@ -39,11 +39,16 @@ class GameSession extends _$GameSession {
   late HintService _hints;
   late LevelRef _id;
   final _events = StreamController<SessionEvent>.broadcast();
-  int _freeUndosLeft = Pricing.freeUndos;
-  int _freeHintsLeft = Pricing.freeHintsPerLevel;
+  late AppConfig _cfg;
+  late int _freeUndosLeft;
+  late int _freeHintsLeft;
   int? _hintArrowId;
   LevelReward? _reward;
   WinOutcome? _outcome;
+  int _heartAds = 0;
+
+  /// Rewarded heart ads used on this level so far.
+  int get heartAdsUsed => _heartAds;
   Duration _startedAt = Duration.zero;
 
   /// Animations to play, in order. Each event is sent after [state] already
@@ -55,11 +60,17 @@ class GameSession extends _$GameSession {
   @override
   SessionState build(LevelRef levelRef) {
     _id = levelRef;
+    _cfg = ref.read(appConfigProvider);
+    _freeUndosLeft = _cfg.freeUndos;
+    _freeHintsLeft = _cfg.freeHintsPerLevel;
     final level = ref.watch(levelProvider(levelRef)).requireValue;
     final settings = ref.read(gameSettingsControllerProvider);
     _engine = GameEngine(
       level,
-      options: EngineOptions(relaxed: settings.relaxed),
+      options: EngineOptions(
+        relaxed: settings.relaxed,
+        hearts: _cfg.heartsPerLevel == 3 ? null : _cfg.heartsPerLevel,
+      ),
     );
     _flow = FlowTracker(now: ref.read(flowClockProvider));
     _hints = HintService(_engine);
@@ -124,6 +135,8 @@ class GameSession extends _$GameSession {
         ),
         today: today,
         localHour: now.hour,
+        dailyBase: _cfg.dailyRewardCoins,
+        dailyPerTier: _cfg.dailyRewardPerTier,
       );
     } else {
       outcome = Progression.recordWin(
@@ -145,13 +158,13 @@ class GameSession extends _$GameSession {
     _reward = LevelReward(coins: outcome.coins, xp: outcome.xp);
   }
 
-  /// Undoes the last removal: free twice, then [Pricing.undo] coins.
+  /// Undoes the last removal: free twice, then the undo price coins.
   PurchaseResult undo() {
     if (!_engine.canUndo) return PurchaseResult.unavailable;
     var result = PurchaseResult.free;
     if (_freeUndosLeft > 0) {
       _freeUndosLeft--;
-    } else if (ref.read(walletProvider.notifier).trySpend(Pricing.undo)) {
+    } else if (ref.read(walletProvider.notifier).trySpend(_cfg.undoPrice)) {
       result = PurchaseResult.done;
     } else {
       return PurchaseResult.noCoins;
@@ -165,16 +178,16 @@ class GameSession extends _$GameSession {
   }
 
   /// Highlights an arrow that keeps the level solvable. Free on the first
-  /// levels and once per level afterwards, then [Pricing.hint] coins.
-  PurchaseResult hint() {
+  /// levels and once per level afterwards, then the hint price coins.
+  PurchaseResult hint({bool free = false}) {
     if (_engine.status != GameStatus.playing) return PurchaseResult.unavailable;
     final id = _hints.next();
     if (id == null) return PurchaseResult.unavailable;
     var result = PurchaseResult.free;
-    if (_id.globalIndex >= Pricing.hintsFreeBelowLevel) {
+    if (!free && _id.globalIndex >= _cfg.hintsFreeBelowLevel) {
       if (_freeHintsLeft > 0) {
         _freeHintsLeft--;
-      } else if (ref.read(walletProvider.notifier).trySpend(Pricing.hint)) {
+      } else if (ref.read(walletProvider.notifier).trySpend(_cfg.hintPrice)) {
         result = PurchaseResult.done;
       } else {
         return PurchaseResult.noCoins;
@@ -190,11 +203,12 @@ class GameSession extends _$GameSession {
   void retry() {
     _engine.reset();
     _flow.reset();
-    _freeUndosLeft = Pricing.freeUndos;
-    _freeHintsLeft = Pricing.freeHintsPerLevel;
+    _freeUndosLeft = _cfg.freeUndos;
+    _freeHintsLeft = _cfg.freeHintsPerLevel;
     _hintArrowId = null;
     _reward = null;
     _outcome = null;
+    _heartAds = 0;
     _startedAt = ref.read(flowClockProvider)();
     state = _snapshot();
     _events.add(const BoardReset());
@@ -208,10 +222,16 @@ class GameSession extends _$GameSession {
     _events.add(const HeartGranted());
   }
 
-  /// "+1 heart" for [Pricing.heart] coins.
+  /// "+1 heart" from a rewarded ad (at most `rewarded_heart_cap` per level).
+  void grantHeartViaAd() {
+    _heartAds++;
+    grantHeart();
+  }
+
+  /// "+1 heart" for the heart price coins.
   PurchaseResult buyHeart() {
     if (_engine.status != GameStatus.lost) return PurchaseResult.unavailable;
-    if (!ref.read(walletProvider.notifier).trySpend(Pricing.heart)) {
+    if (!ref.read(walletProvider.notifier).trySpend(_cfg.heartPrice)) {
       return PurchaseResult.noCoins;
     }
     grantHeart();

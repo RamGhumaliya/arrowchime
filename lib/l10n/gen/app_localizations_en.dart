@@ -771,4 +771,228 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsDeveloper => 'Developer (debug builds)';
+
+  @override
+  String get adUnavailable => 'Ad not available';
+
+  @override
+  String get winDoubleCoins => '×2 coins · ad';
+
+  @override
+  String get hintNoCoinsTitle => 'Not enough coins';
+
+  @override
+  String get hintWatchAd => 'Watch ad for a free hint';
+
+  @override
+  String get dailyUnlockAd => 'Unlock with an ad';
+
+  @override
+  String get shopTitle => 'Shop';
+
+  @override
+  String get shopStarterTitle => 'Starter Bundle';
+
+  @override
+  String shopStarterLeft(String time) {
+    return '$time left';
+  }
+
+  @override
+  String get shopChipRemoveAds => 'Remove Ads';
+
+  @override
+  String shopChipCoins(int n) {
+    return '$n coins';
+  }
+
+  @override
+  String get shopChipSkin => 'Neon skin';
+
+  @override
+  String get shopRemoveAdsTitle => 'Remove Ads';
+
+  @override
+  String shopRemoveAdsNote(int n) {
+    return 'No interstitials, ever. $n coins too.';
+  }
+
+  @override
+  String get shopOwned => 'Owned';
+
+  @override
+  String get shopCoinsSection => 'Coins';
+
+  @override
+  String shopCoinsAmount(int n) {
+    return '$n';
+  }
+
+  @override
+  String get shopBestValue => 'Best value';
+
+  @override
+  String get shopArtPack => 'Chapter Art Pack';
+
+  @override
+  String get shopArtPackNote => 'A skin, a trail and an instrument.';
+
+  @override
+  String get shopRestore => 'Restore purchases';
+
+  @override
+  String get shopThanks => 'Thank you!';
+
+  @override
+  String get shopFailed => 'The purchase didn’t go through.';
+
+  @override
+  String get shopRestored => 'Purchases restored.';
+
+  @override
+  String get shopUnavailable => 'The store isn’t available right now.';
+
+  @override
+  String get shopBuyShort => 'Buy';
+
+  @override
+  String shopBuy(String price) {
+    return 'Buy $price';
+  }
+
+  @override
+  String get shopPriceLoading => '…';
+
+  @override
+  String get starterNotNow => 'Not now';
+
+  @override
+  String get collectionTitle => 'Collection';
+
+  @override
+  String get collTabArrows => 'Arrows';
+
+  @override
+  String get collTabTrails => 'Trails';
+
+  @override
+  String get collTabBoards => 'Boards';
+
+  @override
+  String get collTabInstruments => 'Instruments';
+
+  @override
+  String get collEquip => 'Equip';
+
+  @override
+  String get collEquipped => 'Equipped';
+
+  @override
+  String get collOwned => 'Owned';
+
+  @override
+  String collBuy(int price) {
+    return 'Buy · $price';
+  }
+
+  @override
+  String collLockChapter(String name) {
+    return 'Restore $name';
+  }
+
+  @override
+  String collLockStars(int n) {
+    return '$n stars in one chapter';
+  }
+
+  @override
+  String get collLockBundle => 'Comes in a bundle';
+
+  @override
+  String get collPreviewHint => 'Tap the board to replay.';
+
+  @override
+  String get cos_arrow_candy => 'Enamel Candy';
+
+  @override
+  String get cos_arrow_bamboo => 'Bamboo';
+
+  @override
+  String get cos_arrow_brass => 'Brass';
+
+  @override
+  String get cos_arrow_silk => 'Lantern Silk';
+
+  @override
+  String get cos_arrow_crystal => 'Crystal';
+
+  @override
+  String get cos_arrow_galaxy => 'Galaxy';
+
+  @override
+  String get cos_arrow_neon => 'Neon Tube';
+
+  @override
+  String get cos_arrow_paper => 'Paper-craft';
+
+  @override
+  String get cos_arrow_pixel => 'Pixel';
+
+  @override
+  String get cos_trail_none => 'No trail';
+
+  @override
+  String get cos_trail_sparkle => 'Sparkle';
+
+  @override
+  String get cos_trail_petals => 'Petals';
+
+  @override
+  String get cos_trail_snow => 'Snow';
+
+  @override
+  String get cos_trail_ribbons => 'Ribbons';
+
+  @override
+  String get cos_board_auto => 'Chapter felt';
+
+  @override
+  String get cos_board_night => 'Night felt';
+
+  @override
+  String get cos_board_sunset => 'Sunset felt';
+
+  @override
+  String get cos_board_constellation => 'Constellation';
+
+  @override
+  String get cos_board_aurora => 'Aurora';
+
+  @override
+  String get cos_instrument_auto => 'Chapter instrument';
+
+  @override
+  String get cos_instrument_piano => 'Piano';
+
+  @override
+  String get cos_instrument_marimba => 'Marimba';
+
+  @override
+  String get cos_instrument_eightbit => '8-bit';
+
+  @override
+  String get cos_instrument_choir => 'Choir';
+
+  @override
+  String get attTitle => 'A quick note';
+
+  @override
+  String get attBody =>
+      'Allowing tracking keeps ads relevant and the game free. You can change this later in Settings.';
+
+  @override
+  String get attContinue => 'Continue';
+
+  @override
+  String get attLater => 'Maybe later';
 }

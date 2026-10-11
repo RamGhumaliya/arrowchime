@@ -1449,6 +1449,420 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Developer (debug builds)'**
   String get settingsDeveloper;
+
+  /// No description provided for @adUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Ad not available'**
+  String get adUnavailable;
+
+  /// No description provided for @winDoubleCoins.
+  ///
+  /// In en, this message translates to:
+  /// **'×2 coins · ad'**
+  String get winDoubleCoins;
+
+  /// No description provided for @hintNoCoinsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough coins'**
+  String get hintNoCoinsTitle;
+
+  /// No description provided for @hintWatchAd.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch ad for a free hint'**
+  String get hintWatchAd;
+
+  /// No description provided for @dailyUnlockAd.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock with an ad'**
+  String get dailyUnlockAd;
+
+  /// No description provided for @shopTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop'**
+  String get shopTitle;
+
+  /// No description provided for @shopStarterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Starter Bundle'**
+  String get shopStarterTitle;
+
+  /// No description provided for @shopStarterLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{time} left'**
+  String shopStarterLeft(String time);
+
+  /// No description provided for @shopChipRemoveAds.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Ads'**
+  String get shopChipRemoveAds;
+
+  /// No description provided for @shopChipCoins.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} coins'**
+  String shopChipCoins(int n);
+
+  /// No description provided for @shopChipSkin.
+  ///
+  /// In en, this message translates to:
+  /// **'Neon skin'**
+  String get shopChipSkin;
+
+  /// No description provided for @shopRemoveAdsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Ads'**
+  String get shopRemoveAdsTitle;
+
+  /// No description provided for @shopRemoveAdsNote.
+  ///
+  /// In en, this message translates to:
+  /// **'No interstitials, ever. {n} coins too.'**
+  String shopRemoveAdsNote(int n);
+
+  /// No description provided for @shopOwned.
+  ///
+  /// In en, this message translates to:
+  /// **'Owned'**
+  String get shopOwned;
+
+  /// No description provided for @shopCoinsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Coins'**
+  String get shopCoinsSection;
+
+  /// No description provided for @shopCoinsAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n}'**
+  String shopCoinsAmount(int n);
+
+  /// No description provided for @shopBestValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Best value'**
+  String get shopBestValue;
+
+  /// No description provided for @shopArtPack.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapter Art Pack'**
+  String get shopArtPack;
+
+  /// No description provided for @shopArtPackNote.
+  ///
+  /// In en, this message translates to:
+  /// **'A skin, a trail and an instrument.'**
+  String get shopArtPackNote;
+
+  /// No description provided for @shopRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore purchases'**
+  String get shopRestore;
+
+  /// No description provided for @shopThanks.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you!'**
+  String get shopThanks;
+
+  /// No description provided for @shopFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The purchase didn’t go through.'**
+  String get shopFailed;
+
+  /// No description provided for @shopRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchases restored.'**
+  String get shopRestored;
+
+  /// No description provided for @shopUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The store isn’t available right now.'**
+  String get shopUnavailable;
+
+  /// No description provided for @shopBuyShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy'**
+  String get shopBuyShort;
+
+  /// No description provided for @shopBuy.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy {price}'**
+  String shopBuy(String price);
+
+  /// No description provided for @shopPriceLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'…'**
+  String get shopPriceLoading;
+
+  /// No description provided for @starterNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get starterNotNow;
+
+  /// No description provided for @collectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Collection'**
+  String get collectionTitle;
+
+  /// No description provided for @collTabArrows.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrows'**
+  String get collTabArrows;
+
+  /// No description provided for @collTabTrails.
+  ///
+  /// In en, this message translates to:
+  /// **'Trails'**
+  String get collTabTrails;
+
+  /// No description provided for @collTabBoards.
+  ///
+  /// In en, this message translates to:
+  /// **'Boards'**
+  String get collTabBoards;
+
+  /// No description provided for @collTabInstruments.
+  ///
+  /// In en, this message translates to:
+  /// **'Instruments'**
+  String get collTabInstruments;
+
+  /// No description provided for @collEquip.
+  ///
+  /// In en, this message translates to:
+  /// **'Equip'**
+  String get collEquip;
+
+  /// No description provided for @collEquipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Equipped'**
+  String get collEquipped;
+
+  /// No description provided for @collOwned.
+  ///
+  /// In en, this message translates to:
+  /// **'Owned'**
+  String get collOwned;
+
+  /// No description provided for @collBuy.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy · {price}'**
+  String collBuy(int price);
+
+  /// No description provided for @collLockChapter.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore {name}'**
+  String collLockChapter(String name);
+
+  /// No description provided for @collLockStars.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} stars in one chapter'**
+  String collLockStars(int n);
+
+  /// No description provided for @collLockBundle.
+  ///
+  /// In en, this message translates to:
+  /// **'Comes in a bundle'**
+  String get collLockBundle;
+
+  /// No description provided for @collPreviewHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the board to replay.'**
+  String get collPreviewHint;
+
+  /// No description provided for @cos_arrow_candy.
+  ///
+  /// In en, this message translates to:
+  /// **'Enamel Candy'**
+  String get cos_arrow_candy;
+
+  /// No description provided for @cos_arrow_bamboo.
+  ///
+  /// In en, this message translates to:
+  /// **'Bamboo'**
+  String get cos_arrow_bamboo;
+
+  /// No description provided for @cos_arrow_brass.
+  ///
+  /// In en, this message translates to:
+  /// **'Brass'**
+  String get cos_arrow_brass;
+
+  /// No description provided for @cos_arrow_silk.
+  ///
+  /// In en, this message translates to:
+  /// **'Lantern Silk'**
+  String get cos_arrow_silk;
+
+  /// No description provided for @cos_arrow_crystal.
+  ///
+  /// In en, this message translates to:
+  /// **'Crystal'**
+  String get cos_arrow_crystal;
+
+  /// No description provided for @cos_arrow_galaxy.
+  ///
+  /// In en, this message translates to:
+  /// **'Galaxy'**
+  String get cos_arrow_galaxy;
+
+  /// No description provided for @cos_arrow_neon.
+  ///
+  /// In en, this message translates to:
+  /// **'Neon Tube'**
+  String get cos_arrow_neon;
+
+  /// No description provided for @cos_arrow_paper.
+  ///
+  /// In en, this message translates to:
+  /// **'Paper-craft'**
+  String get cos_arrow_paper;
+
+  /// No description provided for @cos_arrow_pixel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pixel'**
+  String get cos_arrow_pixel;
+
+  /// No description provided for @cos_trail_none.
+  ///
+  /// In en, this message translates to:
+  /// **'No trail'**
+  String get cos_trail_none;
+
+  /// No description provided for @cos_trail_sparkle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sparkle'**
+  String get cos_trail_sparkle;
+
+  /// No description provided for @cos_trail_petals.
+  ///
+  /// In en, this message translates to:
+  /// **'Petals'**
+  String get cos_trail_petals;
+
+  /// No description provided for @cos_trail_snow.
+  ///
+  /// In en, this message translates to:
+  /// **'Snow'**
+  String get cos_trail_snow;
+
+  /// No description provided for @cos_trail_ribbons.
+  ///
+  /// In en, this message translates to:
+  /// **'Ribbons'**
+  String get cos_trail_ribbons;
+
+  /// No description provided for @cos_board_auto.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapter felt'**
+  String get cos_board_auto;
+
+  /// No description provided for @cos_board_night.
+  ///
+  /// In en, this message translates to:
+  /// **'Night felt'**
+  String get cos_board_night;
+
+  /// No description provided for @cos_board_sunset.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunset felt'**
+  String get cos_board_sunset;
+
+  /// No description provided for @cos_board_constellation.
+  ///
+  /// In en, this message translates to:
+  /// **'Constellation'**
+  String get cos_board_constellation;
+
+  /// No description provided for @cos_board_aurora.
+  ///
+  /// In en, this message translates to:
+  /// **'Aurora'**
+  String get cos_board_aurora;
+
+  /// No description provided for @cos_instrument_auto.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapter instrument'**
+  String get cos_instrument_auto;
+
+  /// No description provided for @cos_instrument_piano.
+  ///
+  /// In en, this message translates to:
+  /// **'Piano'**
+  String get cos_instrument_piano;
+
+  /// No description provided for @cos_instrument_marimba.
+  ///
+  /// In en, this message translates to:
+  /// **'Marimba'**
+  String get cos_instrument_marimba;
+
+  /// No description provided for @cos_instrument_eightbit.
+  ///
+  /// In en, this message translates to:
+  /// **'8-bit'**
+  String get cos_instrument_eightbit;
+
+  /// No description provided for @cos_instrument_choir.
+  ///
+  /// In en, this message translates to:
+  /// **'Choir'**
+  String get cos_instrument_choir;
+
+  /// No description provided for @attTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A quick note'**
+  String get attTitle;
+
+  /// No description provided for @attBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowing tracking keeps ads relevant and the game free. You can change this later in Settings.'**
+  String get attBody;
+
+  /// No description provided for @attContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get attContinue;
+
+  /// No description provided for @attLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Maybe later'**
+  String get attLater;
 }
 
 class _AppLocalizationsDelegate

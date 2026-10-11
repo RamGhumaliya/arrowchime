@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'rewarded_ads.dart';
+part of 'app_config.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,43 +9,43 @@ part of 'rewarded_ads.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(rewardedAds)
-final rewardedAdsProvider = RewardedAdsProvider._();
+@ProviderFor(appConfig)
+final appConfigProvider = AppConfigProvider._();
 
-final class RewardedAdsProvider
-    extends $FunctionalProvider<RewardedAds, RewardedAds, RewardedAds>
-    with $Provider<RewardedAds> {
-  RewardedAdsProvider._()
+final class AppConfigProvider
+    extends $FunctionalProvider<AppConfig, AppConfig, AppConfig>
+    with $Provider<AppConfig> {
+  AppConfigProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'rewardedAdsProvider',
+        name: r'appConfigProvider',
         isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$rewardedAdsHash();
+  String debugGetCreateSourceHash() => _$appConfigHash();
 
   @$internal
   @override
-  $ProviderElement<RewardedAds> $createElement($ProviderPointer pointer) =>
+  $ProviderElement<AppConfig> $createElement($ProviderPointer pointer) =>
       $ProviderElement(pointer);
 
   @override
-  RewardedAds create(Ref ref) {
-    return rewardedAds(ref);
+  AppConfig create(Ref ref) {
+    return appConfig(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(RewardedAds value) {
+  Override overrideWithValue(AppConfig value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<RewardedAds>(value),
+      providerOverride: $SyncValueProvider<AppConfig>(value),
     );
   }
 }
 
-String _$rewardedAdsHash() => r'8d19b7410aa5f13c770ef46c2edb728fe680ad0d';
+String _$appConfigHash() => r'ff3d3f22df1907116c68a49c6ae11772b6b3cd18';

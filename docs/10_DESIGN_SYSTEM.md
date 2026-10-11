@@ -325,6 +325,71 @@ Hand cursor = a 3D ceramic hand placeholder (code-painted), loops a tap or press
 solution arrow chosen from the level's `meta.solution`; hidden after the first correct tap.
 ```
 
+
+### Phase 8 screen layouts (approved and implemented in Phase 8; deviation: Shop coin tiles show the price as a caption with a short "Buy" button so it fits iPhone SE)
+Same kit and rules as the Phase 6 screens (`ScreenFrame`, `TBPanel.recessed` wells with ink text, at most one primary `TBButton` per screen, ≥ 44 dp targets, strings in ARB). Prices in the sketches are the defaults of `docs/08` §3 (the real price strings come from the store).
+
+```
+SHOP
+┌───────────────────────────────────────┐
+│ [‹]        Shop ribbon        [coins] │
+│ ┌ Starter Bundle (only L15+, 48 h) ─┐ │  panel with a countdown ("1d 20h left"),
+│ │ Remove Ads · 2,000 coins · Neon   │ │  contents as 3 small icon chips, and the
+│ │ skin           [ $6.99 ] primary  │ │  ONE primary button of the screen; hidden
+│ └───────────────────────────────────┘ │  when expired, bought, or Remove Ads owned
+│ ┌ Remove Ads ───────────────────────┐ │  panel: icon + "No interstitials, ever."
+│ │ + 500 coins        [ $3.99 ]      │ │  (secondary button); shows "Owned" tick when
+│ └───────────────────────────────────┘ │  bought. Rewarded ads stay optional.
+│ Coins (3 equal tiles in a row)        │  each tile: coin-stack icon, amount,
+│ [1,000 $1.99] [5,500 $7.99] [15,000 …]│  secondary button with price; middle one has a
+│                                       │  "Best value" brass tag
+│ ┌ Chapter Art Pack ─ $2.99 ─────────┐ │  skin + trail + instrument preview chips
+│ └───────────────────────────────────┘ │
+│  Restore purchases   (tertiary)       │  bottom, centred
+└───────────────────────────────────────┘
+Buying shows the store sheet; success = a TBToast "Thank you!" + coins fly to the pill
+(count-up), failure = TBToast "Purchase didn't go through.". No dark patterns: no fake
+timers other than the real 48 h bundle window, no pre-ticked upsells.
+
+COLLECTION  (Home shelf → Collection)
+┌───────────────────────────────────────┐
+│ [‹]     Collection ribbon     [coins] │
+│ ┌ live preview (felt tray, 6×6 board)┐│  the REAL board renderer with the selected
+│ │  arrows in the chosen skin/trail   ││  item applied; tap the preview to replay a
+│ │  board theme as the tray colour    ││  short clear (arrows fly out + trail + note)
+│ └────────────────────────────────────┘│
+│ [Arrows|Trails|Boards|Instruments]    │  TBTabBar
+│ ┌ grid of item tiles (2 per row) ────┐│  tile: swatch/preview, name, state:
+│ │ Enamel Candy  ✓ equipped           ││  equipped tick / "Owned" / lock + how to get
+│ │ Bamboo        Owned                ││  it ("Finish Misty Garden" or a coin price
+│ │ Neon Tube     🔒 1,500 coins       ││  chip). Selecting a tile previews it.
+│ └────────────────────────────────────┘│
+│        [ Equip ]  /  [ Buy · 1,500 ]  │  the ONE primary: Equip (owned) or Buy
+└───────────────────────────────────────┘                  (coins; disabled with a hint if short)
+Items: Arrow skins (Enamel Candy default, Bamboo, Brass, Lantern Silk, Crystal, Galaxy,
+Neon Tube, Paper-craft, Pixel), Trails (Sparkle, Petals, Snow, Ribbons), Board themes
+(the 5 chapter trays + 2 extra), Instruments (Piano, Marimba, 8-bit, Choir). Chapter skins
+are earned by restoring the chapter; Constellation items at 120 / 150 / 180 stars; the rest
+cost coins (common 500, rare 1,500, epic 4,000) or come in bundles. Cosmetic only.
+"Galaxy" may use a fragment shader (`glow.frag`) with a flat fallback when it is missing.
+
+STARTER BUNDLE / PAYWALL SHEET  (TBSheet, opens once after level 15, never on a win/fail sheet)
+  ribbon "Starter Bundle" · three chips (Remove Ads · 2,000 coins · Neon skin) · timer ·
+  [ $6.99 ] primary · "Not now" tertiary. Shown at most once per day while the window is open.
+
+ATT PRE-PROMPT  (iOS only, TBSheet after level 5, before the system dialog)
+  ribbon "A quick note" · body ≤ 25 words explaining that allowing tracking keeps ads
+  relevant and the game free · [ Continue ] primary (then the system ATT dialog) ·
+  "Maybe later" tertiary (asks again after 7 days at most once).
+
+WIN SHEET additions (docs/08: rewarded "double coins", max 5 per day)
+  under the coin row: [ ×2 coins ▶ ] secondary teal button with a small ad badge; hidden when
+  coins are 0, the daily cap is used, or no ad is loaded. Win sheet keeps ONE primary (Next).
+FAIL SHEET: unchanged (+1 heart ad / coins already specified).
+HINT with no coins: the "not enough coins" toast gets an action "Watch ad for a free hint".
+MISSED DAILY replay sheet: adds a secondary "Unlock with an ad" next to the coin price.
+```
+
 ## 8. Arrows & board (in-game 3D look)
 
 **Arrow = glossy enamel tube**, drawn in 5 passes on a cached `Picture`:

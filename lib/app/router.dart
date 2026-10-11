@@ -2,6 +2,7 @@ import 'package:arrowchime/app/stub_screen.dart';
 import 'package:arrowchime/core/meta/date_key.dart';
 import 'package:arrowchime/features/achievements/achievements_screen.dart';
 import 'package:arrowchime/features/chapter_map/chapter_map_screen.dart';
+import 'package:arrowchime/features/collection/collection_screen.dart';
 import 'package:arrowchime/features/daily/daily_screen.dart';
 import 'package:arrowchime/features/design_gallery/design_gallery_screen.dart';
 import 'package:arrowchime/features/game/game_screen.dart';
@@ -9,6 +10,7 @@ import 'package:arrowchime/features/game/state/level_ref.dart';
 import 'package:arrowchime/features/home/home_screen.dart';
 import 'package:arrowchime/features/level_lab/level_lab_screen.dart';
 import 'package:arrowchime/features/settings/settings_screen.dart';
+import 'package:arrowchime/features/shop/shop_screen.dart';
 import 'package:arrowchime/features/splash/splash_screen.dart';
 import 'package:arrowchime/l10n/gen/app_localizations.dart';
 import 'package:flutter/foundation.dart';
@@ -95,13 +97,11 @@ GoRouter createRouter({String initialLocation = AppRoutes.splash}) {
       ),
       GoRoute(
         path: AppRoutes.shop,
-        builder: (context, state) =>
-            StubScreen(label: AppLocalizations.of(context).routeShop),
+        builder: (context, state) => const ShopScreen(),
       ),
       GoRoute(
         path: AppRoutes.collection,
-        builder: (context, state) =>
-            StubScreen(label: AppLocalizations.of(context).routeCollection),
+        builder: (context, state) => const CollectionScreen(),
       ),
       GoRoute(
         path: AppRoutes.achievements,

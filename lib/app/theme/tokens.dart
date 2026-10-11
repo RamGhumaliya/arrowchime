@@ -380,6 +380,9 @@ abstract final class TBFeedback {
   /// The key jingle follows the gate door.
   static const Duration keyDelay = Duration(milliseconds: 120);
 
+  /// The Collection preview clears one arrow this often.
+  static const Duration previewStep = Duration(milliseconds: 140);
+
   /// Music returns to full level after the flourish.
   static const Duration duckRestore = Duration(milliseconds: 600);
 

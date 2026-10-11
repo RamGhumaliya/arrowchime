@@ -20,12 +20,16 @@ import 'package:arrowchime/core/ui/components/tb_toggle.dart';
 import 'package:arrowchime/core/ui/components/tb_tray.dart';
 import 'package:arrowchime/core/ui/icons/tb_icon.dart';
 import 'package:arrowchime/core/ui/icons/tb_icon_id.dart';
+import 'package:arrowchime/core/ui/painters/arrow_skin.dart';
 import 'package:arrowchime/core/ui/painters/brass_painter.dart';
 import 'package:arrowchime/core/ui/painters/crystal_painter.dart';
 import 'package:arrowchime/core/ui/painters/enamel_tube_painter.dart';
 import 'package:arrowchime/core/ui/painters/paper_painter.dart';
 import 'package:arrowchime/core/ui/painters/wood_painter.dart';
 import 'package:arrowchime/features/design_gallery/gallery_widgets.dart';
+import 'package:arrowchime/features/game/flame/board_themes.dart';
+import 'package:arrowchime/features/game/flame/particle_pool.dart';
+import 'package:arrowchime/features/game/flame/trail_style.dart';
 import 'package:arrowchime/features/game/preview/board_preview.dart';
 import 'package:flutter/widgets.dart';
 
@@ -41,7 +45,8 @@ enum GalleryGroup {
   chapters('Chapters'),
   icons('Icons'),
   materials('Materials'),
-  mechanics('Mechanics');
+  mechanics('Mechanics'),
+  cosmetics('Cosmetics');
 
   new(this.label);
 
@@ -57,6 +62,7 @@ enum GalleryGroup {
     GalleryGroup.icons => const _Icons(),
     GalleryGroup.materials => const _Materials(),
     GalleryGroup.mechanics => const _Mechanics(),
+    GalleryGroup.cosmetics => const _Cosmetics(),
   };
 }
 
@@ -982,4 +988,122 @@ class _Mechanics extends StatelessWidget {
       ),
     ]);
   }
+}
+
+// --- Cosmetics -----------------------------------------------------------------
+
+/// Every arrow skin on the same sample arrow, the trail particles and the
+/// board felts (`docs/06` §6).
+class _Cosmetics extends StatelessWidget {
+  const new();
+
+  static const _cells = [(0, 1), (1, 1), (2, 1), (2, 0)];
+
+  @override
+  Widget build(BuildContext context) {
+    const chapter = ChapterTheme.mistyGarden;
+    return _column([
+      GalleryItem(
+        title: 'Arrow skins',
+        note: 'Nine skins, one five-pass tube structure (docs/06 §6).',
+        builder: (context, surface) => StateWrap(
+          children: [
+            for (final skin in ArrowSkin.values)
+              StateLabel(
+                skin.name,
+                surface: surface,
+                child: SizedBox(
+                  width: 96,
+                  height: 64,
+                  child: CustomPaint(
+                    painter: EnamelTubePainter(
+                      cells: _cells,
+                      color: chapter.arrowColors[skin.index % 6],
+                      skin: skin,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+      GalleryItem(
+        title: 'Trails',
+        note: 'Particles an arrow leaves while it flies off.',
+        builder: (context, surface) => StateWrap(
+          children: [
+            for (final trail in TrailStyle.values)
+              StateLabel(
+                trail.name,
+                surface: surface,
+                child: SizedBox(
+                  width: 96,
+                  height: 48,
+                  child: CustomPaint(painter: _TrailSample(trail)),
+                ),
+              ),
+          ],
+        ),
+      ),
+      GalleryItem(
+        title: 'Board felts',
+        builder: (context, surface) => StateWrap(
+          children: [
+            for (final id in [
+              'auto',
+              'night',
+              'sunset',
+              'constellation',
+              'aurora',
+            ])
+              StateLabel(
+                id,
+                surface: surface,
+                child: SizedBox.square(
+                  dimension: 64,
+                  child: TBTray(
+                    chapter: BoardThemes.apply(chapter, id),
+                    child: const SizedBox.shrink(),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    ]);
+  }
+}
+
+class _TrailSample extends CustomPainter {
+  const new(this.trail);
+
+  final TrailStyle trail;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (var i = 0; i < 8; i++) {
+      final p = Offset(
+        size.width * (0.1 + i * 0.11),
+        size.height * (0.5 + 0.28 * (i.isEven ? -1 : 1) * (1 - i / 10)),
+      );
+      final paint = Paint()..color = trail.color(TBColors.tangerine, i);
+      switch (trail.shape) {
+        case ParticleShape.dot || ParticleShape.flake:
+          canvas.drawCircle(p, 4, paint);
+        case ParticleShape.petal:
+          canvas.drawOval(
+            Rect.fromCenter(center: p, width: 11, height: 6),
+            paint,
+          );
+        case ParticleShape.ribbon:
+          canvas.drawRect(
+            Rect.fromCenter(center: p, width: 12, height: 3),
+            paint,
+          );
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_TrailSample old) => old.trail != trail;
 }

@@ -1,7 +1,7 @@
-import 'package:arrowchime/core/economy/pricing.dart';
 import 'package:arrowchime/core/economy/wallet.dart';
 import 'package:arrowchime/core/level/engine/game_engine.dart';
 import 'package:arrowchime/core/level/models/level.dart';
+import 'package:arrowchime/core/remote_config/app_config.dart';
 import 'package:arrowchime/features/game/state/game_session.dart';
 import 'package:arrowchime/features/game/state/level_ref.dart';
 import 'package:arrowchime/features/game/state/level_repository.dart';
@@ -102,7 +102,7 @@ void main() {
       expect(state.status, GameStatus.playing);
       expect(state.hearts, 1);
       expect(state.remaining, 2);
-      expect(state.freeUndosLeft, Pricing.freeUndos);
+      expect(state.freeUndosLeft, AppConfig.defaults().freeUndos);
       await Future<void>.delayed(Duration.zero);
       expect(seen.last, isA<BoardReset>());
     });
@@ -123,7 +123,7 @@ void main() {
         expect(c.read(gameSessionProvider(early)).remaining, 2);
         c.read(walletProvider.notifier).add(100);
         expect(s.undo(), PurchaseResult.done);
-        expect(c.read(walletProvider), 100 - Pricing.undo);
+        expect(c.read(walletProvider), 100 - AppConfig.defaults().undoPrice);
         expect(c.read(gameSessionProvider(early)).remaining, 3);
       },
     );
@@ -166,7 +166,7 @@ void main() {
       expect(s.buyHeart(), PurchaseResult.unavailable);
       s.tap(0);
       expect(s.buyHeart(), PurchaseResult.noCoins);
-      c.read(walletProvider.notifier).add(Pricing.heart);
+      c.read(walletProvider.notifier).add(AppConfig.defaults().heartPrice);
       expect(s.buyHeart(), PurchaseResult.done);
       expect(c.read(walletProvider), 0);
       var state = c.read(gameSessionProvider(early));

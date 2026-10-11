@@ -121,6 +121,45 @@ abstract class SaveSettings with _$SaveSettings {
       _$SaveSettingsFromJson(json);
 }
 
+/// Ad frequency state (`docs/08` §2). Times are epoch milliseconds; kept in the
+/// save so the caps hold across app restarts (docs/09 §5).
+@freezed
+abstract class AdState with _$AdState {
+  const factory AdState({
+    /// Last ad of any kind (the 90 s hard gap).
+    @Default(0) int lastAdAt,
+
+    /// Last interstitial (the 150 s minimum).
+    @Default(0) int lastInterstitialAt,
+
+    /// Interstitials of the last hour, for the hourly cap.
+    @Default(<int>[]) List<int> recentInterstitials,
+
+    /// Wins since the last interstitial.
+    @Default(0) int winsSinceInterstitial,
+
+    /// No interstitials until this time (24 h after any purchase).
+    @Default(0) int holidayUntil,
+
+    /// "Double coins" rewarded ads used today (local date).
+    @Default('') String doubleCoinsDate,
+    @Default(0) int doubleCoinsCount,
+
+    /// iOS ATT pre-prompt: `''` never asked, `asked`, or a retry time.
+    @Default('') String attState,
+    @Default(0) int attRetryAt,
+
+    /// The Starter Bundle window opened at this time (0 = not yet).
+    @Default(0) int starterOfferedAt,
+
+    /// Local date of the last Starter Bundle sheet (once a day).
+    @Default('') String starterShownDate,
+  }) = _AdState;
+
+  factory AdState.fromJson(Map<String, dynamic> json) =>
+      _$AdStateFromJson(json);
+}
+
 /// Everything that survives closing the app (`docs/05` §6).
 @freezed
 abstract class SaveData with _$SaveData {
@@ -153,6 +192,12 @@ abstract class SaveData with _$SaveData {
 
     /// Free-form flags (`adsRemoved`, `onboardingDone`, ...).
     @Default(<String, bool>{}) Map<String, bool> flags,
+
+    /// Ad frequency state.
+    @Default(AdState()) AdState ads,
+
+    /// Store transactions already fulfilled (purchases are idempotent).
+    @Default(<String>[]) List<String> purchases,
     @Default('') String updatedAt,
   }) = _SaveData;
 

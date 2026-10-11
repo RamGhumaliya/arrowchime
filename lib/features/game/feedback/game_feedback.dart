@@ -18,6 +18,7 @@ class GameFeedback {
     required this.levelIndex,
     required this.arrowLength,
     this.isBoss = false,
+    this.instrument,
     this.onLastThree,
   }) : melody = MelodyPlayer.forLevel(chapter, levelIndex);
 
@@ -29,6 +30,9 @@ class GameFeedback {
   /// Number of cells of an arrow (long arrows ring heavier).
   final int Function(int arrowId) arrowLength;
   final bool isBoss;
+
+  /// The equipped cosmetic instrument (`null` / `auto`: the chapter's own).
+  final String? instrument;
 
   /// The last three arrows: the screen nudges the zoom in by 3%.
   final void Function()? onLastThree;
@@ -46,7 +50,7 @@ class GameFeedback {
 
   /// Preloads the chapter's sounds and starts its music.
   Future<void> start() async {
-    await audio.enterChapter(chapter);
+    await audio.enterChapter(chapter, instrument: instrument);
     if (isBoss) await audio.preloadSting(chapter);
   }
 
@@ -118,14 +122,19 @@ class GameFeedback {
     final cue = melody.next(flow: flow, arrowLength: arrowLength(arrowId));
     final sound = melody.sound;
     audio
-      ..note(sound, cue.index, volume: cue.heavy ? 1 : 0.85)
+      ..note(
+        sound,
+        cue.index,
+        volume: cue.heavy ? 1 : 0.85,
+        instrument: instrument,
+      )
       ..sfx(
         Sfx.arrowWhoosh,
         volume: 0.5,
         speed: _whooshPitch[_whooshAt++ % _whooshPitch.length],
       );
     for (final h in cue.harmony) {
-      audio.note(sound, h, volume: 0.4);
+      audio.note(sound, h, volume: 0.4, instrument: instrument);
     }
     if (flow >= 3) {
       // The shaker tick layer of Flow ×3.
@@ -154,13 +163,13 @@ class GameFeedback {
     haptics.success();
     var delay = Duration.zero;
     for (final i in melody.cascade()) {
-      audio.note(melody.sound, i, delay: delay);
+      audio.note(melody.sound, i, delay: delay, instrument: instrument);
       delay += TBFeedback.cascadeStep;
     }
     delay += TBFeedback.flourishGap;
     audio.duck(on: true);
     for (final i in melody.flourish()) {
-      audio.note(melody.sound, i, delay: delay);
+      audio.note(melody.sound, i, delay: delay, instrument: instrument);
       delay += TBFeedback.flourishStep;
     }
     audio.sfx(Sfx.boardClear, delay: delay);

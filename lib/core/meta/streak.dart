@@ -70,12 +70,10 @@ abstract final class Streak {
     return s.freezes >= missed ? s.count : 0;
   }
 
-  /// Buys one freeze for [Streak.freezePrice] coins' worth: returns the new
+  /// Adds one freeze (the price is Remote Config's): returns the new
   /// state, or `null` when the stock is full.
   static StreakState? addFreeze(StreakState s) {
     if (s.freezes >= maxFreezes) return null;
     return s.copyWith(freezes: s.freezes + 1);
   }
-
-  static const int freezePrice = 200;
 }

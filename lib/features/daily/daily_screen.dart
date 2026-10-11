@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:arrowchime/app/router.dart';
 import 'package:arrowchime/app/theme/chapter_theme.dart';
 import 'package:arrowchime/app/theme/tokens.dart';
+import 'package:arrowchime/core/ads/ads_controller.dart';
 import 'package:arrowchime/core/level/models/level.dart';
 import 'package:arrowchime/core/meta/daily_share.dart';
 import 'package:arrowchime/core/meta/date_key.dart';
 import 'package:arrowchime/core/meta/meta_actions.dart';
 import 'package:arrowchime/core/meta/progression.dart';
 import 'package:arrowchime/core/meta/streak.dart';
+import 'package:arrowchime/core/remote_config/app_config.dart';
 import 'package:arrowchime/core/save/save_controller.dart';
 import 'package:arrowchime/core/save/save_data.dart';
 import 'package:arrowchime/core/share/share_service.dart';
@@ -285,7 +287,7 @@ class _Calendar extends ConsumerWidget {
         context,
         sheet: _ReplaySheet(
           dateKey: key,
-          canAfford: coins >= Progression.missedDailyPrice,
+          canAfford: coins >= ref.read(appConfigProvider).missedDailyPrice,
         ),
       ),
     );
@@ -301,7 +303,7 @@ class _ReplaySheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    const price = Progression.missedDailyPrice;
+    final price = ref.watch(appConfigProvider).missedDailyPrice;
     return TBSheet(
       title: l10n.dailyReplayTitle,
       child: Column(
@@ -323,6 +325,21 @@ class _ReplaySheet extends ConsumerWidget {
                   }
                 : null,
           ),
+          if (ref.read(adsControllerProvider).rewardedAvailable) ...[
+            const SizedBox(height: TBSpacing.s8),
+            TBButton.secondary(
+              label: l10n.dailyUnlockAd,
+              expand: true,
+              onPressed: () async {
+                final earned = await ref
+                    .read(adsControllerProvider)
+                    .showRewarded();
+                if (!earned || !context.mounted) return;
+                Navigator.of(context).pop();
+                unawaited(context.push(AppRoutes.dailyPlayPath(dateKey)));
+              },
+            ),
+          ],
           const SizedBox(height: TBSpacing.s8),
           TBButton.tertiary(
             label: l10n.gameBack,
@@ -399,8 +416,11 @@ class _StreakRow extends ConsumerWidget {
         ),
         if (save.streak.freezes < Streak.maxFreezes)
           TBButton.tertiary(
-            label: l10n.dailyBuyFreeze(Streak.freezePrice),
-            onPressed: save.coins >= Streak.freezePrice
+            label: l10n.dailyBuyFreeze(
+              ref.watch(appConfigProvider).streakFreezePrice,
+            ),
+            onPressed:
+                save.coins >= ref.watch(appConfigProvider).streakFreezePrice
                 ? () => ref.read(metaActionsProvider).buyFreeze()
                 : null,
           ),

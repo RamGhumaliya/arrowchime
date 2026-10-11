@@ -6,6 +6,7 @@ import 'package:arrowchime/core/meta/player_level.dart';
 import 'package:arrowchime/core/meta/progression.dart';
 import 'package:arrowchime/core/meta/quests.dart';
 import 'package:arrowchime/core/meta/streak.dart';
+import 'package:arrowchime/core/remote_config/app_config.dart';
 import 'package:arrowchime/core/save/save_data.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -534,7 +535,7 @@ void main() {
       );
       expect(replay.coins, 0);
       expect(replay.data.flags['nightOwl'], isNull);
-      expect(Progression.missedDailyPrice, 100);
+      expect(AppConfig.defaults().missedDailyPrice, 100);
     });
 
     test('the calendar covers 30 days with today last', () {

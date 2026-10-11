@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:arrowchime/app/router.dart';
 import 'package:arrowchime/app/theme/tokens.dart';
+import 'package:arrowchime/core/ads/ads_controller.dart';
 import 'package:arrowchime/core/audio/audio_service.dart';
 import 'package:arrowchime/core/audio/sfx.dart';
 import 'package:arrowchime/core/meta/progression.dart';
@@ -39,6 +40,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     );
     final audio = ref.read(audioServiceProvider);
     unawaited(audio.enterChapter(chapter));
+    // Consent (UMP) and the ad SDK start here; a failure never blocks the game.
+    // Provider changes wait until the tree has finished building.
+    unawaited(
+      Future.microtask(() {
+        final ads = ref.read(adsControllerProvider)..markSessionStart();
+        unawaited(ads.init());
+      }),
+    );
     _drop.addStatusListener((status) {
       if (status != AnimationStatus.completed || !mounted) return;
       audio.sfx(Sfx.star3);

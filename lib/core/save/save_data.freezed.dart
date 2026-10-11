@@ -1745,6 +1745,331 @@ as String,
 
 
 /// @nodoc
+mixin _$AdState {
+
+/// Last ad of any kind (the 90 s hard gap).
+ int get lastAdAt;/// Last interstitial (the 150 s minimum).
+ int get lastInterstitialAt;/// Interstitials of the last hour, for the hourly cap.
+ List<int> get recentInterstitials;/// Wins since the last interstitial.
+ int get winsSinceInterstitial;/// No interstitials until this time (24 h after any purchase).
+ int get holidayUntil;/// "Double coins" rewarded ads used today (local date).
+ String get doubleCoinsDate; int get doubleCoinsCount;/// iOS ATT pre-prompt: `''` never asked, `asked`, or a retry time.
+ String get attState; int get attRetryAt;/// The Starter Bundle window opened at this time (0 = not yet).
+ int get starterOfferedAt;/// Local date of the last Starter Bundle sheet (once a day).
+ String get starterShownDate;
+/// Create a copy of AdState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AdStateCopyWith<AdState> get copyWith => _$AdStateCopyWithImpl<AdState>(this as AdState, _$identity);
+
+  /// Serializes this AdState to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as AdState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AdState&&(identical(other.lastAdAt, _this.lastAdAt) || other.lastAdAt == _this.lastAdAt)&&(identical(other.lastInterstitialAt, _this.lastInterstitialAt) || other.lastInterstitialAt == _this.lastInterstitialAt)&&const DeepCollectionEquality().equals(other.recentInterstitials, _this.recentInterstitials)&&(identical(other.winsSinceInterstitial, _this.winsSinceInterstitial) || other.winsSinceInterstitial == _this.winsSinceInterstitial)&&(identical(other.holidayUntil, _this.holidayUntil) || other.holidayUntil == _this.holidayUntil)&&(identical(other.doubleCoinsDate, _this.doubleCoinsDate) || other.doubleCoinsDate == _this.doubleCoinsDate)&&(identical(other.doubleCoinsCount, _this.doubleCoinsCount) || other.doubleCoinsCount == _this.doubleCoinsCount)&&(identical(other.attState, _this.attState) || other.attState == _this.attState)&&(identical(other.attRetryAt, _this.attRetryAt) || other.attRetryAt == _this.attRetryAt)&&(identical(other.starterOfferedAt, _this.starterOfferedAt) || other.starterOfferedAt == _this.starterOfferedAt)&&(identical(other.starterShownDate, _this.starterShownDate) || other.starterShownDate == _this.starterShownDate));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+  final _this = this as AdState;
+  return Object.hash(runtimeType,_this.lastAdAt,_this.lastInterstitialAt,const DeepCollectionEquality().hash(_this.recentInterstitials),_this.winsSinceInterstitial,_this.holidayUntil,_this.doubleCoinsDate,_this.doubleCoinsCount,_this.attState,_this.attRetryAt,_this.starterOfferedAt,_this.starterShownDate);
+}
+
+@override
+String toString() {
+  final _this = this as AdState;
+  return 'AdState(lastAdAt: ${_this.lastAdAt}, lastInterstitialAt: ${_this.lastInterstitialAt}, recentInterstitials: ${_this.recentInterstitials}, winsSinceInterstitial: ${_this.winsSinceInterstitial}, holidayUntil: ${_this.holidayUntil}, doubleCoinsDate: ${_this.doubleCoinsDate}, doubleCoinsCount: ${_this.doubleCoinsCount}, attState: ${_this.attState}, attRetryAt: ${_this.attRetryAt}, starterOfferedAt: ${_this.starterOfferedAt}, starterShownDate: ${_this.starterShownDate})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AdStateCopyWith<$Res>  {
+  factory $AdStateCopyWith(AdState value, $Res Function(AdState) _then) = _$AdStateCopyWithImpl;
+@useResult
+$Res call({
+ int lastAdAt, int lastInterstitialAt, List<int> recentInterstitials, int winsSinceInterstitial, int holidayUntil, String doubleCoinsDate, int doubleCoinsCount, String attState, int attRetryAt, int starterOfferedAt, String starterShownDate
+});
+
+
+
+
+}
+/// @nodoc
+class _$AdStateCopyWithImpl<$Res>
+    implements $AdStateCopyWith<$Res> {
+  _$AdStateCopyWithImpl(this._self, this._then);
+
+  final AdState _self;
+  final $Res Function(AdState) _then;
+
+/// Create a copy of AdState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? lastAdAt = null,Object? lastInterstitialAt = null,Object? recentInterstitials = null,Object? winsSinceInterstitial = null,Object? holidayUntil = null,Object? doubleCoinsDate = null,Object? doubleCoinsCount = null,Object? attState = null,Object? attRetryAt = null,Object? starterOfferedAt = null,Object? starterShownDate = null,}) {
+  return _then(AdState(
+lastAdAt: null == lastAdAt ? _self.lastAdAt : lastAdAt // ignore: cast_nullable_to_non_nullable
+as int,lastInterstitialAt: null == lastInterstitialAt ? _self.lastInterstitialAt : lastInterstitialAt // ignore: cast_nullable_to_non_nullable
+as int,recentInterstitials: null == recentInterstitials ? _self.recentInterstitials : recentInterstitials // ignore: cast_nullable_to_non_nullable
+as List<int>,winsSinceInterstitial: null == winsSinceInterstitial ? _self.winsSinceInterstitial : winsSinceInterstitial // ignore: cast_nullable_to_non_nullable
+as int,holidayUntil: null == holidayUntil ? _self.holidayUntil : holidayUntil // ignore: cast_nullable_to_non_nullable
+as int,doubleCoinsDate: null == doubleCoinsDate ? _self.doubleCoinsDate : doubleCoinsDate // ignore: cast_nullable_to_non_nullable
+as String,doubleCoinsCount: null == doubleCoinsCount ? _self.doubleCoinsCount : doubleCoinsCount // ignore: cast_nullable_to_non_nullable
+as int,attState: null == attState ? _self.attState : attState // ignore: cast_nullable_to_non_nullable
+as String,attRetryAt: null == attRetryAt ? _self.attRetryAt : attRetryAt // ignore: cast_nullable_to_non_nullable
+as int,starterOfferedAt: null == starterOfferedAt ? _self.starterOfferedAt : starterOfferedAt // ignore: cast_nullable_to_non_nullable
+as int,starterShownDate: null == starterShownDate ? _self.starterShownDate : starterShownDate // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [AdState].
+extension AdStatePatterns on AdState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AdState value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _AdState() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AdState value)  $default,){
+final _that = this;
+switch (_that) {
+case _AdState():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AdState value)?  $default,){
+final _that = this;
+switch (_that) {
+case _AdState() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int lastAdAt,  int lastInterstitialAt,  List<int> recentInterstitials,  int winsSinceInterstitial,  int holidayUntil,  String doubleCoinsDate,  int doubleCoinsCount,  String attState,  int attRetryAt,  int starterOfferedAt,  String starterShownDate)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _AdState() when $default != null:
+return $default(_that.lastAdAt,_that.lastInterstitialAt,_that.recentInterstitials,_that.winsSinceInterstitial,_that.holidayUntil,_that.doubleCoinsDate,_that.doubleCoinsCount,_that.attState,_that.attRetryAt,_that.starterOfferedAt,_that.starterShownDate);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int lastAdAt,  int lastInterstitialAt,  List<int> recentInterstitials,  int winsSinceInterstitial,  int holidayUntil,  String doubleCoinsDate,  int doubleCoinsCount,  String attState,  int attRetryAt,  int starterOfferedAt,  String starterShownDate)  $default,) {final _that = this;
+switch (_that) {
+case _AdState():
+return $default(_that.lastAdAt,_that.lastInterstitialAt,_that.recentInterstitials,_that.winsSinceInterstitial,_that.holidayUntil,_that.doubleCoinsDate,_that.doubleCoinsCount,_that.attState,_that.attRetryAt,_that.starterOfferedAt,_that.starterShownDate);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int lastAdAt,  int lastInterstitialAt,  List<int> recentInterstitials,  int winsSinceInterstitial,  int holidayUntil,  String doubleCoinsDate,  int doubleCoinsCount,  String attState,  int attRetryAt,  int starterOfferedAt,  String starterShownDate)?  $default,) {final _that = this;
+switch (_that) {
+case _AdState() when $default != null:
+return $default(_that.lastAdAt,_that.lastInterstitialAt,_that.recentInterstitials,_that.winsSinceInterstitial,_that.holidayUntil,_that.doubleCoinsDate,_that.doubleCoinsCount,_that.attState,_that.attRetryAt,_that.starterOfferedAt,_that.starterShownDate);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _AdState implements AdState {
+  const _AdState({this.lastAdAt = 0, this.lastInterstitialAt = 0,  List<int> recentInterstitials = const <int>[], this.winsSinceInterstitial = 0, this.holidayUntil = 0, this.doubleCoinsDate = '', this.doubleCoinsCount = 0, this.attState = '', this.attRetryAt = 0, this.starterOfferedAt = 0, this.starterShownDate = ''}): _recentInterstitials = recentInterstitials;
+  factory _AdState.fromJson(Map<String, dynamic> json) => _$AdStateFromJson(json);
+
+/// Last ad of any kind (the 90 s hard gap).
+@override@JsonKey() final  int lastAdAt;
+/// Last interstitial (the 150 s minimum).
+@override@JsonKey() final  int lastInterstitialAt;
+/// Interstitials of the last hour, for the hourly cap.
+ final  List<int> _recentInterstitials;
+/// Interstitials of the last hour, for the hourly cap.
+@override@JsonKey() List<int> get recentInterstitials {
+  if (_recentInterstitials is EqualUnmodifiableListView) return _recentInterstitials;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_recentInterstitials);
+}
+
+/// Wins since the last interstitial.
+@override@JsonKey() final  int winsSinceInterstitial;
+/// No interstitials until this time (24 h after any purchase).
+@override@JsonKey() final  int holidayUntil;
+/// "Double coins" rewarded ads used today (local date).
+@override@JsonKey() final  String doubleCoinsDate;
+@override@JsonKey() final  int doubleCoinsCount;
+/// iOS ATT pre-prompt: `''` never asked, `asked`, or a retry time.
+@override@JsonKey() final  String attState;
+@override@JsonKey() final  int attRetryAt;
+/// The Starter Bundle window opened at this time (0 = not yet).
+@override@JsonKey() final  int starterOfferedAt;
+/// Local date of the last Starter Bundle sheet (once a day).
+@override@JsonKey() final  String starterShownDate;
+
+/// Create a copy of AdState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AdStateCopyWith<_AdState> get copyWith => __$AdStateCopyWithImpl<_AdState>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$AdStateToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AdState&&(identical(other.lastAdAt, lastAdAt) || other.lastAdAt == lastAdAt)&&(identical(other.lastInterstitialAt, lastInterstitialAt) || other.lastInterstitialAt == lastInterstitialAt)&&const DeepCollectionEquality().equals(other.recentInterstitials, _recentInterstitials)&&(identical(other.winsSinceInterstitial, winsSinceInterstitial) || other.winsSinceInterstitial == winsSinceInterstitial)&&(identical(other.holidayUntil, holidayUntil) || other.holidayUntil == holidayUntil)&&(identical(other.doubleCoinsDate, doubleCoinsDate) || other.doubleCoinsDate == doubleCoinsDate)&&(identical(other.doubleCoinsCount, doubleCoinsCount) || other.doubleCoinsCount == doubleCoinsCount)&&(identical(other.attState, attState) || other.attState == attState)&&(identical(other.attRetryAt, attRetryAt) || other.attRetryAt == attRetryAt)&&(identical(other.starterOfferedAt, starterOfferedAt) || other.starterOfferedAt == starterOfferedAt)&&(identical(other.starterShownDate, starterShownDate) || other.starterShownDate == starterShownDate));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,lastAdAt,lastInterstitialAt,const DeepCollectionEquality().hash(_recentInterstitials),winsSinceInterstitial,holidayUntil,doubleCoinsDate,doubleCoinsCount,attState,attRetryAt,starterOfferedAt,starterShownDate);
+}
+
+@override
+String toString() {
+    return 'AdState(lastAdAt: $lastAdAt, lastInterstitialAt: $lastInterstitialAt, recentInterstitials: $recentInterstitials, winsSinceInterstitial: $winsSinceInterstitial, holidayUntil: $holidayUntil, doubleCoinsDate: $doubleCoinsDate, doubleCoinsCount: $doubleCoinsCount, attState: $attState, attRetryAt: $attRetryAt, starterOfferedAt: $starterOfferedAt, starterShownDate: $starterShownDate)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AdStateCopyWith<$Res> implements $AdStateCopyWith<$Res> {
+  factory _$AdStateCopyWith(_AdState value, $Res Function(_AdState) _then) = __$AdStateCopyWithImpl;
+@override @useResult
+$Res call({
+ int lastAdAt, int lastInterstitialAt, List<int> recentInterstitials, int winsSinceInterstitial, int holidayUntil, String doubleCoinsDate, int doubleCoinsCount, String attState, int attRetryAt, int starterOfferedAt, String starterShownDate
+});
+
+
+
+
+}
+/// @nodoc
+class __$AdStateCopyWithImpl<$Res>
+    implements _$AdStateCopyWith<$Res> {
+  __$AdStateCopyWithImpl(this._self, this._then);
+
+  final _AdState _self;
+  final $Res Function(_AdState) _then;
+
+/// Create a copy of AdState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? lastAdAt = null,Object? lastInterstitialAt = null,Object? recentInterstitials = null,Object? winsSinceInterstitial = null,Object? holidayUntil = null,Object? doubleCoinsDate = null,Object? doubleCoinsCount = null,Object? attState = null,Object? attRetryAt = null,Object? starterOfferedAt = null,Object? starterShownDate = null,}) {
+  return _then(_AdState(
+lastAdAt: null == lastAdAt ? _self.lastAdAt : lastAdAt // ignore: cast_nullable_to_non_nullable
+as int,lastInterstitialAt: null == lastInterstitialAt ? _self.lastInterstitialAt : lastInterstitialAt // ignore: cast_nullable_to_non_nullable
+as int,recentInterstitials: null == recentInterstitials ? _self._recentInterstitials : recentInterstitials // ignore: cast_nullable_to_non_nullable
+as List<int>,winsSinceInterstitial: null == winsSinceInterstitial ? _self.winsSinceInterstitial : winsSinceInterstitial // ignore: cast_nullable_to_non_nullable
+as int,holidayUntil: null == holidayUntil ? _self.holidayUntil : holidayUntil // ignore: cast_nullable_to_non_nullable
+as int,doubleCoinsDate: null == doubleCoinsDate ? _self.doubleCoinsDate : doubleCoinsDate // ignore: cast_nullable_to_non_nullable
+as String,doubleCoinsCount: null == doubleCoinsCount ? _self.doubleCoinsCount : doubleCoinsCount // ignore: cast_nullable_to_non_nullable
+as int,attState: null == attState ? _self.attState : attState // ignore: cast_nullable_to_non_nullable
+as String,attRetryAt: null == attRetryAt ? _self.attRetryAt : attRetryAt // ignore: cast_nullable_to_non_nullable
+as int,starterOfferedAt: null == starterOfferedAt ? _self.starterOfferedAt : starterOfferedAt // ignore: cast_nullable_to_non_nullable
+as int,starterShownDate: null == starterShownDate ? _self.starterShownDate : starterShownDate // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
 mixin _$SaveData {
 
  int get schemaVersion;/// Monotonic write counter: of two storage slots, the higher valid one
@@ -1754,7 +2079,9 @@ mixin _$SaveData {
  Map<String, int> get currentLevel; int get coins; int get xp; List<String> get inventory; Map<String, String> get equipped; StreakState get streak;/// Daily Knot results by UTC date (`2026-10-10`).
  Map<String, DailyResult> get daily;/// Achievement id → local date unlocked.
  Map<String, String> get achievements; QuestState get quests; SaveSettings get settings; PlayStats get stats;/// Free-form flags (`adsRemoved`, `onboardingDone`, ...).
- Map<String, bool> get flags; String get updatedAt;
+ Map<String, bool> get flags;/// Ad frequency state.
+ AdState get ads;/// Store transactions already fulfilled (purchases are idempotent).
+ List<String> get purchases; String get updatedAt;
 /// Create a copy of SaveData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1768,20 +2095,20 @@ $SaveDataCopyWith<SaveData> get copyWith => _$SaveDataCopyWithImpl<SaveData>(thi
 @override
 bool operator ==(Object other) {
   final _this = this as SaveData;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SaveData&&(identical(other.schemaVersion, _this.schemaVersion) || other.schemaVersion == _this.schemaVersion)&&(identical(other.seq, _this.seq) || other.seq == _this.seq)&&const DeepCollectionEquality().equals(other.stars, _this.stars)&&const DeepCollectionEquality().equals(other.currentLevel, _this.currentLevel)&&(identical(other.coins, _this.coins) || other.coins == _this.coins)&&(identical(other.xp, _this.xp) || other.xp == _this.xp)&&const DeepCollectionEquality().equals(other.inventory, _this.inventory)&&const DeepCollectionEquality().equals(other.equipped, _this.equipped)&&(identical(other.streak, _this.streak) || other.streak == _this.streak)&&const DeepCollectionEquality().equals(other.daily, _this.daily)&&const DeepCollectionEquality().equals(other.achievements, _this.achievements)&&(identical(other.quests, _this.quests) || other.quests == _this.quests)&&(identical(other.settings, _this.settings) || other.settings == _this.settings)&&(identical(other.stats, _this.stats) || other.stats == _this.stats)&&const DeepCollectionEquality().equals(other.flags, _this.flags)&&(identical(other.updatedAt, _this.updatedAt) || other.updatedAt == _this.updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SaveData&&(identical(other.schemaVersion, _this.schemaVersion) || other.schemaVersion == _this.schemaVersion)&&(identical(other.seq, _this.seq) || other.seq == _this.seq)&&const DeepCollectionEquality().equals(other.stars, _this.stars)&&const DeepCollectionEquality().equals(other.currentLevel, _this.currentLevel)&&(identical(other.coins, _this.coins) || other.coins == _this.coins)&&(identical(other.xp, _this.xp) || other.xp == _this.xp)&&const DeepCollectionEquality().equals(other.inventory, _this.inventory)&&const DeepCollectionEquality().equals(other.equipped, _this.equipped)&&(identical(other.streak, _this.streak) || other.streak == _this.streak)&&const DeepCollectionEquality().equals(other.daily, _this.daily)&&const DeepCollectionEquality().equals(other.achievements, _this.achievements)&&(identical(other.quests, _this.quests) || other.quests == _this.quests)&&(identical(other.settings, _this.settings) || other.settings == _this.settings)&&(identical(other.stats, _this.stats) || other.stats == _this.stats)&&const DeepCollectionEquality().equals(other.flags, _this.flags)&&(identical(other.ads, _this.ads) || other.ads == _this.ads)&&const DeepCollectionEquality().equals(other.purchases, _this.purchases)&&(identical(other.updatedAt, _this.updatedAt) || other.updatedAt == _this.updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as SaveData;
-  return Object.hash(runtimeType,_this.schemaVersion,_this.seq,const DeepCollectionEquality().hash(_this.stars),const DeepCollectionEquality().hash(_this.currentLevel),_this.coins,_this.xp,const DeepCollectionEquality().hash(_this.inventory),const DeepCollectionEquality().hash(_this.equipped),_this.streak,const DeepCollectionEquality().hash(_this.daily),const DeepCollectionEquality().hash(_this.achievements),_this.quests,_this.settings,_this.stats,const DeepCollectionEquality().hash(_this.flags),_this.updatedAt);
+  return Object.hash(runtimeType,_this.schemaVersion,_this.seq,const DeepCollectionEquality().hash(_this.stars),const DeepCollectionEquality().hash(_this.currentLevel),_this.coins,_this.xp,const DeepCollectionEquality().hash(_this.inventory),const DeepCollectionEquality().hash(_this.equipped),_this.streak,const DeepCollectionEquality().hash(_this.daily),const DeepCollectionEquality().hash(_this.achievements),_this.quests,_this.settings,_this.stats,const DeepCollectionEquality().hash(_this.flags),_this.ads,const DeepCollectionEquality().hash(_this.purchases),_this.updatedAt);
 }
 
 @override
 String toString() {
   final _this = this as SaveData;
-  return 'SaveData(schemaVersion: ${_this.schemaVersion}, seq: ${_this.seq}, stars: ${_this.stars}, currentLevel: ${_this.currentLevel}, coins: ${_this.coins}, xp: ${_this.xp}, inventory: ${_this.inventory}, equipped: ${_this.equipped}, streak: ${_this.streak}, daily: ${_this.daily}, achievements: ${_this.achievements}, quests: ${_this.quests}, settings: ${_this.settings}, stats: ${_this.stats}, flags: ${_this.flags}, updatedAt: ${_this.updatedAt})';
+  return 'SaveData(schemaVersion: ${_this.schemaVersion}, seq: ${_this.seq}, stars: ${_this.stars}, currentLevel: ${_this.currentLevel}, coins: ${_this.coins}, xp: ${_this.xp}, inventory: ${_this.inventory}, equipped: ${_this.equipped}, streak: ${_this.streak}, daily: ${_this.daily}, achievements: ${_this.achievements}, quests: ${_this.quests}, settings: ${_this.settings}, stats: ${_this.stats}, flags: ${_this.flags}, ads: ${_this.ads}, purchases: ${_this.purchases}, updatedAt: ${_this.updatedAt})';
 }
 
 
@@ -1792,11 +2119,11 @@ abstract mixin class $SaveDataCopyWith<$Res>  {
   factory $SaveDataCopyWith(SaveData value, $Res Function(SaveData) _then) = _$SaveDataCopyWithImpl;
 @useResult
 $Res call({
- int schemaVersion, int seq, Map<String, int> stars, Map<String, int> currentLevel, int coins, int xp, List<String> inventory, Map<String, String> equipped, StreakState streak, Map<String, DailyResult> daily, Map<String, String> achievements, QuestState quests, SaveSettings settings, PlayStats stats, Map<String, bool> flags, String updatedAt
+ int schemaVersion, int seq, Map<String, int> stars, Map<String, int> currentLevel, int coins, int xp, List<String> inventory, Map<String, String> equipped, StreakState streak, Map<String, DailyResult> daily, Map<String, String> achievements, QuestState quests, SaveSettings settings, PlayStats stats, Map<String, bool> flags, AdState ads, List<String> purchases, String updatedAt
 });
 
 
-$StreakStateCopyWith<$Res> get streak;$QuestStateCopyWith<$Res> get quests;$SaveSettingsCopyWith<$Res> get settings;$PlayStatsCopyWith<$Res> get stats;
+$StreakStateCopyWith<$Res> get streak;$QuestStateCopyWith<$Res> get quests;$SaveSettingsCopyWith<$Res> get settings;$PlayStatsCopyWith<$Res> get stats;$AdStateCopyWith<$Res> get ads;
 
 }
 /// @nodoc
@@ -1809,7 +2136,7 @@ class _$SaveDataCopyWithImpl<$Res>
 
 /// Create a copy of SaveData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? schemaVersion = null,Object? seq = null,Object? stars = null,Object? currentLevel = null,Object? coins = null,Object? xp = null,Object? inventory = null,Object? equipped = null,Object? streak = null,Object? daily = null,Object? achievements = null,Object? quests = null,Object? settings = null,Object? stats = null,Object? flags = null,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? schemaVersion = null,Object? seq = null,Object? stars = null,Object? currentLevel = null,Object? coins = null,Object? xp = null,Object? inventory = null,Object? equipped = null,Object? streak = null,Object? daily = null,Object? achievements = null,Object? quests = null,Object? settings = null,Object? stats = null,Object? flags = null,Object? ads = null,Object? purchases = null,Object? updatedAt = null,}) {
   return _then(SaveData(
 schemaVersion: null == schemaVersion ? _self.schemaVersion : schemaVersion // ignore: cast_nullable_to_non_nullable
 as int,seq: null == seq ? _self.seq : seq // ignore: cast_nullable_to_non_nullable
@@ -1826,7 +2153,9 @@ as Map<String, String>,quests: null == quests ? _self.quests : quests // ignore:
 as QuestState,settings: null == settings ? _self.settings : settings // ignore: cast_nullable_to_non_nullable
 as SaveSettings,stats: null == stats ? _self.stats : stats // ignore: cast_nullable_to_non_nullable
 as PlayStats,flags: null == flags ? _self.flags : flags // ignore: cast_nullable_to_non_nullable
-as Map<String, bool>,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as Map<String, bool>,ads: null == ads ? _self.ads : ads // ignore: cast_nullable_to_non_nullable
+as AdState,purchases: null == purchases ? _self.purchases : purchases // ignore: cast_nullable_to_non_nullable
+as List<String>,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -1865,6 +2194,15 @@ $PlayStatsCopyWith<$Res> get stats {
   
   return $PlayStatsCopyWith<$Res>(_self.stats, (value) {
     return _then(_self.copyWith(stats: value));
+  });
+}/// Create a copy of SaveData
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AdStateCopyWith<$Res> get ads {
+  
+  return $AdStateCopyWith<$Res>(_self.ads, (value) {
+    return _then(_self.copyWith(ads: value));
   });
 }
 }
@@ -1948,10 +2286,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int schemaVersion,  int seq,  Map<String, int> stars,  Map<String, int> currentLevel,  int coins,  int xp,  List<String> inventory,  Map<String, String> equipped,  StreakState streak,  Map<String, DailyResult> daily,  Map<String, String> achievements,  QuestState quests,  SaveSettings settings,  PlayStats stats,  Map<String, bool> flags,  String updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int schemaVersion,  int seq,  Map<String, int> stars,  Map<String, int> currentLevel,  int coins,  int xp,  List<String> inventory,  Map<String, String> equipped,  StreakState streak,  Map<String, DailyResult> daily,  Map<String, String> achievements,  QuestState quests,  SaveSettings settings,  PlayStats stats,  Map<String, bool> flags,  AdState ads,  List<String> purchases,  String updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SaveData() when $default != null:
-return $default(_that.schemaVersion,_that.seq,_that.stars,_that.currentLevel,_that.coins,_that.xp,_that.inventory,_that.equipped,_that.streak,_that.daily,_that.achievements,_that.quests,_that.settings,_that.stats,_that.flags,_that.updatedAt);case _:
+return $default(_that.schemaVersion,_that.seq,_that.stars,_that.currentLevel,_that.coins,_that.xp,_that.inventory,_that.equipped,_that.streak,_that.daily,_that.achievements,_that.quests,_that.settings,_that.stats,_that.flags,_that.ads,_that.purchases,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -1969,10 +2307,10 @@ return $default(_that.schemaVersion,_that.seq,_that.stars,_that.currentLevel,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int schemaVersion,  int seq,  Map<String, int> stars,  Map<String, int> currentLevel,  int coins,  int xp,  List<String> inventory,  Map<String, String> equipped,  StreakState streak,  Map<String, DailyResult> daily,  Map<String, String> achievements,  QuestState quests,  SaveSettings settings,  PlayStats stats,  Map<String, bool> flags,  String updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int schemaVersion,  int seq,  Map<String, int> stars,  Map<String, int> currentLevel,  int coins,  int xp,  List<String> inventory,  Map<String, String> equipped,  StreakState streak,  Map<String, DailyResult> daily,  Map<String, String> achievements,  QuestState quests,  SaveSettings settings,  PlayStats stats,  Map<String, bool> flags,  AdState ads,  List<String> purchases,  String updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _SaveData():
-return $default(_that.schemaVersion,_that.seq,_that.stars,_that.currentLevel,_that.coins,_that.xp,_that.inventory,_that.equipped,_that.streak,_that.daily,_that.achievements,_that.quests,_that.settings,_that.stats,_that.flags,_that.updatedAt);case _:
+return $default(_that.schemaVersion,_that.seq,_that.stars,_that.currentLevel,_that.coins,_that.xp,_that.inventory,_that.equipped,_that.streak,_that.daily,_that.achievements,_that.quests,_that.settings,_that.stats,_that.flags,_that.ads,_that.purchases,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1989,10 +2327,10 @@ return $default(_that.schemaVersion,_that.seq,_that.stars,_that.currentLevel,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int schemaVersion,  int seq,  Map<String, int> stars,  Map<String, int> currentLevel,  int coins,  int xp,  List<String> inventory,  Map<String, String> equipped,  StreakState streak,  Map<String, DailyResult> daily,  Map<String, String> achievements,  QuestState quests,  SaveSettings settings,  PlayStats stats,  Map<String, bool> flags,  String updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int schemaVersion,  int seq,  Map<String, int> stars,  Map<String, int> currentLevel,  int coins,  int xp,  List<String> inventory,  Map<String, String> equipped,  StreakState streak,  Map<String, DailyResult> daily,  Map<String, String> achievements,  QuestState quests,  SaveSettings settings,  PlayStats stats,  Map<String, bool> flags,  AdState ads,  List<String> purchases,  String updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _SaveData() when $default != null:
-return $default(_that.schemaVersion,_that.seq,_that.stars,_that.currentLevel,_that.coins,_that.xp,_that.inventory,_that.equipped,_that.streak,_that.daily,_that.achievements,_that.quests,_that.settings,_that.stats,_that.flags,_that.updatedAt);case _:
+return $default(_that.schemaVersion,_that.seq,_that.stars,_that.currentLevel,_that.coins,_that.xp,_that.inventory,_that.equipped,_that.streak,_that.daily,_that.achievements,_that.quests,_that.settings,_that.stats,_that.flags,_that.ads,_that.purchases,_that.updatedAt);case _:
   return null;
 
 }
@@ -2004,7 +2342,7 @@ return $default(_that.schemaVersion,_that.seq,_that.stars,_that.currentLevel,_th
 @JsonSerializable()
 
 class _SaveData extends SaveData {
-  const _SaveData({this.schemaVersion = currentSaveSchema, this.seq = 0,  Map<String, int> stars = const <String, int>{},  Map<String, int> currentLevel = const <String, int>{'1' : 1}, this.coins = 0, this.xp = 0,  List<String> inventory = const <String>[],  Map<String, String> equipped = const <String, String>{}, this.streak = const StreakState(),  Map<String, DailyResult> daily = const <String, DailyResult>{},  Map<String, String> achievements = const <String, String>{}, this.quests = const QuestState(), this.settings = const SaveSettings(), this.stats = const PlayStats(),  Map<String, bool> flags = const <String, bool>{}, this.updatedAt = ''}): _stars = stars,_currentLevel = currentLevel,_inventory = inventory,_equipped = equipped,_daily = daily,_achievements = achievements,_flags = flags,super._();
+  const _SaveData({this.schemaVersion = currentSaveSchema, this.seq = 0,  Map<String, int> stars = const <String, int>{},  Map<String, int> currentLevel = const <String, int>{'1' : 1}, this.coins = 0, this.xp = 0,  List<String> inventory = const <String>[],  Map<String, String> equipped = const <String, String>{}, this.streak = const StreakState(),  Map<String, DailyResult> daily = const <String, DailyResult>{},  Map<String, String> achievements = const <String, String>{}, this.quests = const QuestState(), this.settings = const SaveSettings(), this.stats = const PlayStats(),  Map<String, bool> flags = const <String, bool>{}, this.ads = const AdState(),  List<String> purchases = const <String>[], this.updatedAt = ''}): _stars = stars,_currentLevel = currentLevel,_inventory = inventory,_equipped = equipped,_daily = daily,_achievements = achievements,_flags = flags,_purchases = purchases,super._();
   factory _SaveData.fromJson(Map<String, dynamic> json) => _$SaveDataFromJson(json);
 
 @override@JsonKey() final  int schemaVersion;
@@ -2076,6 +2414,17 @@ class _SaveData extends SaveData {
   return EqualUnmodifiableMapView(_flags);
 }
 
+/// Ad frequency state.
+@override@JsonKey() final  AdState ads;
+/// Store transactions already fulfilled (purchases are idempotent).
+ final  List<String> _purchases;
+/// Store transactions already fulfilled (purchases are idempotent).
+@override@JsonKey() List<String> get purchases {
+  if (_purchases is EqualUnmodifiableListView) return _purchases;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_purchases);
+}
+
 @override@JsonKey() final  String updatedAt;
 
 /// Create a copy of SaveData
@@ -2091,18 +2440,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SaveData&&(identical(other.schemaVersion, schemaVersion) || other.schemaVersion == schemaVersion)&&(identical(other.seq, seq) || other.seq == seq)&&const DeepCollectionEquality().equals(other.stars, _stars)&&const DeepCollectionEquality().equals(other.currentLevel, _currentLevel)&&(identical(other.coins, coins) || other.coins == coins)&&(identical(other.xp, xp) || other.xp == xp)&&const DeepCollectionEquality().equals(other.inventory, _inventory)&&const DeepCollectionEquality().equals(other.equipped, _equipped)&&(identical(other.streak, streak) || other.streak == streak)&&const DeepCollectionEquality().equals(other.daily, _daily)&&const DeepCollectionEquality().equals(other.achievements, _achievements)&&(identical(other.quests, quests) || other.quests == quests)&&(identical(other.settings, settings) || other.settings == settings)&&(identical(other.stats, stats) || other.stats == stats)&&const DeepCollectionEquality().equals(other.flags, _flags)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SaveData&&(identical(other.schemaVersion, schemaVersion) || other.schemaVersion == schemaVersion)&&(identical(other.seq, seq) || other.seq == seq)&&const DeepCollectionEquality().equals(other.stars, _stars)&&const DeepCollectionEquality().equals(other.currentLevel, _currentLevel)&&(identical(other.coins, coins) || other.coins == coins)&&(identical(other.xp, xp) || other.xp == xp)&&const DeepCollectionEquality().equals(other.inventory, _inventory)&&const DeepCollectionEquality().equals(other.equipped, _equipped)&&(identical(other.streak, streak) || other.streak == streak)&&const DeepCollectionEquality().equals(other.daily, _daily)&&const DeepCollectionEquality().equals(other.achievements, _achievements)&&(identical(other.quests, quests) || other.quests == quests)&&(identical(other.settings, settings) || other.settings == settings)&&(identical(other.stats, stats) || other.stats == stats)&&const DeepCollectionEquality().equals(other.flags, _flags)&&(identical(other.ads, ads) || other.ads == ads)&&const DeepCollectionEquality().equals(other.purchases, _purchases)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,schemaVersion,seq,const DeepCollectionEquality().hash(_stars),const DeepCollectionEquality().hash(_currentLevel),coins,xp,const DeepCollectionEquality().hash(_inventory),const DeepCollectionEquality().hash(_equipped),streak,const DeepCollectionEquality().hash(_daily),const DeepCollectionEquality().hash(_achievements),quests,settings,stats,const DeepCollectionEquality().hash(_flags),updatedAt);
+    return Object.hash(runtimeType,schemaVersion,seq,const DeepCollectionEquality().hash(_stars),const DeepCollectionEquality().hash(_currentLevel),coins,xp,const DeepCollectionEquality().hash(_inventory),const DeepCollectionEquality().hash(_equipped),streak,const DeepCollectionEquality().hash(_daily),const DeepCollectionEquality().hash(_achievements),quests,settings,stats,const DeepCollectionEquality().hash(_flags),ads,const DeepCollectionEquality().hash(_purchases),updatedAt);
 }
 
 @override
 String toString() {
-    return 'SaveData(schemaVersion: $schemaVersion, seq: $seq, stars: $stars, currentLevel: $currentLevel, coins: $coins, xp: $xp, inventory: $inventory, equipped: $equipped, streak: $streak, daily: $daily, achievements: $achievements, quests: $quests, settings: $settings, stats: $stats, flags: $flags, updatedAt: $updatedAt)';
+    return 'SaveData(schemaVersion: $schemaVersion, seq: $seq, stars: $stars, currentLevel: $currentLevel, coins: $coins, xp: $xp, inventory: $inventory, equipped: $equipped, streak: $streak, daily: $daily, achievements: $achievements, quests: $quests, settings: $settings, stats: $stats, flags: $flags, ads: $ads, purchases: $purchases, updatedAt: $updatedAt)';
 }
 
 
@@ -2113,11 +2462,11 @@ abstract mixin class _$SaveDataCopyWith<$Res> implements $SaveDataCopyWith<$Res>
   factory _$SaveDataCopyWith(_SaveData value, $Res Function(_SaveData) _then) = __$SaveDataCopyWithImpl;
 @override @useResult
 $Res call({
- int schemaVersion, int seq, Map<String, int> stars, Map<String, int> currentLevel, int coins, int xp, List<String> inventory, Map<String, String> equipped, StreakState streak, Map<String, DailyResult> daily, Map<String, String> achievements, QuestState quests, SaveSettings settings, PlayStats stats, Map<String, bool> flags, String updatedAt
+ int schemaVersion, int seq, Map<String, int> stars, Map<String, int> currentLevel, int coins, int xp, List<String> inventory, Map<String, String> equipped, StreakState streak, Map<String, DailyResult> daily, Map<String, String> achievements, QuestState quests, SaveSettings settings, PlayStats stats, Map<String, bool> flags, AdState ads, List<String> purchases, String updatedAt
 });
 
 
-@override $StreakStateCopyWith<$Res> get streak;@override $QuestStateCopyWith<$Res> get quests;@override $SaveSettingsCopyWith<$Res> get settings;@override $PlayStatsCopyWith<$Res> get stats;
+@override $StreakStateCopyWith<$Res> get streak;@override $QuestStateCopyWith<$Res> get quests;@override $SaveSettingsCopyWith<$Res> get settings;@override $PlayStatsCopyWith<$Res> get stats;@override $AdStateCopyWith<$Res> get ads;
 
 }
 /// @nodoc
@@ -2130,7 +2479,7 @@ class __$SaveDataCopyWithImpl<$Res>
 
 /// Create a copy of SaveData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? schemaVersion = null,Object? seq = null,Object? stars = null,Object? currentLevel = null,Object? coins = null,Object? xp = null,Object? inventory = null,Object? equipped = null,Object? streak = null,Object? daily = null,Object? achievements = null,Object? quests = null,Object? settings = null,Object? stats = null,Object? flags = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? schemaVersion = null,Object? seq = null,Object? stars = null,Object? currentLevel = null,Object? coins = null,Object? xp = null,Object? inventory = null,Object? equipped = null,Object? streak = null,Object? daily = null,Object? achievements = null,Object? quests = null,Object? settings = null,Object? stats = null,Object? flags = null,Object? ads = null,Object? purchases = null,Object? updatedAt = null,}) {
   return _then(_SaveData(
 schemaVersion: null == schemaVersion ? _self.schemaVersion : schemaVersion // ignore: cast_nullable_to_non_nullable
 as int,seq: null == seq ? _self.seq : seq // ignore: cast_nullable_to_non_nullable
@@ -2147,7 +2496,9 @@ as Map<String, String>,quests: null == quests ? _self.quests : quests // ignore:
 as QuestState,settings: null == settings ? _self.settings : settings // ignore: cast_nullable_to_non_nullable
 as SaveSettings,stats: null == stats ? _self.stats : stats // ignore: cast_nullable_to_non_nullable
 as PlayStats,flags: null == flags ? _self._flags : flags // ignore: cast_nullable_to_non_nullable
-as Map<String, bool>,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as Map<String, bool>,ads: null == ads ? _self.ads : ads // ignore: cast_nullable_to_non_nullable
+as AdState,purchases: null == purchases ? _self._purchases : purchases // ignore: cast_nullable_to_non_nullable
+as List<String>,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -2187,6 +2538,15 @@ $PlayStatsCopyWith<$Res> get stats {
   
   return $PlayStatsCopyWith<$Res>(_self.stats, (value) {
     return _then(_self.copyWith(stats: value));
+  });
+}/// Create a copy of SaveData
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AdStateCopyWith<$Res> get ads {
+  
+  return $AdStateCopyWith<$Res>(_self.ads, (value) {
+    return _then(_self.copyWith(ads: value));
   });
 }
 }

@@ -64,7 +64,7 @@ final class GameSessionProvider
   }
 }
 
-String _$gameSessionHash() => r'3721ac00851f4a2a52cca66cf62aa55454cacd1b';
+String _$gameSessionHash() => r'f9bf9ed922c4be454b0eb19bf32c9ba1ad6b7582';
 
 /// One attempt at one level: owns the engine, the Flow streak and the hint
 /// cache, pays and charges the wallet, and publishes [events] for Flame.

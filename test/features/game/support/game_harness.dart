@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:arrowchime/core/ads/ads_controller.dart';
+import 'package:arrowchime/core/ads/ads_service.dart';
 import 'package:arrowchime/core/audio/audio_service.dart';
 import 'package:arrowchime/core/haptics/haptics_service.dart';
 import 'package:arrowchime/core/level/models/level.dart';
@@ -26,12 +28,16 @@ Level shippedLevel(LevelRef id) {
 }
 
 /// Overrides that keep tests silent and let them see what was played.
-List<Override> feedbackOverrides(FakeAudioBackend audio, FakeHaptics haptics) =>
-    [
-      saveDebounceProvider.overrideWithValue(null),
-      audioBackendProvider.overrideWithValue(audio),
-      hapticsProvider.overrideWithValue(haptics),
-    ];
+List<Override> feedbackOverrides(
+  FakeAudioBackend audio,
+  FakeHaptics haptics, [
+  FakeAdsService? ads,
+]) => [
+  adsServiceProvider.overrideWithValue(ads ?? FakeAdsService()),
+  saveDebounceProvider.overrideWithValue(null),
+  audioBackendProvider.overrideWithValue(audio),
+  hapticsProvider.overrideWithValue(haptics),
+];
 
 class GameHarness {
   new(this.container, this.id, {this.audio, this.haptics});

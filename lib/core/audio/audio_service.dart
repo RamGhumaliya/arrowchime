@@ -50,14 +50,20 @@ class AudioService {
   }
 
   /// Loads the effects and the notes of [chapter], then starts its music.
-  Future<void> enterChapter(int chapter) async {
+  Future<void> enterChapter(int chapter, {String? instrument}) async {
     await init();
     if (!_ready) return;
     final sound = ChapterSound.of(chapter);
-    await _loadAll([for (final sfx in Sfx.values) sfx.asset, ...sound.assets]);
+    final voices = sound.voiceAssets(instrument: instrument);
+    await _loadAll([
+      for (final sfx in Sfx.values) sfx.asset,
+      ...sound.assets,
+      ...voices,
+    ]);
     _chapterAssets
       ..clear()
-      ..addAll(sound.assets);
+      ..addAll(sound.assets)
+      ..addAll(voices);
     await startMusic(chapter);
   }
 
@@ -135,7 +141,11 @@ class AudioService {
     double volume = 1,
     double speed = 1,
     Duration delay = Duration.zero,
-  }) => _play(sound.assetOf(index), AudioBus.notes, volume, speed, delay);
+    String? instrument,
+  }) {
+    final voice = sound.voiceOf(index, instrument: instrument);
+    _play(voice.asset, AudioBus.notes, volume, speed * voice.speed, delay);
+  }
 
   void sfx(
     Sfx sfx, {

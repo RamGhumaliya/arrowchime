@@ -75,6 +75,12 @@ abstract final class OnboardingPlan {
     ),
   };
 
+  /// Whether a level is part of a tutorial (no interstitials there,
+  /// `docs/08` §2): Chapter 1's first ten and the mechanic tutorials.
+  static bool isTutorial(int chapter, int index) =>
+      (chapter == 1 && index <= lastLevel) ||
+      MechanicTutorials.at(chapter, index) != null;
+
   /// The step for a chapter level, or `null` outside the tutorials. Only levels
   /// that have never been cleared get a hint: Chapter 1's first ten, and the
   /// level where each mechanic is introduced.

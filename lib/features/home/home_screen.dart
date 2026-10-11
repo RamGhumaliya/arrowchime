@@ -3,12 +3,16 @@ import 'dart:async';
 import 'package:arrowchime/app/router.dart';
 import 'package:arrowchime/app/theme/chapter_theme.dart';
 import 'package:arrowchime/app/theme/tokens.dart';
+import 'package:arrowchime/core/ads/ads_controller.dart';
+import 'package:arrowchime/core/ads/tracking_service.dart';
 import 'package:arrowchime/core/audio/audio_service.dart';
+import 'package:arrowchime/core/iap/starter_offer.dart';
 import 'package:arrowchime/core/meta/date_key.dart';
 import 'package:arrowchime/core/meta/meta_actions.dart';
 import 'package:arrowchime/core/meta/player_level.dart';
 import 'package:arrowchime/core/meta/progression.dart';
 import 'package:arrowchime/core/meta/streak.dart';
+import 'package:arrowchime/core/remote_config/app_config.dart';
 import 'package:arrowchime/core/save/save_controller.dart';
 import 'package:arrowchime/core/ui/components/tb_button.dart';
 import 'package:arrowchime/core/ui/components/tb_icon_button.dart';
@@ -24,6 +28,8 @@ import 'package:arrowchime/features/home/home_backdrop.dart';
 import 'package:arrowchime/features/home/streak_badge.dart';
 import 'package:arrowchime/features/quests/quests_sheet.dart';
 import 'package:arrowchime/features/shared/chapter_names.dart';
+import 'package:arrowchime/features/shop/att_sheet.dart';
+import 'package:arrowchime/features/shop/starter_bundle_sheet.dart';
 import 'package:arrowchime/l10n/gen/app_localizations.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,8 +61,51 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ref.read(saveControllerProvider),
         );
         unawaited(ref.read(audioServiceProvider).enterChapter(chapter));
+        unawaited(_prompts());
       }),
     );
+  }
+
+  /// The iOS tracking pre-prompt after level 5, or the Starter Bundle after
+  /// level 15: at most one sheet per visit, ATT first (`docs/08` §2-3).
+  Future<void> _prompts() async {
+    if (!mounted) return;
+    final save = ref.read(saveControllerProvider.notifier);
+    final config = ref.read(appConfigProvider);
+    final policy = ref.read(adPolicyProvider);
+    final tracking = ref.read(trackingServiceProvider);
+    final now = ref.read(clockProvider)();
+    final nowMs = now.millisecondsSinceEpoch;
+    final data = ref.read(saveControllerProvider);
+    if (tracking.supported &&
+        policy.shouldAskAtt(
+          data.ads,
+          levelsCleared: data.stats.levelsCleared,
+          nowMs: nowMs,
+        )) {
+      final choice = await showAttSheet(context);
+      if (choice == AttChoice.continueToSystem) {
+        save.update((d) => d.copyWith(ads: policy.attAsked(d.ads)));
+        await tracking.requestAuthorization();
+      } else {
+        save.update(
+          (d) => d.copyWith(ads: policy.attPostponed(d.ads, nowMs: nowMs)),
+        );
+      }
+      return;
+    }
+    final offer = StarterOffer.of(
+      data,
+      config,
+      nowMs: nowMs,
+      today: DateKey.of(now),
+    );
+    if (offer.open && offer.promptToday && mounted) {
+      save.update(
+        (d) => StarterOffer.shown(d, nowMs: nowMs, today: DateKey.of(now)),
+      );
+      await showStarterBundleSheet(context);
+    }
   }
 
   @override

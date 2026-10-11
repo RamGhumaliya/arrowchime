@@ -71,9 +71,6 @@ abstract final class Progression {
   static const int dailyBase = 50;
   static const int dailyPerTier = 25;
 
-  /// Replaying a missed Daily (`docs/08`).
-  static const int missedDailyPrice = 100;
-
   // --- reading progress -------------------------------------------------------
 
   static String levelId(int chapter, int index) =>
@@ -229,6 +226,8 @@ abstract final class Progression {
     DailyResult result, {
     required String today,
     required int localHour,
+    int dailyBase = Progression.dailyBase,
+    int dailyPerTier = Progression.dailyPerTier,
   }) {
     final firstTime = !before.daily.containsKey(dateKey);
     final tier = Streak.tierOf(Streak.play(before.streak, today).count);

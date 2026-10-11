@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:arrowchime/app/router.dart';
 import 'package:arrowchime/app/theme/chapter_theme.dart';
 import 'package:arrowchime/app/theme/tokens.dart';
-import 'package:arrowchime/core/ads/rewarded_ads.dart';
+import 'package:arrowchime/core/ads/ads_controller.dart';
 import 'package:arrowchime/core/audio/audio_service.dart';
 import 'package:arrowchime/core/audio/sfx.dart';
-import 'package:arrowchime/core/economy/pricing.dart';
+import 'package:arrowchime/core/cosmetics/cosmetics.dart';
 import 'package:arrowchime/core/economy/wallet.dart';
 import 'package:arrowchime/core/haptics/haptics_service.dart';
 import 'package:arrowchime/core/level/generator/chapter_plan.dart';
@@ -14,6 +14,7 @@ import 'package:arrowchime/core/level/generator/mechanic_tutorials.dart';
 import 'package:arrowchime/core/level/models/arrow.dart';
 import 'package:arrowchime/core/meta/player_level.dart';
 import 'package:arrowchime/core/meta/progression.dart';
+import 'package:arrowchime/core/remote_config/app_config.dart';
 import 'package:arrowchime/core/save/save_controller.dart';
 import 'package:arrowchime/core/ui/components/tb_button.dart';
 import 'package:arrowchime/core/ui/components/tb_chapter_card.dart';
@@ -22,12 +23,15 @@ import 'package:arrowchime/core/ui/components/tb_sheet.dart';
 import 'package:arrowchime/core/ui/components/tb_text.dart';
 import 'package:arrowchime/core/ui/components/tb_toast.dart';
 import 'package:arrowchime/core/ui/icons/tb_icon_id.dart';
+import 'package:arrowchime/core/ui/painters/arrow_skin.dart';
 import 'package:arrowchime/core/ui/support/tb_layout.dart';
 import 'package:arrowchime/core/ui/support/tb_motion_scope.dart';
 import 'package:arrowchime/features/game/dialogs/fail_sheet.dart';
 import 'package:arrowchime/features/game/dialogs/win_sheet.dart';
 import 'package:arrowchime/features/game/feedback/game_feedback.dart';
 import 'package:arrowchime/features/game/flame/arrow_game.dart';
+import 'package:arrowchime/features/game/flame/board_themes.dart';
+import 'package:arrowchime/features/game/flame/trail_style.dart';
 import 'package:arrowchime/features/game/hud/game_shelf.dart';
 import 'package:arrowchime/features/game/hud/game_top_bar.dart';
 import 'package:arrowchime/features/game/input/board_gestures.dart';
@@ -163,9 +167,13 @@ class _GameViewState extends ConsumerState<_GameView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    final save = ref.read(saveControllerProvider);
+    String equipped(CosmeticKind k) => Cosmetics.equipped(save, k);
     _game ??= ArrowGame(
       engine: _session.engine,
-      theme: widget.theme,
+      theme: BoardThemes.apply(widget.theme, equipped(CosmeticKind.board)),
+      skin: ArrowSkin.fromId(equipped(CosmeticKind.arrow)),
+      trail: TrailStyle.fromId(equipped(CosmeticKind.trail)),
       reduceMotion: TBMotionScope.reduced(context),
       pixelRatio: MediaQuery.devicePixelRatioOf(context),
       colorBlind: ref.read(gameSettingsControllerProvider).colorBlind,
@@ -186,6 +194,7 @@ class _GameViewState extends ConsumerState<_GameView> {
         levelIndex: widget.levelRef.index,
         arrowLength: (id) => lengths[id] ?? 1,
         isBoss: ChapterPlan.isBoss(widget.levelRef.index),
+        instrument: equipped(CosmeticKind.instrument),
         onLastThree: _game!.nudgeZoom,
       );
       unawaited(_feedback!.start());
@@ -253,13 +262,51 @@ class _GameViewState extends ConsumerState<_GameView> {
     final l10n = AppLocalizations.of(context);
     switch (_session.hint()) {
       case PurchaseResult.noCoins:
-        _toast(l10n.gameNoCoins, icon: TBIconId.coin);
+        if (ref.read(adsControllerProvider).rewardedAvailable) {
+          unawaited(_offerAdHint());
+        } else {
+          _toast(l10n.gameNoCoins, icon: TBIconId.coin);
+        }
       case PurchaseResult.unavailable:
         _toast(l10n.gameNoHint, icon: TBIconId.hint);
       case PurchaseResult.done:
       case PurchaseResult.free:
         break;
     }
+  }
+
+  /// Not enough coins for a hint: offer a free one for a rewarded ad.
+  Future<void> _offerAdHint() {
+    final l10n = AppLocalizations.of(context);
+    return showTBSheet<void>(
+      context,
+      sheet: TBSheet(
+        title: l10n.hintNoCoinsTitle,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TBButton.primary(
+              label: l10n.hintWatchAd,
+              expand: true,
+              onPressed: () async {
+                final earned = await ref
+                    .read(adsControllerProvider)
+                    .showRewarded();
+                if (!mounted) return;
+                Navigator.of(context).pop();
+                if (earned) _session.hint(free: true);
+              },
+            ),
+            const SizedBox(height: TBSpacing.s8),
+            TBButton.tertiary(
+              label: l10n.gameBack,
+              expand: true,
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   // --- results --------------------------------------------------------------
@@ -286,33 +333,51 @@ class _GameViewState extends ConsumerState<_GameView> {
     final reward = state.reward;
     if (reward == null) return;
     final id = widget.levelRef;
+    final ads = ref.read(adsControllerProvider)..onWin();
+    final doubled = ValueNotifier<bool>(false);
     _feedback?.starsAwarded(state.stars);
     unawaited(
       showTBSheet<void>(
         context,
         barrierDismissible: false,
-        sheet: WinSheet(
-          levelNumber: id.index,
-          stars: state.stars,
-          reward: reward,
-          animate: !TBMotionScope.reduced(context),
-          onCoinTick: _feedback?.coinTick,
-          nextLabel: id.isDaily ? l10n.winDone : null,
-          bonusLines: _bonusLines(l10n, state),
-          onNext: () {
-            Navigator.of(context).pop();
-            context.go(
-              id.isDaily
-                  ? AppRoutes.daily
-                  : (id.index < 60
-                        ? AppRoutes.levelPath(id.chapterSlug, id.index + 1)
-                        : AppRoutes.chapterMap),
-            );
-          },
-          onReplay: () {
-            Navigator.of(context).pop();
-            _session.retry();
-          },
+        sheet: ValueListenableBuilder<bool>(
+          valueListenable: doubled,
+          builder: (context, isDoubled, _) => WinSheet(
+            levelNumber: id.index,
+            stars: state.stars,
+            reward: reward,
+            animate: !TBMotionScope.reduced(context),
+            onCoinTick: _feedback?.coinTick,
+            nextLabel: id.isDaily ? l10n.winDone : null,
+            bonusLines: _bonusLines(l10n, state),
+            onDoubleCoins: !isDoubled && ads.canOfferDoubleCoins(reward.coins)
+                ? () async {
+                    if (await ads.doubleCoins(reward.coins)) {
+                      doubled.value = true;
+                    }
+                  }
+                : null,
+            onNext: () async {
+              await ads.maybeInterstitialAfterWin(
+                levelNumber: id.globalIndex,
+                isDaily: id.isDaily,
+                isTutorial: OnboardingPlan.isTutorial(id.chapter, id.index),
+              );
+              if (!context.mounted) return;
+              Navigator.of(context).pop();
+              context.go(
+                id.isDaily
+                    ? AppRoutes.daily
+                    : (id.index < 60
+                          ? AppRoutes.levelPath(id.chapterSlug, id.index + 1)
+                          : AppRoutes.chapterMap),
+              );
+            },
+            onReplay: () {
+              Navigator.of(context).pop();
+              _session.retry();
+            },
+          ),
         ),
       ),
     );
@@ -330,18 +395,27 @@ class _GameViewState extends ConsumerState<_GameView> {
             level: session.engine.level,
             theme: widget.theme,
             remaining: session.engine.remainingIds.toSet(),
-            heartPrice: Pricing.heart,
-            canAffordHeart: ref.watch(walletProvider) >= Pricing.heart,
+            heartPrice: ref.read(appConfigProvider).heartPrice,
+            canAffordHeart:
+                ref.watch(walletProvider) >=
+                ref.read(appConfigProvider).heartPrice,
             onRetry: () {
               Navigator.of(context).pop();
               session.retry();
             },
-            onHeartAd: () async {
-              final earned = await ref.read(rewardedAdsProvider).show();
-              if (!earned || !context.mounted) return;
-              Navigator.of(context).pop();
-              session.grantHeart();
-            },
+            onHeartAd:
+                ref
+                    .read(adsControllerProvider)
+                    .canOfferHeartAd(session.heartAdsUsed)
+                ? () async {
+                    final earned = await ref
+                        .read(adsControllerProvider)
+                        .showRewarded();
+                    if (!earned || !context.mounted) return;
+                    Navigator.of(context).pop();
+                    session.grantHeartViaAd();
+                  }
+                : null,
             onHeartCoins: () {
               if (session.buyHeart() == PurchaseResult.done) {
                 Navigator.of(context).pop();
@@ -433,7 +507,7 @@ class _GameViewState extends ConsumerState<_GameView> {
         canUndo: state.canUndo && state.isPlaying,
         undoBadge: state.freeUndosLeft > 0
             ? '${state.freeUndosLeft}'
-            : '${Pricing.undo}',
+            : '${ref.watch(appConfigProvider).undoPrice}',
         hintBadge: _hintBadge(state),
         gridOn: settings.gridOn,
         canFit: !atFit,
@@ -484,10 +558,11 @@ class _GameViewState extends ConsumerState<_GameView> {
   }
 
   String? _hintBadge(SessionState state) {
-    if (widget.levelRef.globalIndex < Pricing.hintsFreeBelowLevel) return null;
+    final cfg = ref.watch(appConfigProvider);
+    if (widget.levelRef.globalIndex < cfg.hintsFreeBelowLevel) return null;
     return state.freeHintsLeft > 0
         ? '${state.freeHintsLeft}'
-        : '${Pricing.hint}';
+        : '${cfg.hintPrice}';
   }
 }
 

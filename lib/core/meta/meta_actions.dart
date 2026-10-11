@@ -2,6 +2,7 @@ import 'package:arrowchime/core/meta/date_key.dart';
 import 'package:arrowchime/core/meta/progression.dart';
 import 'package:arrowchime/core/meta/quests.dart';
 import 'package:arrowchime/core/meta/streak.dart';
+import 'package:arrowchime/core/remote_config/app_config.dart';
 import 'package:arrowchime/core/save/save_controller.dart';
 import 'package:arrowchime/core/save/save_data.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -55,29 +56,24 @@ class MetaActions {
     return r.$2;
   }
 
-  /// Buys a streak freeze for [Streak.freezePrice] coins; `false` if the stock
+  /// Buys a streak freeze for the Remote Config freeze price coins; `false` if the stock
   /// is full or the coins are short.
   bool buyFreeze() {
     final d = _data;
+    final price = _ref.read(appConfigProvider).streakFreezePrice;
     final streak = Streak.addFreeze(d.streak);
-    if (streak == null || d.coins < Streak.freezePrice) return false;
-    _save.update(
-      (x) => x.copyWith(streak: streak, coins: x.coins - Streak.freezePrice),
-    );
+    if (streak == null || d.coins < price) return false;
+    _save.update((x) => x.copyWith(streak: streak, coins: x.coins - price));
     return true;
   }
 
-  /// Pays [Progression.missedDailyPrice] to replay a missed Daily; `false` if
+  /// Pays the Remote Config missed-Daily price to replay a missed Daily; `false` if
   /// the coins are short or the day was already played.
   bool payForMissedDaily(String dateKey) {
     final d = _data;
-    if (d.daily.containsKey(dateKey) ||
-        d.coins < Progression.missedDailyPrice) {
-      return false;
-    }
-    _save.update(
-      (x) => x.copyWith(coins: x.coins - Progression.missedDailyPrice),
-    );
+    final price = _ref.read(appConfigProvider).missedDailyPrice;
+    if (d.daily.containsKey(dateKey) || d.coins < price) return false;
+    _save.update((x) => x.copyWith(coins: x.coins - price));
     return true;
   }
 }

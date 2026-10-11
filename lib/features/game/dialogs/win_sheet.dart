@@ -22,6 +22,7 @@ class WinSheet extends StatelessWidget {
     this.animate = true,
     this.onCoinTick,
     this.nextLabel,
+    this.onDoubleCoins,
     this.bonusLines = const [],
     super.key,
   });
@@ -38,6 +39,10 @@ class WinSheet extends StatelessWidget {
 
   /// Label of the primary button (default "Next level"; Daily: "Done").
   final String? nextLabel;
+
+  /// "x2 coins" rewarded ad; `null` hides the button (no coins, cap used or
+  /// no ad ready).
+  final VoidCallback? onDoubleCoins;
 
   /// Extra lines under the rewards: a level-up, achievements unlocked.
   final List<String> bonusLines;
@@ -70,6 +75,13 @@ class WinSheet extends StatelessWidget {
             animate: animate,
             onTick: onCoinTick,
           ),
+          if (onDoubleCoins != null) ...[
+            const SizedBox(height: TBSpacing.s8),
+            TBButton.secondary(
+              label: l10n.winDoubleCoins,
+              onPressed: onDoubleCoins,
+            ),
+          ],
           const SizedBox(height: TBSpacing.s8),
           _RewardRow(
             icon: TBIconId.trophy,

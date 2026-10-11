@@ -124,6 +124,38 @@ Map<String, dynamic> _$SaveSettingsToJson(_SaveSettings instance) =>
       'colorBlind': instance.colorBlind,
     };
 
+_AdState _$AdStateFromJson(Map<String, dynamic> json) => _AdState(
+  lastAdAt: (json['lastAdAt'] as num?)?.toInt() ?? 0,
+  lastInterstitialAt: (json['lastInterstitialAt'] as num?)?.toInt() ?? 0,
+  recentInterstitials:
+      (json['recentInterstitials'] as List<dynamic>?)
+          ?.map((e) => (e as num).toInt())
+          .toList() ??
+      const <int>[],
+  winsSinceInterstitial: (json['winsSinceInterstitial'] as num?)?.toInt() ?? 0,
+  holidayUntil: (json['holidayUntil'] as num?)?.toInt() ?? 0,
+  doubleCoinsDate: json['doubleCoinsDate'] as String? ?? '',
+  doubleCoinsCount: (json['doubleCoinsCount'] as num?)?.toInt() ?? 0,
+  attState: json['attState'] as String? ?? '',
+  attRetryAt: (json['attRetryAt'] as num?)?.toInt() ?? 0,
+  starterOfferedAt: (json['starterOfferedAt'] as num?)?.toInt() ?? 0,
+  starterShownDate: json['starterShownDate'] as String? ?? '',
+);
+
+Map<String, dynamic> _$AdStateToJson(_AdState instance) => <String, dynamic>{
+  'lastAdAt': instance.lastAdAt,
+  'lastInterstitialAt': instance.lastInterstitialAt,
+  'recentInterstitials': instance.recentInterstitials,
+  'winsSinceInterstitial': instance.winsSinceInterstitial,
+  'holidayUntil': instance.holidayUntil,
+  'doubleCoinsDate': instance.doubleCoinsDate,
+  'doubleCoinsCount': instance.doubleCoinsCount,
+  'attState': instance.attState,
+  'attRetryAt': instance.attRetryAt,
+  'starterOfferedAt': instance.starterOfferedAt,
+  'starterShownDate': instance.starterShownDate,
+};
+
 _SaveData _$SaveDataFromJson(Map<String, dynamic> json) => _SaveData(
   schemaVersion: (json['schemaVersion'] as num?)?.toInt() ?? currentSaveSchema,
   seq: (json['seq'] as num?)?.toInt() ?? 0,
@@ -174,6 +206,12 @@ _SaveData _$SaveDataFromJson(Map<String, dynamic> json) => _SaveData(
         (k, e) => MapEntry(k, e as bool),
       ) ??
       const <String, bool>{},
+  ads: json['ads'] == null
+      ? const AdState()
+      : AdState.fromJson(json['ads'] as Map<String, dynamic>),
+  purchases:
+      (json['purchases'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const <String>[],
   updatedAt: json['updatedAt'] as String? ?? '',
 );
 
@@ -193,5 +231,7 @@ Map<String, dynamic> _$SaveDataToJson(_SaveData instance) => <String, dynamic>{
   'settings': instance.settings.toJson(),
   'stats': instance.stats.toJson(),
   'flags': instance.flags,
+  'ads': instance.ads.toJson(),
+  'purchases': instance.purchases,
   'updatedAt': instance.updatedAt,
 };

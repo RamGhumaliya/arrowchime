@@ -1,6 +1,9 @@
 # PROGRESS — Arrowchime
 
 ## Current phase
+**Phase 8 — Shop, cosmetics, ads & IAP: built and verified (1,333 tests green, analyzer clean), NOT committed; design gate: the human reviews `docs/screenshots/phase8/` (30 images).** Phase 7 is committed (`6d8e7cd`).
+
+(Older entry:)
 **Phase 7 — Mechanics content & Level Lab: built and verified, NOT committed.** Phase 6 is committed (`87f2120`); its design review is still open.
 
 (Older entry:)
@@ -259,6 +262,21 @@ The layouts you approved (docs/10 §7) are built. The app now starts on the **Sp
 2. The tutorials are generated, not hand-made; if one feels wrong, Regenerate and tell me.
 3. Open points: ceramic portal "swirl shader + fallback": the swirl is code-drawn (animated arcs); a real fragment shader is art/engineering work for later.
 
+## Phase 8 — Shop, cosmetics, ads & IAP (design gate: human review)
+Built:
+- **Config**: `core/remote_config/{defaults,remote_config_service,app_config}.dart` (`LocalRemoteConfig` until Firebase in Phase 9); every economy/ad number reads `AppConfig`. `core/economy/pricing.dart` removed.
+- **Ads** (`core/ads/`): `AdPolicy` (pure, unit-tested per docs/09 §5), `AdsService` + `FakeAdsService`, `AdMobAdsService` (google_mobile_ads + UMP, Google **test** unit IDs), `AdsController`, ATT `TrackingService`. Rules: no interstitial before level 12, only win→next, never retry/fail/first session/Daily/tutorial, 90 s hard gap, 150 s between interstitials, every 3rd win, <=6/h, 24 h holiday after a purchase, none after Remove Ads. Rewarded: +1 heart (<=2/level), x2 win coins (<=5/day), free hint when out of coins, unlock a missed Daily.
+- **IAP** (`core/iap/`): `in_app_purchase` behind `IapService`; products remove_ads, starter_bundle, coins_pouch/chest/vault, art_pack; idempotent fulfilment (transaction ids + `product:<id>` markers); restore re-grants entitlements only (coin bonus once, consumables never); Starter Bundle 48 h window after level 15.
+- **Cosmetics** (`core/cosmetics/`): 9 arrow skins, 5 trails, 5 boards, 5 instruments; prices common 500 / rare 1,500 / epic 4,000; chapter skins earned by restoring that chapter. Rendering: `ArrowSkin`, `glow.frag` (+ fallback), trail particle shapes, board themes, pitch-mapped instruments.
+- **Screens**: Shop, Collection (4 tabs + live preview), Starter Bundle sheet, ATT pre-prompt; x2 coins on win sheet, "Ad not available" on fail sheet, hint/Daily ad sheets; Design Gallery Cosmetics page.
+
+Acceptance vs docs/09 §5: ad-policy tests green (19); IAP fulfilment/restore/idempotency (28); cosmetics (12); screens/flows (`shop_ads_screens_test`). **Not verifiable here:** sandbox purchases on Android/iOS stores and any iOS build (no Mac, no store listing).
+
+Decisions: `in_app_purchase` (not RevenueCat); no server-side receipt validation; Chapter Art Pack = paper skin + ribbons trail + marimba; hint-ad uses a sheet (not a toast action); Constellation board = stars within one chapter; instruments are pitch-shifted from the C-pentatonic samples; `glow.frag` is a placeholder shader.
+Design self-review: found and fixed dark-on-cream coin amounts and truncated prices in the Shop coin tiles (now amount + caption price + short "Buy" button). Home behind the Starter sheet looks sparse only because it is the placeholder world art.
+Known issues / before release: replace AdMob **test** app/unit IDs (AndroidManifest, Info.plist, `AdUnits`); real store products must be created with the ids above; iOS untested; Firebase wiring is Phase 9.
+Docs-impact: docs/10 Phase 8 layouts approved and implemented.
+
 ## Re-verification of Phase 0 + 1 (2026-10-10)
 | Check | Result |
 |---|---|
@@ -300,6 +318,8 @@ Phase 5: `flutter_soloud` (docs/05 §5, re-added), `audio_session` (iOS ambient 
 Phase 4: none. (`integration_test` was already there; `test_driver/integration_test.dart` is the standard 3-line driver for `flutter drive --profile`.)
 Phase 2: `integration_test` (SDK, dev only): runs the golden determinism hashes on a real device (`flutter test integration_test --flavor dev`). No other new packages; `dart:io` is used only by `tool/` and tests.
 See "Packages added" above; all from docs/05 §1. `very_good_analysis` for lints; `flame_test` for Flame tests; `intl` + `flutter_localizations` for ARB l10n.
+
+- Phase 8: google_mobile_ads (AdMob + UMP consent), in_app_purchase (store purchases, decision: not RevenueCat), app_tracking_transparency (iOS ATT).
 
 ## Design review gate
 **Phase 4 is built and tested but not committed; the human reviews `docs/screenshots/phase4/` (20 images, incl. tablet) before Phase 5 starts.** Self-review and the open questions are in the Phase 4 section above. Phase 3's gate material is in `docs/screenshots/phase3/`.

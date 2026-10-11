@@ -34,6 +34,18 @@ class ChapterTheme {
   /// Dark tray ⇒ light arrows (chapters 3 and 5).
   final bool darkTray;
 
+  /// A copy with another tray (board-theme cosmetics).
+  ChapterTheme copyWith({Color? trayFelt, bool? darkTray}) => ChapterTheme(
+    id: id,
+    name: name,
+    diorama: diorama,
+    skyTop: skyTop,
+    skyBottom: skyBottom,
+    trayFelt: trayFelt ?? this.trayFelt,
+    arrowColors: arrowColors,
+    darkTray: darkTray ?? this.darkTray,
+  );
+
   static const ChapterTheme mistyGarden = ChapterTheme(
     id: 1,
     name: 'Misty Garden',
