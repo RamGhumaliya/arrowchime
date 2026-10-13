@@ -25,8 +25,10 @@ void main() {
         expect(s.assets, hasLength(s.notes.length));
         expect(s.tonics, hasLength(3));
       }
+      // The endless track cycles the five palettes.
       expect(ChapterSound.of(0), ChapterSound.all.first);
-      expect(ChapterSound.of(9), ChapterSound.all.last);
+      expect(ChapterSound.of(6), ChapterSound.all.first);
+      expect(ChapterSound.of(10), ChapterSound.all.last);
     });
 
     test('12 melodies per chapter, 16 valid notes, resolving to the tonic', () {

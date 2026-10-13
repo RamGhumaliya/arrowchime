@@ -42,7 +42,8 @@ void main() {
       expect(LevelRef.parse('ch2', '7'), const LevelRef(2, 7));
       expect(LevelRef.parse('ch2', '7')!.globalIndex, 67);
       expect(const LevelRef(2, 7).chapterSlug, 'ch2');
-      expect(LevelRef.parse('ch9', '1'), isNull);
+      expect(LevelRef.parse('ch0', '1'), isNull);
+      expect(LevelRef.parse('ch9', '1'), const LevelRef(9, 1));
       expect(LevelRef.parse('ch1', '61'), isNull);
       expect(LevelRef.parse('x', 'y'), isNull);
       expect(LevelRef.parse(null, null), isNull);

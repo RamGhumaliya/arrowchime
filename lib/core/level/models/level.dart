@@ -157,8 +157,8 @@ Level _parseLevel(Map<String, Object?> json) {
   if (!RegExp(r'^[a-z0-9_]+$').hasMatch(id)) {
     throw LevelFormatException('level.id "$id" must match [a-z0-9_]+');
   }
-  final width = _reqInt(json, 'width', 'level', min: 3, max: 24);
-  final height = _reqInt(json, 'height', 'level', min: 3, max: 24);
+  final width = _reqInt(json, 'width', 'level', min: 3, max: 40);
+  final height = _reqInt(json, 'height', 'level', min: 3, max: 40);
   final hearts = _reqInt(json, 'hearts', 'level', min: 1, max: 9);
   final chapter = _optInt(json, 'chapter', 'level', min: 0);
   final index = _optInt(json, 'index', 'level', min: 1);

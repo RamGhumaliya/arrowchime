@@ -1,38 +1,17 @@
-import 'package:arrowchime/app/theme/tokens.dart';
 import 'package:arrowchime/core/ui/painters/arrow_skin.dart';
-import 'package:arrowchime/core/ui/painters/shade.dart';
 import 'package:flutter/rendering.dart';
 
-/// Glossy enamel arrow tube (`docs/10` §8): five passes per path.
+/// The arrow itself (`docs/10` §8, V2 "Clean Line"): a thin rounded line with
+/// a small solid arrowhead. The class keeps its old name so callers do not
+/// change; there is no tube, bevel or shadow any more.
 ///
-/// 1. shadow (+0.06c, +0.10c), width 0.44c, ink 28%, blurred 0.08c
-/// 2. dark rim, width 0.46c, colour −30% lightness
-/// 3. body, width 0.40c
-/// 4. light band, width 0.18c, +25% lightness, offset (−0.03c, −0.05c)
-/// 5. specular, width 0.05c, white 70%, offset (−0.06c, −0.09c), only on
-///    segments facing up / left
-///
-/// plus a rounded triangle head with the same passes and a darker "nock" ring
-/// at the tail. `c` is the cell size. Used by the Design Gallery preview now
-/// and by the Flame arrow component later (Phase 4).
+/// `c` is the cell size. A skin only recolours the line and may add a glow
+/// behind it.
 abstract final class EnamelTube {
-  static const double _shadowDx = 0.06;
-  static const double _shadowDy = 0.10;
-  static const double _shadowWidth = 0.44;
-  static const double _shadowBlur = 0.08;
-  static const double _rimWidth = 0.46;
-  static const double _bodyWidth = 0.40;
-  static const double _bandWidth = 0.18;
-  static const double _specWidth = 0.05;
-  static const double _cornerRadius = 0.45;
-  static const double _headLength = 0.62;
-  static const double _headHalfWidth = 0.40;
-  static const double _headCorner = 0.08;
-  static const double _nockRadius = 0.14;
-  static const double _nockStroke = 0.06;
-
-  static const double _rimDelta = -0.30;
-  static const double _bandDelta = 0.25;
+  static const double _lineWidth = 0.17;
+  static const double _cornerRadius = 0.3;
+  static const double _headLength = 0.46;
+  static const double _headHalfWidth = 0.26;
 
   /// Paints an arrow whose body runs through [points] (cell centres, tail →
   /// head) with cell size [c].
@@ -59,14 +38,14 @@ abstract final class EnamelTube {
     );
   }
 
-  /// The smooth centre line through [points] (corners rounded to 0.45 c).
+  /// The smooth centre line through [points] (corners rounded).
   static Path smoothPath(List<Offset> points, double c) =>
       _smoothPath(points, _cornerRadius * c);
 
   /// Paints an arrow along an existing centre-line [body] (any path, e.g. a
   /// sub-path of a longer travel path while the arrow slides out). [tail] and
   /// [head] are its end points and [dir] the unit direction the head faces.
-  /// [blurShadow] false draws a hard shadow, much cheaper for arrows in motion.
+  /// [blurShadow] is kept for callers; a flat line has no shadow.
   static void paintPath(
     Canvas canvas,
     Path body, {
@@ -78,83 +57,34 @@ abstract final class EnamelTube {
     bool blurShadow = true,
     ArrowSkin skin = ArrowSkin.candy,
   }) {
-    final inkColor = color;
+    skin.paintGlow(canvas, body, c, color);
     final tint = skin.body(color);
-    final headPath = _headPath(head, dir, c);
-
-    // 1. Shadow.
-    final shadowShift = Offset(_shadowDx * c, _shadowDy * c);
-    final shadowPaint = Paint()
-      ..color = TBShade.ink(0.28)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = _shadowWidth * c
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round
-      ..maskFilter = blurShadow
-          ? MaskFilter.blur(BlurStyle.normal, _shadowBlur * c)
-          : null;
-    canvas
-      ..drawPath(body.shift(shadowShift), shadowPaint)
-      ..drawPath(
-        headPath.shift(shadowShift),
-        shadowPaint..style = PaintingStyle.fill,
-      );
-
-    skin.paintGlow(canvas, body, c, inkColor);
-
-    // 2. Dark rim.
-    final rim = TBShade.lighten(tint, _rimDelta);
-    canvas
-      ..drawPath(body, _stroke(rim, _rimWidth * c))
-      ..drawPath(headPath, _headRim(rim, c))
-      // 3. Body.
-      ..drawPath(body, _stroke(tint, _bodyWidth * c))
-      ..drawPath(headPath, Paint()..color = tint);
-
-    // 4. Light band, nudged towards the key light.
-    final band = TBShade.lighten(tint, _bandDelta);
-    final bandShift = Offset(-0.03 * c, -0.05 * c);
-    canvas
-      ..drawPath(body.shift(bandShift), _stroke(band, _bandWidth * c))
-      ..drawPath(
-        headPath.shift(bandShift * 1.5),
-        Paint()..color = band.withValues(alpha: 0.55),
-      );
-
-    skin.paintDetail(canvas, body, c, inkColor);
-
-    // 5. Specular, only where the body runs up or left.
-    final specShift = Offset(-0.06 * c, -0.09 * c);
-    final spec = _upLeftRuns(body, c * 0.12);
     canvas
       ..drawPath(
-        spec.shift(specShift),
-        _stroke(TBShade.white(TBBevel.specularOpacity), _specWidth * c),
-      )
-      // Tail nock.
-      ..drawCircle(
-        tail,
-        _nockRadius * c,
+        body,
         Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = _nockStroke * c
-          ..color = rim,
-      );
+          ..strokeWidth = _lineWidth * c
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round
+          ..color = tint,
+      )
+      ..drawPath(headPath(head, dir, c), Paint()..color = tint);
   }
 
-  static Paint _stroke(Color color, double width) => Paint()
-    ..style = PaintingStyle.stroke
-    ..strokeWidth = width
-    ..strokeCap = StrokeCap.round
-    ..strokeJoin = StrokeJoin.round
-    ..color = color;
-
-  /// A fill + round-joined stroke gives the head its rounded corners.
-  static Paint _headRim(Color rim, double c) => Paint()
-    ..color = rim
-    ..style = PaintingStyle.stroke
-    ..strokeWidth = (_headCorner * 2 + 0.06) * c
-    ..strokeJoin = StrokeJoin.round;
+  /// The arrowhead triangle in front of [head], pointing along [dir].
+  static Path headPath(Offset head, Offset dir, double c) {
+    final side = Offset(-dir.dy, dir.dx);
+    final base = head - dir * (_lineWidth * c * 0.3);
+    final tip = head + dir * (_headLength * c);
+    final left = base + side * (_headHalfWidth * c);
+    final right = base - side * (_headHalfWidth * c);
+    return Path()
+      ..moveTo(tip.dx, tip.dy)
+      ..lineTo(left.dx, left.dy)
+      ..lineTo(right.dx, right.dy)
+      ..close();
+  }
 
   /// Path through [pts] with corners rounded to [radius].
   static Path _smoothPath(List<Offset> pts, double radius) {
@@ -174,48 +104,6 @@ abstract final class EnamelTube {
         ..quadraticBezierTo(cur.dx, cur.dy, b.dx, b.dy);
     }
     return path..lineTo(pts.last.dx, pts.last.dy);
-  }
-
-  /// Triangle in front of [head], pointing along [dir], inset by its corner
-  /// radius (the rounding stroke grows it back).
-  static Path _headPath(Offset head, Offset dir, double c) {
-    final side = Offset(-dir.dy, dir.dx);
-    final inset = _headCorner * c;
-    final base = head + dir * (_bodyWidth * c * 0.1);
-    final tip = base + dir * (_headLength * c - inset);
-    final left = base + side * (_headHalfWidth * c - inset);
-    final right = base - side * (_headHalfWidth * c - inset);
-    return Path()
-      ..moveTo(tip.dx, tip.dy)
-      ..lineTo(left.dx, left.dy)
-      ..lineTo(right.dx, right.dy)
-      ..close();
-  }
-
-  /// Sub-paths of [path] whose travel direction points up or left.
-  static Path _upLeftRuns(Path path, double step) {
-    final out = Path();
-    for (final metric in path.computeMetrics()) {
-      var run = false;
-      var runStart = 0.0;
-      for (var d = 0.0; d < metric.length; d += step) {
-        final end = (d + step).clamp(0.0, metric.length);
-        final tan = metric.getTangentForOffset((d + end) / 2);
-        final facing =
-            tan != null && (tan.vector.dx < -0.5 || tan.vector.dy < -0.5);
-        if (facing && !run) {
-          run = true;
-          runStart = d;
-        } else if (!facing && run) {
-          run = false;
-          out.addPath(metric.extractPath(runStart, d), Offset.zero);
-        }
-      }
-      if (run) {
-        out.addPath(metric.extractPath(runStart, metric.length), Offset.zero);
-      }
-    }
-    return out;
   }
 
   static Offset _unit(Offset v) {

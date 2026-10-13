@@ -298,7 +298,8 @@ void main() {
       final done = SaveData(
         currentLevel: {for (var c = 1; c <= 5; c++) '$c': 61},
       );
-      expect(Progression.playTarget(done), (5, 60));
+      // The track never ends: the frontier is the next stage.
+      expect(Progression.playTarget(done), (6, 1));
     });
 
     test('restoration, stars and cleared counts per chapter', () {

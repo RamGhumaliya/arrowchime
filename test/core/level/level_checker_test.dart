@@ -109,13 +109,13 @@ void main() {
         solution: [0, 1, 2],
       );
       final r = LevelChecker.checkLevel(level);
-      expect(r.errors.single, contains('is not within ±6.0 of the target'));
+      expect(r.errors.single, contains('is not within ±14.0 of the target'));
 
-      // The same level is fine as chapter 1 level 1 (target ~10).
+      // The same level is fine as chapter 1 level 5 (a breather, target ~20).
       final ok = withMeta(
         freeTrio(),
         chapter: 1,
-        index: 1,
+        index: 5,
         difficulty: 9.2,
         solution: [0, 1, 2],
       );

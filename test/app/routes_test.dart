@@ -9,7 +9,6 @@ void main() {
   const labels = <String, String>{
     AppRoutes.splash: 'Arrowchime',
     AppRoutes.home: 'PLAY · Level 1',
-    AppRoutes.chapterMap: 'Chapters',
     AppRoutes.daily: 'Daily Knot #283',
     AppRoutes.shop: 'Shop',
     AppRoutes.collection: 'Collection',
@@ -38,8 +37,8 @@ void main() {
   });
 
   testWidgets('a malformed level route falls back to the stub', (tester) async {
-    await pumpApp(tester, location: AppRoutes.levelPath('ch9', 7));
-    expect(find.text('Level ch9 · 7'), findsOneWidget);
+    await pumpApp(tester, location: AppRoutes.levelPath('ch0', 7));
+    expect(find.text('Level ch0 · 7'), findsOneWidget);
   });
 
   testWidgets('daily play only opens for today and the last 30 days', (

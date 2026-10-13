@@ -3,9 +3,9 @@ import 'package:arrowchime/app/theme/tokens.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('brand colours match docs/10 §3.1', () {
-    expect(TBColors.ink900.toARGB32(), 0xFF121A2B);
-    expect(TBColors.tangerine.toARGB32(), 0xFFFF8A1F);
+  test('brand colours match docs/10 §3.1 (V2 Clean Line)', () {
+    expect(TBColors.ink900.toARGB32(), 0xFF0F1B2D);
+    expect(TBColors.tangerine.toARGB32(), 0xFF14B8A6);
     expect(TBColors.butterLip.toARGB32(), 0xFFC9952A);
     expect(TBColors.sky.toARGB32(), 0xFF6EC6FF);
   });
@@ -26,11 +26,14 @@ void main() {
     }
   });
 
-  test('every elevation has a drop and a contact shadow', () {
+  test('every elevation is one soft shadow that deepens with height', () {
     for (final e in [TBElevation.e1, TBElevation.e2, TBElevation.e3]) {
-      expect(e, hasLength(2));
+      expect(e, hasLength(1));
     }
-    expect(TBElevation.e3.first.offset, const Offset(4, 18));
+    expect(
+      TBElevation.e3.first.offset.dy,
+      greaterThan(TBElevation.e1.first.offset.dy),
+    );
   });
 
   test('release curve overshoots then settles', () {

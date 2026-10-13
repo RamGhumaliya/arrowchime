@@ -16,7 +16,7 @@ import 'package:integration_test/integration_test.dart';
 /// another with `--dart-define=PERF_LEVEL=1/60`, the 14x14 one): idle,
 /// pinching to 4x and back, and a burst of taps (`docs/09` perf budget:
 /// 60 fps, i.e. frames under 16.7 ms). Run in profile mode on a device:
-/// `flutter test integration_test/performance_test.dart --flavor dev --profile`
+/// `flutter test integration_test/performance_test.dart --profile`
 /// (an emulator only gives an indicative number).
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();

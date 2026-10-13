@@ -117,7 +117,7 @@ class BoardComponent extends Component {
   @override
   void render(Canvas canvas) {
     _tray.paint(canvas, context);
-    _paintFlowGlow(canvas);
+    if (!theme.flat) _paintFlowGlow(canvas);
     if (gridVisible) _grid.paint(canvas, context);
     _paintLinks(canvas);
     _paintPortals(canvas);
@@ -126,6 +126,10 @@ class BoardComponent extends Component {
   }
 
   void _paintTray(Canvas canvas) {
+    if (theme.flat) {
+      _paintDots(canvas);
+      return;
+    }
     Felt.paintTray(
       canvas,
       geometry.worldSize,
@@ -146,11 +150,28 @@ class BoardComponent extends Component {
             canvas,
             Size.square(_c),
             radius: _c * 0.18,
-            elevation: TBElevation.e1,
             grainSeed: x * 7 + y,
           );
           canvas.restore();
         }
+      }
+    }
+  }
+
+  /// The flat board has no tray: a faint dot marks the centre of every
+  /// playable cell so the shape of the level still reads.
+  void _paintDots(Canvas canvas) {
+    final mask = level.mask;
+    final paint = Paint()
+      ..color = theme.ink.withValues(alpha: 0.14)
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = _c * 0.07;
+    for (var y = 0; y < level.height; y++) {
+      for (var x = 0; x < level.width; x++) {
+        if (mask != null && mask[y][x] != '1') continue;
+        canvas.drawPoints(PointMode.points, [
+          geometry.center(Cell(x, y)),
+        ], paint);
       }
     }
   }
@@ -298,7 +319,6 @@ class BoardComponent extends Component {
         canvas,
         rect.size,
         radius: _c * 0.22,
-        elevation: TBElevation.e1,
         grainSeed: gate.cell.x + gate.cell.y * 5,
       );
       canvas.restore();

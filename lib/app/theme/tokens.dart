@@ -7,24 +7,27 @@ import 'package:flutter/painting.dart';
 /// duration; it reads from here.
 abstract final class TBColors {
   // Ink (darks).
-  static const Color ink900 = Color(0xFF121A2B);
-  static const Color ink700 = Color(0xFF1E2A44);
-  static const Color ink500 = Color(0xFF3A4A6B);
+  static const Color ink900 = Color(0xFF0F1B2D);
+  static const Color ink700 = Color(0xFF2A3A55);
+  static const Color ink500 = Color(0xFF5B6B85);
+
+  /// The page behind every non-game screen: a barely tinted white.
+  static const Color page = Color(0xFFF4F7FB);
 
   // Cream (panels).
-  static const Color cream100 = Color(0xFFFFF6E6);
-  static const Color cream300 = Color(0xFFF3DFC1);
+  static const Color cream100 = Color(0xFFFFFFFF);
+  static const Color cream300 = Color(0xFFE6EBF3);
 
   // Primary CTA only.
-  static const Color tangerine = Color(0xFFFF8A1F);
-  static const Color tangerineLip = Color(0xFFC85A08);
+  static const Color tangerine = Color(0xFF14B8A6);
+  static const Color tangerineLip = Color(0xFF0B8F82);
 
   // Secondary CTA / success / "free" route.
-  static const Color teal = Color(0xFF19B3A3);
-  static const Color tealLip = Color(0xFF0E7D72);
+  static const Color teal = Color(0xFF2F7DF6);
+  static const Color tealLip = Color(0xFF1B58BD);
 
   // Hearts, errors, blocked flash.
-  static const Color berry = Color(0xFFE5446D);
+  static const Color berry = Color(0xFFFF4D5E);
 
   // Coins, stars, rewards.
   static const Color butter = Color(0xFFFFD15C);
@@ -68,46 +71,19 @@ abstract final class TBRadius {
 /// The only three elevations (B7). Each is a drop shadow + a tight contact
 /// shadow. X offsets lean right to follow the top-left key light.
 abstract final class TBElevation {
-  /// Pills, small chips.
+  /// Chips and small controls: barely there.
   static const List<BoxShadow> e1 = [
-    BoxShadow(
-      color: Color(0x2E121A2B), // ink900 @ 18%
-      offset: Offset(0, 3),
-      blurRadius: 6,
-    ),
-    BoxShadow(
-      color: Color(0x40121A2B), // ink900 @ 25%
-      offset: Offset(0, 1),
-      blurRadius: 1,
-    ),
+    BoxShadow(color: Color(0x14000000), offset: Offset(0, 2), blurRadius: 6),
   ];
 
-  /// Buttons, cards.
+  /// Buttons and cards.
   static const List<BoxShadow> e2 = [
-    BoxShadow(
-      color: Color(0x38121A2B), // ink900 @ 22%
-      offset: Offset(2, 8),
-      blurRadius: 16,
-    ),
-    BoxShadow(
-      color: Color(0x4D121A2B), // ink900 @ 30%
-      offset: Offset(0, 2),
-      blurRadius: 2,
-    ),
+    BoxShadow(color: Color(0x1A0F1B2D), offset: Offset(0, 4), blurRadius: 14),
   ];
 
-  /// Sheets, dialogs, win plaque.
+  /// Sheets and dialogs.
   static const List<BoxShadow> e3 = [
-    BoxShadow(
-      color: Color(0x47121A2B), // ink900 @ 28%
-      offset: Offset(4, 18),
-      blurRadius: 32,
-    ),
-    BoxShadow(
-      color: Color(0x4D121A2B), // ink900 @ 30%
-      offset: Offset(0, 3),
-      blurRadius: 3,
-    ),
+    BoxShadow(color: Color(0x290F1B2D), offset: Offset(0, 10), blurRadius: 30),
   ];
 }
 
@@ -131,7 +107,7 @@ abstract final class TBLight {
   static const double contactShadowOpacity = 0.30;
 
   /// Scrim behind sheets: ink900 @ 55%.
-  static const Color scrim = Color(0x8C121A2B);
+  static const Color scrim = Color(0x730F1B2D);
 }
 
 /// Motion durations and curves from `docs/10` §3.5.
@@ -196,9 +172,9 @@ abstract final class TBSizes {
   static const double buttonSecondaryHeight = 52;
   static const double buttonTertiaryHeight = 44;
   static const double iconButton = 56;
-  static const double buttonLip = 6;
-  static const double buttonPressDepth = 4;
-  static const double buttonLipPressed = 2;
+  static const double buttonLip = 4;
+  static const double buttonPressDepth = 2;
+  static const double buttonLipPressed = 1;
   static const double buttonIcon = 32;
 
   /// Shortest side at/above which a device is treated as a tablet.
@@ -238,33 +214,17 @@ abstract final class TBSizes {
 /// Derived material colours (docs/10 §2 "Materials"). The palette in §3.1 has
 /// no wood or brass, so they are mixed from palette colours; no new hues.
 abstract final class TBMaterials {
-  /// Lacquered wood: `tangerineLip` toned down into the night blue.
-  static final Color woodFace = Color.lerp(
-    TBColors.tangerineLip,
-    TBColors.ink700,
-    0.55,
-  )!;
-  static final Color woodLip = Color.lerp(woodFace, TBColors.ink900, 0.45)!;
-  static final Color woodHighlight = Color.lerp(
-    woodFace,
-    TBColors.cream100,
-    0.25,
-  )!;
+  /// Flat cool-grey "wood": shelves, tab bars and blocked cells.
+  static const Color woodFace = Color(0xFFE6EBF3);
+  static const Color woodLip = Color(0xFFD0D8E6);
+  static const Color woodHighlight = Color(0xFFE6EBF3);
 
-  /// Brushed brass: butter lip as the base, butter as the highlight.
-  static const Color brassFace = TBColors.butterLip;
-  static final Color brassLight = Color.lerp(
-    TBColors.butter,
-    TBColors.cream100,
-    0.35,
-  )!;
-  static final Color brassDark = Color.lerp(
-    TBColors.butterLip,
-    TBColors.ink900,
-    0.45,
-  )!;
+  /// Flat butter "brass": plaques, badges, the rotator ring.
+  static const Color brassFace = TBColors.butter;
+  static const Color brassLight = Color(0xFFFFE9A8);
+  static const Color brassDark = TBColors.butterLip;
 
-  /// Crystal / ice face (translucent).
+  /// Ice face of the frozen mechanic.
   static const Color crystalFace = TBColors.sky;
 }
 

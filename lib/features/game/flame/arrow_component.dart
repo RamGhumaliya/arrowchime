@@ -34,9 +34,12 @@ class ArrowComponent extends Component {
     required this.reduceMotion,
     required this.context,
     this.skin = ArrowSkin.candy,
+    this.accent = TBColors.tangerine,
+    this.introDelay = -1,
     this.onExited,
   }) : _dir = arrow.dir,
-       _frozen = arrow.frozen ?? 0 {
+       _frozen = arrow.frozen ?? 0,
+       _introT = introDelay < 0 ? _introLength : -introDelay {
     _points = [for (final c in arrow.body) geometry.center(c)];
     _bodyPath = EnamelTube.smoothPath(_points, geometry.cell);
     _baked = BakedPicture(
@@ -56,6 +59,14 @@ class ArrowComponent extends Component {
   /// The equipped arrow skin.
   final ArrowSkin skin;
 
+  /// Highlight colour of presses and hints.
+  final Color accent;
+
+  /// Seconds to wait before popping in at level start (`< 0`: no entrance).
+  final double introDelay;
+
+  static const double _introLength = 0.32;
+
   /// Called once when the exit animation has finished.
   final void Function(ArrowComponent)? onExited;
 
@@ -68,6 +79,8 @@ class ArrowComponent extends Component {
   // Dynamic state.
   _Exit? _exit;
   double _lurchT = -1;
+  double _introT;
+  double _nudgeT = -1;
   double _shakeT = -1;
   double _flashT = -1;
   double _hintT = -1;
@@ -108,6 +121,12 @@ class ArrowComponent extends Component {
   void press({required bool down}) {
     _pressing = down;
     if (reduceMotion) _press = down ? 1 : 0;
+  }
+
+  /// A gentle bounce along the facing direction: "tap me" when idle.
+  void nudge() {
+    if (reduceMotion || _exit != null) return;
+    _nudgeT = 0;
   }
 
   /// Blocked tap: lurch forward then recoil.
@@ -159,6 +178,11 @@ class ArrowComponent extends Component {
       }
       return;
     }
+    if (_introT < _introLength) _introT += dt;
+    if (_nudgeT >= 0) {
+      _nudgeT += dt;
+      if (_nudgeT > 0.5) _nudgeT = -1;
+    }
     if (_lurchT >= 0) {
       _lurchT += dt;
       if (_lurchT > TBGameMotion.lurch + TBGameMotion.recoil) _lurchT = -1;
@@ -188,12 +212,23 @@ class ArrowComponent extends Component {
       exit.paint(canvas, this);
       return;
     }
+    if (_introT < 0) return; // waiting for its turn to pop in
+    final intro = (_introT / _introLength).clamp(0.0, 1.0);
     final offset = _dynamicOffset();
-    final moved = offset != Offset.zero || _press > 0;
+    final moved = offset != Offset.zero || _press > 0 || intro < 1;
     if (moved) {
       canvas
         ..save()
         ..translate(offset.dx, offset.dy);
+      if (intro < 1) {
+        // Pops in from 60% with a small overshoot.
+        final k = 0.6 + 0.4 * TBMotion.releaseCurve.transform(intro);
+        final c = _baked.bounds.center;
+        canvas
+          ..translate(c.dx, c.dy)
+          ..scale(k)
+          ..translate(-c.dx, -c.dy);
+      }
       if (_press > 0) {
         final k = 1 + (TBFeedback.pressScale - 1) * _press;
         final c = _baked.bounds.center;
@@ -226,6 +261,10 @@ class ArrowComponent extends Component {
       }
       o += Offset(_dir.dx.toDouble(), _dir.dy.toDouble()) * (travel * _c);
     }
+    if (_nudgeT >= 0) {
+      final pulse = math.sin(_nudgeT / 0.5 * math.pi);
+      o += Offset(_dir.dx.toDouble(), _dir.dy.toDouble()) * (pulse * 0.16 * _c);
+    }
     if (_shakeT >= 0) {
       final k = 1 - _shakeT / TBGameMotion.shake;
       o += Offset(math.sin(_shakeT * 70) * 0.1 * _c * k, 0);
@@ -239,10 +278,10 @@ class ArrowComponent extends Component {
         _bodyPath,
         Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = _c * 0.4
+          ..strokeWidth = _c * 0.22
           ..strokeCap = StrokeCap.round
           ..strokeJoin = StrokeJoin.round
-          ..color = TBShade.white(TBFeedback.pressBrighten * _press),
+          ..color = accent.withValues(alpha: _press),
       );
     }
     if (_flashT >= 0) {
@@ -257,7 +296,7 @@ class ArrowComponent extends Component {
         _bodyPath,
         Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = _c * 0.5
+          ..strokeWidth = _c * 0.34
           ..strokeCap = StrokeCap.round
           ..strokeJoin = StrokeJoin.round
           ..color = TBColors.berry.withValues(alpha: 0.75 * pulse),
@@ -271,10 +310,10 @@ class ArrowComponent extends Component {
         _bodyPath,
         Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = _c * (0.56 + 0.08 * wave)
+          ..strokeWidth = _c * (0.34 + 0.1 * wave)
           ..strokeCap = StrokeCap.round
           ..strokeJoin = StrokeJoin.round
-          ..color = TBColors.sky.withValues(alpha: 0.35 + 0.35 * wave),
+          ..color = accent.withValues(alpha: 0.3 + 0.4 * wave),
       );
     }
   }

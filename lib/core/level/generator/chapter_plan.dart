@@ -11,6 +11,8 @@ class ChapterBand {
     required this.scoreMin,
     required this.scoreMax,
     required this.bossScore,
+    required this.arrowsMin,
+    required this.arrowsMax,
   });
 
   final int sizeMin;
@@ -22,60 +24,86 @@ class ChapterBand {
 
   /// Absolute target of level 60.
   final double bossScore;
+
+  /// Fewest arrows a level may have, at level 1 and level 60 of the chapter:
+  /// the game is about busy boards, so a level below this is rejected.
+  final int arrowsMin;
+  final int arrowsMax;
 }
 
 /// Chapter band table, sawtooth targets and level → [GenParams] mapping.
 abstract final class ChapterPlan {
   static const int levelsPerChapter = 60;
 
-  /// A level is accepted when its score is within this of its target.
-  static const double checkTolerance = 6;
+  /// The endless track continues past the five authored stages: stage 6 and
+  /// beyond reuse stage 5's band and mechanics with fresh seeds.
+  static const int authoredChapters = 5;
 
+  /// The chapter whose band/mechanics a stage uses (stages 6+ use 5).
+  static int planOf(int chapter) => chapter < 1
+      ? 1
+      : (chapter > authoredChapters ? authoredChapters : chapter);
+
+  /// A level is accepted when its score is within this of its target.
+  static const double checkTolerance = 14;
+
+  /// V2: dense boards from the start. Sizes are the board edge in cells; the
+  /// first few levels of chapter 1 are the hand-built onboarding boards.
   static const Map<int, ChapterBand> bands = {
     1: ChapterBand(
-      sizeMin: 6,
-      sizeMax: 12,
-      fillMin: 0.55,
-      fillMax: 0.75,
-      scoreMin: 10,
-      scoreMax: 35,
-      bossScore: 45,
+      sizeMin: 10,
+      sizeMax: 17,
+      fillMin: 0.78,
+      fillMax: 0.88,
+      scoreMin: 26,
+      scoreMax: 56,
+      bossScore: 66,
+      arrowsMin: 16,
+      arrowsMax: 58,
     ),
     2: ChapterBand(
-      sizeMin: 8,
-      sizeMax: 14,
-      fillMin: 0.65,
-      fillMax: 0.80,
-      scoreMin: 25,
-      scoreMax: 45,
-      bossScore: 55,
-    ),
-    3: ChapterBand(
-      sizeMin: 10,
-      sizeMax: 16,
-      fillMin: 0.70,
-      fillMax: 0.85,
-      scoreMin: 30,
-      scoreMax: 55,
-      bossScore: 65,
-    ),
-    4: ChapterBand(
-      sizeMin: 12,
-      sizeMax: 18,
-      fillMin: 0.75,
-      fillMax: 0.88,
-      scoreMin: 40,
-      scoreMax: 65,
-      bossScore: 75,
-    ),
-    5: ChapterBand(
       sizeMin: 14,
       sizeMax: 22,
-      fillMin: 0.78,
+      fillMin: 0.84,
+      fillMax: 0.91,
+      scoreMin: 46,
+      scoreMax: 70,
+      bossScore: 78,
+      arrowsMin: 40,
+      arrowsMax: 90,
+    ),
+    3: ChapterBand(
+      sizeMin: 18,
+      sizeMax: 26,
+      fillMin: 0.86,
       fillMax: 0.92,
-      scoreMin: 50,
-      scoreMax: 75,
+      scoreMin: 56,
+      scoreMax: 78,
+      bossScore: 86,
+      arrowsMin: 60,
+      arrowsMax: 120,
+    ),
+    4: ChapterBand(
+      sizeMin: 22,
+      sizeMax: 30,
+      fillMin: 0.88,
+      fillMax: 0.93,
+      scoreMin: 62,
+      scoreMax: 80,
       bossScore: 88,
+      arrowsMin: 80,
+      arrowsMax: 150,
+    ),
+    5: ChapterBand(
+      sizeMin: 26,
+      sizeMax: 34,
+      fillMin: 0.90,
+      fillMax: 0.94,
+      scoreMin: 68,
+      scoreMax: 88,
+      bossScore: 94,
+      arrowsMin: 100,
+      arrowsMax: 190,
     ),
   };
 
@@ -99,7 +127,7 @@ abstract final class ChapterPlan {
   /// `bandMin + (bandMax - bandMin) * (i / 60) + saw(i)`, Knot `+8`, Boss =
   /// the chapter's absolute boss score. Clamped to 0–100.
   static double targetScore(int chapter, int index) {
-    final b = bands[chapter]!;
+    final b = bands[planOf(chapter)]!;
     if (isBoss(index)) return b.bossScore;
     var t =
         b.scoreMin +
@@ -109,22 +137,26 @@ abstract final class ChapterPlan {
     return t.clamp(0.0, 100.0);
   }
 
-  /// Mask name for this level, or `null` for the full rectangle.
+  /// Fewest arrows level [index] of [chapter] may have.
+  static int minArrows(int chapter, int index) {
+    final b = bands[planOf(chapter)]!;
+    final t = (index - 1) / (levelsPerChapter - 1);
+    var n = b.arrowsMin + ((b.arrowsMax - b.arrowsMin) * t).round();
+    if (isBreather(index)) n = (n * 0.8).round();
+    if (isKnot(index)) n = (n * 1.15).round();
+    return n;
+  }
+
+  /// Mask name for this level, or `null` for the full rectangle. Nearly every
+  /// level is a silhouette (a heart, a cat, a tree, ...); one in four is a
+  /// plain rectangle, and the first levels of the game always are.
   static String? maskKind(int chapter, int index) {
+    if (chapter == 1 && index <= 5) return null;
     if (isBoss(index)) return 'circle';
-    if (isKnot(index)) {
-      return Masks.kinds[(index ~/ 10 - 1) % Masks.kinds.length];
-    }
-    if (chapter == 1) {
-      // Shaped boards are introduced at L12 and then recur.
-      if (index >= 12 && index % 4 == 0) {
-        return index % 8 == 0 ? 'ring' : 'diamond';
-      }
-      return null;
-    }
-    return index % 7 == 3
-        ? Masks.kinds[(index ~/ 7) % Masks.kinds.length]
-        : null;
+    final slot = (chapter * 7 + index) % 4;
+    if (slot == 3 && !isKnot(index)) return null;
+    final n = Masks.kinds.length;
+    return Masks.kinds[((chapter - 1) * 11 + index * 3 + index ~/ 7) % n];
   }
 
   /// Which mechanics a level carries (budget: ≤ 2 types in chapters 2–4,
@@ -132,7 +164,7 @@ abstract final class ChapterPlan {
   static MechanicMix mixFor(int chapter, int index) {
     final boss = isBoss(index);
     final extra = isKnot(index) ? 1 : 0;
-    switch (chapter) {
+    switch (planOf(chapter)) {
       case 2:
         return MechanicMix(
           rotators: 2 + (index * 4) ~/ levelsPerChapter + extra,
@@ -172,45 +204,63 @@ abstract final class ChapterPlan {
   /// the fill, how winding the arrows are, their length and (beyond ±1.5) the
   /// board size. The pack builder bisects it to hit the target score.
   static GenParams paramsFor(int chapter, int index, {double adapt = 0}) {
-    final b = bands[chapter]!;
+    final b = bands[planOf(chapter)]!;
     final a = adapt.clamp(-maxAdapt, maxAdapt);
     final t = (index - 1) / (levelsPerChapter - 1);
     var size = b.sizeMin + ((b.sizeMax - b.sizeMin) * t).round();
     var fill = b.fillMin + (b.fillMax - b.fillMin) * t;
     if (isKnot(index)) {
-      size += 1;
-      fill += 0.03;
+      size += 2;
+      fill += 0.02;
     } else if (isBreather(index)) {
-      size -= 1;
-      fill -= 0.05;
+      size -= 2;
+      fill -= 0.04;
     } else if (isBoss(index)) {
-      size = b.sizeMax + 2;
+      size = b.sizeMax + 3;
       fill = b.fillMax;
     }
     size += (a / 1.5).truncate();
-    if (size < b.sizeMin - 1) size = b.sizeMin - 1;
-    if (size > 24) size = 24;
-    if (size < 5) size = 5;
+    if (size < b.sizeMin) size = b.sizeMin;
+    if (size > maxBoardSize) size = maxBoardSize;
+    if (size < 6) size = 6;
 
     final mix = mixFor(chapter, index);
-    final lenMax = 3 + ((size * 0.5) + 1.5 * a).round();
-    final mask = maskKind(chapter, index);
+    // Short-ish bodies give many arrows; a few long ones add the tangles.
+    final lenMax = (3 + size ~/ 6 + (1.2 * a).round()).clamp(3, 11);
+    final kind = maskKind(chapter, index);
+    List<String>? mask;
+    if (kind != null) {
+      // A thin silhouette (a bolt, an arrow) has few cells for its bounding
+      // box: grow the board until it has about as many playable cells as a
+      // 2/3-full square of the planned size.
+      final wanted = (size * size * 0.66).round();
+      mask = Masks.byName(kind, size, size);
+      while (Masks.playable(mask, size, size) < wanted && size < maxBoardSize) {
+        size++;
+        mask = Masks.byName(kind, size, size);
+      }
+    }
     return GenParams(
       width: size,
       height: size,
-      mask: mask == null ? null : Masks.byName(mask, size, size),
-      targetFill: (fill + 0.05 * a).clamp(0.3, 0.93),
-      lenMax: lenMax < 3 ? 3 : lenMax,
-      singleCellShare: mix.rotators > 0 ? 0.15 : 0,
-      windiness: (0.3 + 0.3 * t + 0.1 * a).clamp(0.05, 0.95),
-      maxFailures: 600 + size * 40,
+      mask: mask,
+      targetFill: (fill + 0.03 * a).clamp(0.5, 0.96),
+      lenMax: lenMax,
+      lenSkew: 2,
+      singleCellShare: mix.rotators > 0 ? 0.12 : 0.02,
+      windiness: (0.35 + 0.3 * t + 0.1 * a).clamp(0.1, 0.9),
+      peelBias: 0.85,
+      maxFailures: 1500 + size * 60,
       mix: mix,
     );
   }
 
+  /// Largest board edge the generator and the game screen are built for.
+  static const int maxBoardSize = 34;
+
   /// Melody id for a level (`ch1_m02`): 12 melodies per chapter, rotated.
   static String melodyFor(int chapter, int index) =>
-      'ch${chapter}_m${((index - 1) % 12 + 1).toString().padLeft(2, '0')}';
+      'ch${planOf(chapter)}_m${((index - 1) % 12 + 1).toString().padLeft(2, '0')}';
 
   /// Level id (`ch1_l007`).
   static String idFor(int chapter, int index) =>

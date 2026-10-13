@@ -88,7 +88,7 @@ class _SliderPainter extends CustomPainter {
       Rect.fromLTWH(0, cy - track / 2, size.width, track),
       const Radius.circular(TBRadius.pill),
     );
-    Inset.paint(canvas, groove, fill: TBColors.ink700, shadowOpacity: 0.5);
+    Inset.paint(canvas, groove, fill: TBColors.cream300);
 
     final travel = size.width - knob;
     final x = knob / 2 + travel * value.clamp(0.0, 1.0);

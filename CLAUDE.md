@@ -56,10 +56,10 @@ flutter test --update-goldens test/core/ui                 # only when a design 
 dart run tool/level_gen.dart --chapter 1 --count 60 --seed 1001 --out assets/levels/ch1.json
 dart run tool/level_check.dart assets/levels/
 dart run tool/gen_placeholder_assets.dart
-flutter run --flavor dev -t lib/main_dev.dart              # Android emulator / iOS simulator
-flutter test integration_test --flavor dev                 # screenshots for the design gate
-flutter build appbundle --flavor prod -t lib/main_prod.dart
-flutter build ipa --flavor prod -t lib/main_prod.dart
+flutter run                                                # Android emulator / iOS simulator
+flutter test integration_test                              # screenshots for the design gate
+flutter build appbundle
+flutter build ipa
 ```
 
 ## Code conventions

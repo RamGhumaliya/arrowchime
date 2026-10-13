@@ -1,10 +1,10 @@
 import 'package:arrowchime/app/stub_screen.dart';
 import 'package:arrowchime/core/meta/date_key.dart';
 import 'package:arrowchime/features/achievements/achievements_screen.dart';
-import 'package:arrowchime/features/chapter_map/chapter_map_screen.dart';
 import 'package:arrowchime/features/collection/collection_screen.dart';
 import 'package:arrowchime/features/daily/daily_screen.dart';
 import 'package:arrowchime/features/design_gallery/design_gallery_screen.dart';
+import 'package:arrowchime/features/diary/diary_screen.dart';
 import 'package:arrowchime/features/game/game_screen.dart';
 import 'package:arrowchime/features/game/state/level_ref.dart';
 import 'package:arrowchime/features/home/home_screen.dart';
@@ -21,13 +21,13 @@ import 'package:go_router/go_router.dart';
 abstract final class AppRoutes {
   static const splash = '/';
   static const home = '/home';
-  static const chapterMap = '/chapters';
   static const level = '/level/:chapter/:index';
   static const daily = '/daily';
   static const dailyPlay = '/daily/play/:date';
   static const shop = '/shop';
   static const collection = '/collection';
   static const achievements = '/achievements';
+  static const diary = '/diary';
   static const settings = '/settings';
   static const designGallery = '/design-gallery';
   static const levelLab = '/level-lab';
@@ -58,10 +58,6 @@ GoRouter createRouter({String initialLocation = AppRoutes.splash}) {
       GoRoute(
         path: AppRoutes.home,
         builder: (context, state) => const HomeScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.chapterMap,
-        builder: (context, state) => const ChapterMapScreen(),
       ),
       GoRoute(
         path: AppRoutes.level,
@@ -106,6 +102,10 @@ GoRouter createRouter({String initialLocation = AppRoutes.splash}) {
       GoRoute(
         path: AppRoutes.achievements,
         builder: (context, state) => const AchievementsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.diary,
+        builder: (context, state) => const DiaryScreen(),
       ),
       GoRoute(
         path: AppRoutes.settings,

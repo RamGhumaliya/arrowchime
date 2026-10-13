@@ -197,7 +197,7 @@ void main() {
       'level.id must be a string': (j) => j['id'] = 4,
       'must match': (j) => j['id'] = 'Bad Id',
       'level.width=2 is out of range': (j) => j['width'] = 2,
-      'level.height=25 is out of range': (j) => j['height'] = 25,
+      'level.height=41 is out of range': (j) => j['height'] = 41,
       'level.hearts=0 is out of range': (j) => j['hearts'] = 0,
       'level.chapter must be an integer': (j) => j['chapter'] = 'x',
       'level.index=0 is out of range': (j) => j['index'] = 0,

@@ -93,7 +93,7 @@ void main() {
   });
 
   test('byName rejects unknown names', () {
-    expect(() => Masks.byName('hexagon', 8, 8), throwsArgumentError);
+    expect(() => Masks.byName('pentagon', 8, 8), throwsArgumentError);
   });
 
   test('masks are deterministic', () {

@@ -8,7 +8,6 @@ import 'package:arrowchime/features/game/state/game_session.dart';
 import 'package:arrowchime/features/game/state/level_ref.dart';
 import 'package:arrowchime/features/onboarding/onboarding_overlay.dart';
 import 'package:flame/game.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../game/support/game_harness.dart';
@@ -40,18 +39,14 @@ void main() {
       await pumpApp(tester);
       expect(find.text('PLAY · Level 1'), findsWidgets);
       expect(find.bySemanticsLabel('No streak yet'), findsOneWidget);
-      expect(find.text('Misty Garden · 0%'), findsWidgets);
       expect(find.bySemanticsLabel('Shop'), findsOneWidget);
       expect(find.bySemanticsLabel('Collection'), findsOneWidget);
       expect(find.bySemanticsLabel('Quests'), findsOneWidget);
     });
 
-    testWidgets('progress moves the Play button and the restoration', (
-      tester,
-    ) async {
+    testWidgets('progress moves the Play button', (tester) async {
       await pumpApp(tester, save: played(cleared: 30, coins: 120));
       expect(find.text('PLAY · Level 31'), findsWidgets);
-      expect(find.text('Misty Garden · 50%'), findsWidgets);
       expect(find.text('120'), findsWidgets);
     });
 
@@ -122,7 +117,7 @@ void main() {
       await settle(tester, frames: 12);
       expect(find.text('Daily quests'), findsWidgets);
       expect(find.text('Clear 5 levels'), findsWidgets);
-      expect(find.text('Claim'), findsNWidgets(6)); // sticker text counts twice
+      expect(find.text('Claim'), findsNWidgets(3));
       for (var i = 0; i < 3; i++) {
         await tester.tap(find.text('Claim').last);
         await settle(tester, frames: 4);
@@ -149,63 +144,6 @@ void main() {
       await tester.tap(find.bySemanticsLabel('Quests'));
       await settle(tester, frames: 12);
       expect(find.text('Claim'), findsNothing);
-    });
-  });
-
-  group('Chapter map', () {
-    testWidgets('chapter 1 open, later ones locked, pips and Play', (
-      tester,
-    ) async {
-      await pumpApp(
-        tester,
-        location: AppRoutes.chapterMap,
-        save: played(cleared: 3),
-      );
-      expect(find.text('Chapters'), findsWidgets);
-      expect(find.text('Misty Garden'), findsWidgets);
-      expect(find.text('9 / 180 stars'), findsWidgets);
-      expect(find.bySemanticsLabel('Level 1, 3 stars'), findsOneWidget);
-      expect(find.bySemanticsLabel('Level 4, next'), findsOneWidget);
-      expect(find.bySemanticsLabel('Level 5, locked'), findsOneWidget);
-      expect(find.text('PLAY · Level 4'), findsWidgets);
-    });
-
-    testWidgets('tapping a cleared pip plays it; locked pips do nothing', (
-      tester,
-    ) async {
-      await pumpApp(
-        tester,
-        location: AppRoutes.chapterMap,
-        save: played(cleared: 3),
-      );
-      await tester.tap(find.bySemanticsLabel('Level 5, locked'));
-      await settle(tester, frames: 6);
-      expect(find.byType(GameWidget<ArrowGame>), findsNothing);
-      await tester.tap(find.bySemanticsLabel('Level 2, 3 stars'));
-      await settle(tester, frames: 12);
-      expect(find.byType(GameWidget<ArrowGame>), findsOneWidget);
-    });
-
-    testWidgets('swiping to a locked chapter shows how to open it', (
-      tester,
-    ) async {
-      await pumpApp(tester, location: AppRoutes.chapterMap);
-      await tester.drag(find.byType(PageView), const Offset(-300, 0));
-      await settle(tester, frames: 12);
-      expect(find.text('Clockwork Town'), findsWidgets);
-      expect(find.text('Finish the chapter before it.'), findsWidgets);
-      expect(find.text('PLAY · Level 1'), findsNothing);
-    });
-
-    testWidgets('chapter 2 opens once chapter 1 is finished', (tester) async {
-      await pumpApp(
-        tester,
-        location: AppRoutes.chapterMap,
-        save: const SaveData(currentLevel: {'1': 61, '2': 1}),
-      );
-      // The map opens on the chapter you are in: chapter 2.
-      expect(find.text('Clockwork Town'), findsWidgets);
-      expect(find.text('PLAY · Level 1'), findsWidgets);
     });
   });
 

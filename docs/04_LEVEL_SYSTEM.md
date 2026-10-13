@@ -49,6 +49,16 @@ Field rules:
 
 Pack files: `assets/levels/ch{N}.json` → `{ "schema": 1, "chapter": N, "levels": [ ... ] }`. Daily: `assets/levels/daily_{yyyy}.json` → `{ "schema": 1, "year": 2027, "levels": { "2027-01-01": { level }, ... } }` (keyed by UTC `yyyy-mm-dd`; a file may cover part of a year; daily level ids are `daily_yyyymmdd`, `chapter` 0, `index` = day of the year). Files are written one level per line so diffs stay readable.
 
+### 1.1 Schema v2 (V2 redesign, approved 2026-10-11 — additive, v1 files still load)
+Chapters are removed (`docs/11`): the game is one endless track.
+- `chapter` is deprecated and always `0`; level ids become `l{index:05d}` (e.g. `l00087`), `index` is the global level number (1…∞). Packs are `assets/levels/pack_{n}.json` of 25 levels (`n = (index-1) ~/ 25`).
+- The win screen's "picture reveal" is drawn from `mask` and the arrows themselves, so no `picture` field was needed (dropped from the proposal). `mask` is unchanged; `Masks` now offers 21 silhouettes (heart, star, circle, cat, flower, triangle, moon, house, drop, hexagon, clover, mushroom, tree, leaf, cloud, fish, bolt, arrow, diamond, ring, cross).
+- Board edge may be up to 40 (was 24); the generator uses up to 34.
+- Stages past the five authored ones are generated on the device from the same seeds (`PackBuilder.buildLevel(chapter, index, seed)`), so the track never ends.
+
+### 1.2 V2 level density (`docs/11` §7)
+Players asked for busy boards, not a handful of arrows. `ChapterPlan` now plans, per chapter, a board edge of 10–17 (ch1) up to 26–34 (ch5), fill 0.78–0.94, short bodies (2…3+size/6 cells, skewed short) so counts are high, and almost every level is a silhouette (one in four is a plain square). A level is rejected unless it has at least `ChapterPlan.minArrows` arrows (≈16→58 in chapter 1, ≈100→190 in chapter 5) and the score then follows the target band. The generator's `peelBias` builds each board from the middle outwards, which is what lets the fill pass 0.9 while every arrow keeps a free exit ray (still solvable by construction).
+
 ## 2. Engine semantics (pure Dart — must match GDD §2 & §5)
 
 ```

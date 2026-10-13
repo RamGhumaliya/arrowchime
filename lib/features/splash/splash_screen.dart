@@ -5,6 +5,8 @@ import 'package:arrowchime/app/theme/tokens.dart';
 import 'package:arrowchime/core/ads/ads_controller.dart';
 import 'package:arrowchime/core/audio/audio_service.dart';
 import 'package:arrowchime/core/audio/sfx.dart';
+import 'package:arrowchime/core/companion/companion_controller.dart';
+import 'package:arrowchime/core/companion/notification_service.dart';
 import 'package:arrowchime/core/meta/progression.dart';
 import 'package:arrowchime/core/save/save_controller.dart';
 import 'package:arrowchime/core/ui/components/tb_panel.dart';
@@ -46,6 +48,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       Future.microtask(() {
         final ads = ref.read(adsControllerProvider)..markSessionStart();
         unawaited(ads.init());
+        unawaited(_companionSessionStart());
       }),
     );
     _drop.addStatusListener((status) {
@@ -53,6 +56,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       audio.sfx(Sfx.star3);
       context.go(AppRoutes.home);
     });
+  }
+
+  Future<void> _companionSessionStart() async {
+    final fromNote = await ref
+        .read(notificationServiceProvider)
+        .launchedFromNotification();
+    ref.read(companionControllerProvider).onSessionStart(fromNote: fromNote);
   }
 
   @override

@@ -4,6 +4,7 @@ import 'package:arrowchime/app/app.dart';
 import 'package:arrowchime/app/router.dart';
 import 'package:arrowchime/core/ads/ads_service.dart';
 import 'package:arrowchime/core/ads/tracking_service.dart';
+import 'package:arrowchime/core/companion/notification_service.dart';
 import 'package:arrowchime/core/iap/iap_controller.dart';
 import 'package:arrowchime/core/iap/iap_service.dart';
 import 'package:arrowchime/core/save/save_controller.dart';
@@ -54,13 +55,21 @@ class FakeShare implements ShareService {
 /// The app at a given location with a fixed clock, an in-memory save (optionally
 /// pre-filled) and silent audio.
 class AppHarness {
-  new(this.container, this.audio, this.haptics, this.share, this.ads);
+  new(
+    this.container,
+    this.audio,
+    this.haptics,
+    this.share,
+    this.ads,
+    this.notifications,
+  );
 
   final ProviderContainer container;
   final FakeAudioBackend audio;
   final FakeHaptics haptics;
   final FakeShare share;
   final FakeAdsService ads;
+  final FakeNotificationService notifications;
 
   SaveData get save => container.read(saveControllerProvider);
 }
@@ -77,6 +86,7 @@ Future<AppHarness> pumpApp(
   DateTime? now,
   FakeTrackingService? tracking,
   FakeIapService? iap,
+  FakeNotificationService? notifications,
 }) async {
   tester.view
     ..devicePixelRatio = dpr
@@ -86,6 +96,7 @@ Future<AppHarness> pumpApp(
   final haptics = FakeHaptics();
   final share = FakeShare();
   final ads = FakeAdsService();
+  final notes = notifications ?? FakeNotificationService();
   final store = MemorySaveStore();
   if (save != null) await SaveRepository(store).save(save);
   final container = ProviderContainer(
@@ -94,7 +105,7 @@ Future<AppHarness> pumpApp(
       clockProvider.overrideWithValue(() => now ?? testNow),
       shareServiceProvider.overrideWithValue(share),
       levelBundleProvider.overrideWithValue(DiskAssetBundle()),
-      ...feedbackOverrides(audio, haptics, ads),
+      ...feedbackOverrides(audio, haptics, ads, notes),
       trackingServiceProvider.overrideWithValue(
         tracking ?? FakeTrackingService(isSupported: false),
       ),
@@ -114,5 +125,5 @@ Future<AppHarness> pumpApp(
     ),
   );
   await settle(tester);
-  return AppHarness(container, audio, haptics, share, ads);
+  return AppHarness(container, audio, haptics, share, ads, notes);
 }

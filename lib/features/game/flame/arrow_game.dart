@@ -131,15 +131,22 @@ class ArrowGame extends FlameGame {
   // --- building -----------------------------------------------------------
 
   void _spawnArrows() {
-    engine.level.arrows.forEach(_spawn);
+    final arrows = engine.level.arrows;
+    // Arrows pop in one after the other, the whole entrance within ~0.5 s.
+    final step = arrows.length > 1 ? 0.5 / arrows.length : 0.0;
+    for (var i = 0; i < arrows.length; i++) {
+      _spawn(arrows[i], introDelay: reduceMotion ? -1 : i * step);
+    }
   }
 
-  void _spawn(Arrow arrow) {
+  void _spawn(Arrow arrow, {double introDelay = -1}) {
     final comp = ArrowComponent(
       arrow: arrow,
       geometry: geometry,
       color: ArrowVisuals.arrowColor(arrow, theme, colorBlind: colorBlind),
       skin: skin,
+      accent: theme.accent,
+      introDelay: introDelay,
       reduceMotion: reduceMotion,
       context: boardContext,
       onExited: (c) => _leaving.remove(c.arrow.id),
@@ -173,6 +180,7 @@ class ArrowGame extends FlameGame {
 
   /// Animates what the engine just did.
   void playEvents(List<GameEvent> events) {
+    _idle = 0;
     for (final c in arrows.values) {
       c.clearHint();
     }
@@ -510,6 +518,7 @@ class ArrowGame extends FlameGame {
       _syncCamera();
       if (tween.t >= 1) _tween = null;
     }
+    _idleNudge(dt);
     if (_resultTimer >= 0) {
       _resultTimer += dt;
       if (_won) {
@@ -524,6 +533,26 @@ class ArrowGame extends FlameGame {
           _resultTimer = -1;
           onLost?.call();
         }
+      }
+    }
+  }
+
+  /// Seconds without a tap before a free arrow bounces ("tap me"), then again
+  /// every [_idleRepeat].
+  static const double _idleFirst = 6;
+  static const double _idleRepeat = 3;
+  double _idle = 0;
+
+  void _idleNudge(double dt) {
+    if (reduceMotion || _resultTimer >= 0 || _won) return;
+    _idle += dt;
+    if (_idle < _idleFirst) return;
+    _idle = _idleFirst - _idleRepeat;
+    for (final id in engine.freeArrowIds) {
+      final comp = arrows[id];
+      if (comp != null && !comp.isLeaving) {
+        comp.nudge();
+        return;
       }
     }
   }

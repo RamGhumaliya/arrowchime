@@ -40,7 +40,7 @@ Read CLAUDE.md and every file in docs/. Then scaffold the project:
    (`--platforms=android,ios`) on the current stable Flutter (3.47.x). Follow the 3.47
    Material/Cupertino standalone-package setup from the official docs. Do not create web/
    or desktop folders.
-2. Flavors dev/prod with entrypoints lib/main_dev.dart and lib/main_prod.dart
+2. (V2: single configuration, entrypoint lib/main.dart; no flavors)
    (ids com.webazonic.arrowchime.dev / com.webazonic.arrowchime). Portrait on phones,
    all orientations on tablets.
 3. Add packages with `flutter pub add` per docs/05 §1 (skip Firebase, ads and IAP for now).

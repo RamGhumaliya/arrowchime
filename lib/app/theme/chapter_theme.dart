@@ -15,6 +15,9 @@ class ChapterTheme {
     required this.trayFelt,
     required this.arrowColors,
     this.darkTray = false,
+    this.flat = false,
+    this.ink = const Color(0xFF1B2A41),
+    this.accent = const Color(0xFF14B8A6),
   });
 
   final int id;
@@ -34,6 +37,15 @@ class ChapterTheme {
   /// Dark tray ⇒ light arrows (chapters 3 and 5).
   final bool darkTray;
 
+  /// V2 "Clean Line": no tray or scene, one flat background and ink arrows.
+  final bool flat;
+
+  /// Arrow line colour on a [flat] board.
+  final Color ink;
+
+  /// Highlight colour (taps, hints, progress) on a [flat] board.
+  final Color accent;
+
   /// A copy with another tray (board-theme cosmetics).
   ChapterTheme copyWith({Color? trayFelt, bool? darkTray}) => ChapterTheme(
     id: id,
@@ -44,6 +56,48 @@ class ChapterTheme {
     trayFelt: trayFelt ?? this.trayFelt,
     arrowColors: arrowColors,
     darkTray: darkTray ?? this.darkTray,
+    flat: flat,
+    ink: ink,
+    accent: accent,
+  );
+
+  /// The V2 game board in light mode: white page, navy ink, teal accent.
+  /// [skyTop] is the page colour; [arrowColors] is the confetti palette.
+  static const ChapterTheme cleanLight = ChapterTheme(
+    id: 1,
+    name: 'Clean Light',
+    diorama: '',
+    skyTop: Color(0xFFFFFFFF),
+    skyBottom: Color(0xFFFFFFFF),
+    trayFelt: Color(0xFFFFFFFF),
+    flat: true,
+    arrowColors: [
+      Color(0xFF14B8A6),
+      Color(0xFFFFC94D),
+      Color(0xFFFF4D5E),
+      Color(0xFF6EC6FF),
+      Color(0xFF2F7DF6),
+    ],
+  );
+
+  /// The V2 game board in dark mode: charcoal page, near-white ink.
+  static const ChapterTheme cleanDark = ChapterTheme(
+    id: 1,
+    name: 'Clean Dark',
+    diorama: '',
+    skyTop: Color(0xFF10151C),
+    skyBottom: Color(0xFF10151C),
+    trayFelt: Color(0xFF10151C),
+    darkTray: true,
+    flat: true,
+    ink: Color(0xFFE8EEF6),
+    arrowColors: [
+      Color(0xFF14B8A6),
+      Color(0xFFFFC94D),
+      Color(0xFFFF4D5E),
+      Color(0xFF6EC6FF),
+      Color(0xFF2F7DF6),
+    ],
   );
 
   static const ChapterTheme mistyGarden = ChapterTheme(

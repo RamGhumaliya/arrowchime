@@ -1,7 +1,6 @@
 import 'package:arrowchime/app/theme/chapter_theme.dart';
 import 'package:arrowchime/app/theme/tokens.dart';
 import 'package:arrowchime/core/ui/components/tb_button.dart';
-import 'package:arrowchime/core/ui/components/tb_chapter_card.dart';
 import 'package:arrowchime/core/ui/components/tb_flow_meter.dart';
 import 'package:arrowchime/core/ui/components/tb_icon_button.dart';
 import 'package:arrowchime/core/ui/components/tb_panel.dart';
@@ -350,35 +349,6 @@ final List<_Case> _cases = [
     surface: TestSurface.chapter,
   ),
   // Chapter cards, tray, tube
-  _Case(
-    'chapter_card_tilted',
-    () => const TBChapterCard(
-      chapter: ChapterTheme.mistyGarden,
-      restoration: 0.42,
-    ),
-    size: const Size(340, 420),
-    surface: TestSurface.ink,
-  ),
-  _Case(
-    'chapter_card_focused',
-    () => const TBChapterCard(
-      chapter: ChapterTheme.clockworkTown,
-      restoration: 0.9,
-      focused: true,
-    ),
-    size: const Size(340, 420),
-    surface: TestSurface.ink,
-  ),
-  _Case(
-    'chapter_card_locked',
-    () => const TBChapterCard(
-      chapter: ChapterTheme.lanternBazaar,
-      restoration: 0,
-      locked: true,
-    ),
-    size: const Size(340, 420),
-    surface: TestSurface.ink,
-  ),
   _Case(
     'tray_light',
     () => TBTray(chapter: ChapterTheme.mistyGarden, child: _tube()),

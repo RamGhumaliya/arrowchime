@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:arrowchime/core/companion/companion_controller.dart';
 import 'package:arrowchime/core/save/save_controller.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,10 +24,16 @@ class _SaveLifecycleState extends ConsumerState<SaveLifecycle> {
     super.initState();
     _listener = AppLifecycleListener(
       onInactive: _flush,
-      onPause: _flush,
+      onPause: _paused,
       onDetach: _flush,
       onHide: _flush,
     );
+  }
+
+  void _paused() {
+    _flush();
+    // Plan the next kind notes now that the player is leaving.
+    unawaited(ref.read(companionControllerProvider).onBackground());
   }
 
   void _flush() => unawaited(ref.read(saveControllerProvider.notifier).flush());

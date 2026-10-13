@@ -73,6 +73,12 @@ abstract class GenParams with _$GenParams {
     /// Chance a new head is drawn next to existing arrows.
     @Default(0.5) double clusterBias,
 
+    /// Chance a new head is the innermost of a handful of candidates, so the
+    /// board is built from the middle outwards. Late arrows then sit near the
+    /// edge where their exit ray is still free, which is what lets the fill
+    /// reach 0.9+ while staying solvable.
+    @Default(0.0) double peelBias,
+
     /// Consecutive-ish placement failures before giving up.
     @Default(800) int maxFailures,
 

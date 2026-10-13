@@ -1,10 +1,6 @@
-import 'dart:ui' as ui;
-
 import 'package:arrowchime/app/theme/tokens.dart';
 import 'package:arrowchime/core/ui/components/tb_text.dart';
 import 'package:arrowchime/core/ui/painters/brass_painter.dart';
-import 'package:arrowchime/core/ui/painters/inset_painter.dart';
-import 'package:arrowchime/core/ui/painters/shade.dart';
 import 'package:arrowchime/core/ui/support/tb_motion_scope.dart';
 import 'package:flutter/widgets.dart';
 
@@ -107,61 +103,22 @@ class _TubePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final tube = RRect.fromRectAndRadius(
-      Offset.zero & size,
+    // A thin track with a solid fill; the segment count only sets how many
+    // notches the progress snaps to.
+    final h = size.height * 0.28;
+    final track = RRect.fromRectAndRadius(
+      Rect.fromLTWH(0, (size.height - h) / 2, size.width, h),
       const Radius.circular(TBRadius.pill),
     );
-    Inset.paint(canvas, tube, fill: TBColors.ink700, shadowOpacity: 0.5);
-
-    final inner = tube.deflate(TBBevel.rimLight * 1.5);
-    const gap = TBSpacing.s4;
-    final segW = (inner.width - gap * (segments - 1)) / segments;
-    final lit = (fill * segments).ceil();
-    for (var i = 0; i < segments; i++) {
-      final left = inner.left + i * (segW + gap);
-      final seg = RRect.fromRectAndRadius(
-        Rect.fromLTWH(left, inner.top, segW, inner.height),
-        const Radius.circular(TBRadius.r12 / 2),
-      );
-      final on = i < lit;
-      canvas.drawRRect(
-        seg,
-        Paint()
-          ..shader = ui.Gradient.linear(
-            seg.outerRect.topCenter,
-            seg.outerRect.bottomCenter,
-            on
-                ? [TBShade.lighten(color, 0.14), color]
-                : [TBShade.white(0.12), TBShade.white(0.05)],
-          ),
-      );
-      if (on) {
-        canvas.drawRRect(
-          RRect.fromRectAndRadius(
-            Rect.fromLTWH(
-              left + 2,
-              inner.top + 2,
-              segW - 4,
-              TBBevel.specularThickness / 1.5,
-            ),
-            const Radius.circular(TBRadius.pill),
-          ),
-          Paint()..color = TBShade.white(0.5),
-        );
-      }
-    }
-    // Glass sheen across the top of the tube.
+    canvas.drawRRect(track, Paint()..color = TBColors.cream300);
+    final lit = (fill * segments).ceil() / segments;
+    if (lit <= 0) return;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromLTWH(
-          tube.left + size.height / 2,
-          tube.top + TBBevel.rimLight,
-          size.width - size.height,
-          size.height * 0.28,
-        ),
+        Rect.fromLTWH(0, track.top, size.width * lit, h),
         const Radius.circular(TBRadius.pill),
       ),
-      Paint()..color = TBShade.white(0.16),
+      Paint()..color = color,
     );
   }
 

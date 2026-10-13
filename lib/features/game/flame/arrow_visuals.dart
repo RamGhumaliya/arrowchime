@@ -22,6 +22,7 @@ abstract final class ArrowVisuals {
   }) {
     final key = arrow.color;
     if (key != null) return gateColor(key);
+    if (theme.flat) return theme.ink;
     final colors = TBColorBlind.of(colorBlind) ?? theme.arrowColors;
     return colors[(arrow.skinHint ?? arrow.id) % colors.length];
   }

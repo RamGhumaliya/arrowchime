@@ -47,7 +47,12 @@ abstract final class PackBuilder {
       fnv1a32('arrowchime-level-v1:$baseSeed:$chapter:$index:$attempt');
 
   /// Builds level [index] (1–60) of [chapter] (1–5).
-  static BuiltLevel buildLevel(int chapter, int index, int baseSeed) {
+  static BuiltLevel buildLevel(
+    int chapter,
+    int index,
+    int baseSeed, {
+    int attempts = maxAttempts,
+  }) {
     final target = ChapterPlan.targetScore(chapter, index);
     final id = ChapterPlan.idFor(chapter, index);
     final melody = ChapterPlan.melodyFor(chapter, index);
@@ -65,15 +70,16 @@ abstract final class PackBuilder {
       );
     }
 
+    final minArrows = ChapterPlan.minArrows(chapter, index);
     Level? best;
     var bestError = double.infinity;
     // Bisect the easy ↔ hard axis: a harder `adapt` gives a higher score.
     var lo = -ChapterPlan.maxAdapt;
     var hi = ChapterPlan.maxAdapt;
     var adapt = 0.0;
-    var attempts = 0;
-    for (var a = 0; a < maxAttempts; a++) {
-      attempts = a + 1;
+    var tried = 0;
+    for (var a = 0; a < attempts; a++) {
+      tried = a + 1;
       final params = ChapterPlan.paramsFor(chapter, index, adapt: adapt);
       final level = LevelGenerator.generate(
         params,
@@ -84,12 +90,26 @@ abstract final class PackBuilder {
         melody: melody,
       );
       final score = level.meta.difficulty ?? 0;
-      final error = (score - target).abs();
+      // A level short of arrows is worse than any level that has enough.
+      final short = minArrows - level.arrows.length;
+      final error = (score - target).abs() + (short > 0 ? 100.0 + short : 0);
       if (error < bestError) {
         best = level;
         bestError = error;
       }
       if (error <= acceptError) break;
+      // Too few arrows: make the next try bigger and denser regardless of
+      // the score.
+      if (short > 0) {
+        lo = adapt;
+        adapt = (lo + hi) / 2;
+        if (hi - lo < 0.2) {
+          lo = adapt;
+          hi = ChapterPlan.maxAdapt;
+          adapt = (lo + hi) / 2;
+        }
+        continue;
+      }
       if (score < target) {
         lo = adapt;
       } else {
@@ -102,7 +122,7 @@ abstract final class PackBuilder {
         hi = ChapterPlan.maxAdapt;
       }
     }
-    return BuiltLevel(level: best!, target: target, attempts: attempts);
+    return BuiltLevel(level: best!, target: target, attempts: tried);
   }
 
   /// Builds [count] levels of [chapter] starting at level 1.

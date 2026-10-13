@@ -214,7 +214,6 @@ void main() {
       'tb_star_row.dart',
       'tb_progress_bar.dart',
       'tb_toast.dart',
-      'tb_chapter_card.dart',
       'tb_flow_meter.dart',
       'tb_text.dart',
       'tb_tray.dart',

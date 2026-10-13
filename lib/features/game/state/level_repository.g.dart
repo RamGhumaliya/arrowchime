@@ -225,17 +225,20 @@ final class DailyLevelFamily extends $Family
   String toString() => r'dailyLevelProvider';
 }
 
-/// A single level of a chapter pack.
+/// A single level of the endless track: bundled up to stage 5, generated
+/// beyond.
 
 @ProviderFor(level)
 final levelProvider = LevelFamily._();
 
-/// A single level of a chapter pack.
+/// A single level of the endless track: bundled up to stage 5, generated
+/// beyond.
 
 final class LevelProvider
     extends $FunctionalProvider<AsyncValue<Level>, Level, FutureOr<Level>>
     with $FutureModifier<Level>, $FutureProvider<Level> {
-  /// A single level of a chapter pack.
+  /// A single level of the endless track: bundled up to stage 5, generated
+  /// beyond.
   LevelProvider._({
     required LevelFamily super.from,
     required LevelRef super.argument,
@@ -279,9 +282,10 @@ final class LevelProvider
   }
 }
 
-String _$levelHash() => r'1a220094b9864b4f031d0878f4c5a4561f9cadcb';
+String _$levelHash() => r'483da25c34ceb7e9e057bce999c22f1ad4891e92';
 
-/// A single level of a chapter pack.
+/// A single level of the endless track: bundled up to stage 5, generated
+/// beyond.
 
 final class LevelFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<Level>, LevelRef> {
@@ -294,7 +298,8 @@ final class LevelFamily extends $Family
         isAutoDispose: false,
       );
 
-  /// A single level of a chapter pack.
+  /// A single level of the endless track: bundled up to stage 5, generated
+  /// beyond.
 
   LevelProvider call(LevelRef id) => LevelProvider._(argument: id, from: this);
 

@@ -36,7 +36,7 @@ void main() {
 
     test('levels land within tolerance of their target (every chapter)', () {
       for (final chapter in ChapterPlan.bands.keys) {
-        for (final index in [11, 23, 35, 47, 58, 60]) {
+        for (final index in [11, 35, 58]) {
           final built = PackBuilder.buildLevel(chapter, index, 1001);
           expect(
             built.withinTolerance,

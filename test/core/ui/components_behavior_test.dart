@@ -3,7 +3,6 @@ import 'dart:ui' as ui;
 import 'package:arrowchime/app/theme/chapter_theme.dart';
 import 'package:arrowchime/app/theme/tokens.dart';
 import 'package:arrowchime/core/ui/components/tb_button.dart';
-import 'package:arrowchime/core/ui/components/tb_chapter_card.dart';
 import 'package:arrowchime/core/ui/components/tb_flow_meter.dart';
 import 'package:arrowchime/core/ui/components/tb_icon_button.dart';
 import 'package:arrowchime/core/ui/components/tb_panel.dart';
@@ -345,23 +344,18 @@ void main() {
   });
 
   group('TBText', () {
-    testWidgets('sticker variants stack shadow, stroke and fill', (
+    testWidgets('display, title, counter and button are plain flat text', (
       tester,
     ) async {
-      await pumpSurface(tester, const TBText.display('Hi'));
-      // shadow + stroke + fill
-      expect(find.byType(Text), findsNWidgets(3));
-      await pumpSurface(tester, const TBText.title('Hi'));
-      expect(find.byType(Text), findsNWidgets(3));
-    });
-
-    testWidgets('counter and button have a stroke but no hard shadow', (
-      tester,
-    ) async {
-      await pumpSurface(tester, const TBText.counter('5'));
-      expect(find.byType(Text), findsNWidgets(2));
-      await pumpSurface(tester, const TBText.button('Go'));
-      expect(find.byType(Text), findsNWidgets(2));
+      for (final w in const [
+        TBText.display('Hi'),
+        TBText.title('Hi'),
+        TBText.counter('5'),
+        TBText.button('Go'),
+      ]) {
+        await pumpSurface(tester, w);
+        expect(find.byType(Text), findsOneWidget);
+      }
     });
 
     testWidgets('body and caption are plain', (tester) async {
@@ -1014,93 +1008,6 @@ void main() {
       await tester.pump(TBMotion.toast);
       await tester.pumpAndSettle();
       expect(find.text('Hi'), findsNothing);
-    });
-  });
-
-  group('TBChapterCard', () {
-    testWidgets('announces name and restoration; tap works', (tester) async {
-      final handle = tester.ensureSemantics();
-      var taps = 0;
-      await pumpSurface(
-        tester,
-        TBChapterCard(
-          chapter: ChapterTheme.mistyGarden,
-          restoration: 0.42,
-          onTap: () => taps++,
-        ),
-        size: const Size(340, 420),
-        surface: TestSurface.ink,
-      );
-      expect(
-        tester.getSemantics(find.byType(TBChapterCard)).label,
-        'Misty Garden, 42 percent restored',
-      );
-      await tester.tap(find.byType(TBChapterCard));
-      expect(taps, 1);
-      handle.dispose();
-    });
-
-    testWidgets('locked cards say so and ignore taps', (tester) async {
-      final handle = tester.ensureSemantics();
-      var taps = 0;
-      await pumpSurface(
-        tester,
-        TBChapterCard(
-          chapter: ChapterTheme.lanternBazaar,
-          restoration: 0,
-          locked: true,
-          onTap: () => taps++,
-        ),
-        size: const Size(340, 420),
-        surface: TestSurface.ink,
-      );
-      expect(
-        tester.getSemantics(find.byType(TBChapterCard)).label,
-        'Lantern Bazaar, locked',
-      );
-      await tester.tap(find.byType(TBChapterCard));
-      expect(taps, 0);
-      handle.dispose();
-    });
-
-    testWidgets('tilts 4 degrees, relaxes to 0 when focused', (tester) async {
-      Matrix4 tilt() => tester
-          .widgetList<Transform>(find.byType(Transform))
-          .firstWhere((t) => t.transform.entry(3, 2) != 0)
-          .transform;
-
-      late StateSetter set;
-      var focused = false;
-      await pumpSurface(
-        tester,
-        StatefulBuilder(
-          builder: (context, setState) {
-            set = setState;
-            return TBChapterCard(
-              chapter: ChapterTheme.mistyGarden,
-              restoration: 0.1,
-              focused: focused,
-            );
-          },
-        ),
-        size: const Size(340, 420),
-        surface: TestSurface.ink,
-      );
-      await tester.pumpAndSettle();
-      // cos(4 deg) = 0.99756.
-      expect(tilt().entry(1, 1), closeTo(0.99756, 1e-4));
-
-      set(() => focused = true);
-      await tester.pumpAndSettle();
-      expect(tilt().entry(1, 1), closeTo(1, 1e-9));
-    });
-
-    test('restoration outside 0-1 is a programming error', () {
-      expect(
-        () =>
-            TBChapterCard(chapter: ChapterTheme.mistyGarden, restoration: 1.5),
-        throwsAssertionError,
-      );
     });
   });
 

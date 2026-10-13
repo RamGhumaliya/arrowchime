@@ -21,7 +21,7 @@ import 'package:arrowchime/core/level/prng.dart';
 /// `(params, seed)` yields identical JSON on every platform.
 abstract final class LevelGenerator {
   /// Written to `meta.generatorVersion`. Bump when output changes.
-  static const String version = '1.0.0';
+  static const String version = '2.0.0';
 
   /// Generates one level.
   static Level generate(
@@ -245,6 +245,15 @@ abstract final class LevelGenerator {
       if (active[c] == 1 && occ[c] < 0 && portalOther[c] < 0) empty.add(c);
     }
     if (empty.isEmpty) return -1;
+
+    if (p.peelBias > 0 && rng.nextBool(p.peelBias)) {
+      var best = rng.pick(empty);
+      for (var i = 0; i < 12; i++) {
+        final other = rng.pick(empty);
+        if (_centerDist(other, w, h) < _centerDist(best, w, h)) best = other;
+      }
+      return best;
+    }
 
     var pool = empty;
     if (rng.nextBool(p.clusterBias)) {

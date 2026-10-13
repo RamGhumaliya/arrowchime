@@ -100,9 +100,7 @@ class _PillPainter extends CustomPainter {
         Offset.zero & size,
         const Radius.circular(TBRadius.pill),
       ),
-      fill: TBColors.ink700,
-      shadowOpacity: 0.5,
-      rimOpacity: 0.18,
+      fill: TBColors.cream300,
     );
   }
 

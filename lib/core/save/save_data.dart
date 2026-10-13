@@ -160,6 +160,48 @@ abstract class AdState with _$AdState {
       _$AdStateFromJson(json);
 }
 
+/// The Chime Companion's memory (`docs/11` §5): whether the player opted in,
+/// how often they want to hear from it, and what it has learnt. Times are
+/// epoch milliseconds, dates are local `yyyy-MM-dd`.
+@freezed
+abstract class CompanionState with _$CompanionState {
+  const factory CompanionState({
+    /// `normal`, `fewer` or `off`.
+    @Default('normal') String mode,
+
+    /// When the player said yes to notifications (0 = never).
+    @Default(0) int optedInAt,
+
+    /// The pre-prompt: `''` never shown, `declined`, or `asked`.
+    @Default('') String askState,
+
+    /// When the pre-prompt may be shown again after "Maybe later".
+    @Default(0) int askRetryAt,
+
+    /// Notifications in a row that were never opened. At 3 it stays quiet.
+    @Default(0) int ignoredInRow,
+
+    /// When the last batch was planned (0 = never) and how many it held.
+    @Default(0) int lastPlannedAt,
+    @Default(0) int lastPlannedCount,
+
+    /// The hour of day the player usually plays (moving average).
+    @Default(19) int usualHour,
+
+    /// Levels cleared today (local date) and the best such day so far.
+    @Default('') String todayDate,
+    @Default(0) int todayLevels,
+    @Default(0) int bestDayLevels,
+
+    /// Levels cleared yesterday, if that was a new best day (shown in the
+    /// appreciation note).
+    @Default(0) int yesterdayRecord,
+  }) = _CompanionState;
+
+  factory CompanionState.fromJson(Map<String, dynamic> json) =>
+      _$CompanionStateFromJson(json);
+}
+
 /// Everything that survives closing the app (`docs/05` §6).
 @freezed
 abstract class SaveData with _$SaveData {
@@ -195,6 +237,9 @@ abstract class SaveData with _$SaveData {
 
     /// Ad frequency state.
     @Default(AdState()) AdState ads,
+
+    /// The Chime Companion (notifications).
+    @Default(CompanionState()) CompanionState companion,
 
     /// Store transactions already fulfilled (purchases are idempotent).
     @Default(<String>[]) List<String> purchases,

@@ -4,13 +4,13 @@
 /// They mirror `lib/app/theme/tokens.dart` and `chapter_theme.dart`;
 /// `test/tool/placeholder_palette_test.dart` fails if they drift.
 abstract final class PlaceholderPalette {
-  static const int ink900 = 0x121A2B;
-  static const int ink700 = 0x1E2A44;
-  static const int ink500 = 0x3A4A6B;
-  static const int cream100 = 0xFFF6E6;
-  static const int cream300 = 0xF3DFC1;
-  static const int teal = 0x19B3A3;
-  static const int berry = 0xE5446D;
+  static const int ink900 = 0x0F1B2D;
+  static const int ink700 = 0x2A3A55;
+  static const int ink500 = 0x5B6B85;
+  static const int cream100 = 0xFFFFFF;
+  static const int cream300 = 0xE6EBF3;
+  static const int teal = 0x2F7DF6;
+  static const int berry = 0xFF4D5E;
   static const int butter = 0xFFD15C;
   static const int butterLip = 0xC9952A;
   static const int sky = 0x6EC6FF;

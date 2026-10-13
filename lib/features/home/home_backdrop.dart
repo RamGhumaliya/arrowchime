@@ -1,20 +1,19 @@
-import 'dart:math' as math;
-
 import 'package:arrowchime/app/theme/chapter_theme.dart';
 import 'package:arrowchime/app/theme/tokens.dart';
-import 'package:arrowchime/core/ui/components/tb_chapter_card.dart';
-import 'package:arrowchime/core/ui/painters/shade.dart';
+import 'package:arrowchime/core/ui/painters/enamel_tube_painter.dart';
 import 'package:arrowchime/core/ui/support/tb_motion_scope.dart';
 import 'package:flutter/widgets.dart';
 
-/// Full-bleed chapter scene behind Home (`docs/10` §7): the chapter's sky and
-/// ridges, restored in colour by [restoration], with soft cloud layers
-/// drifting at three speeds as the parallax placeholder. Reduce Motion: the
-/// clouds stand still.
+/// The page behind Home (`docs/10` §7, V2 "Clean Line"): the plain page colour
+/// with a slow field of faint thin-line arrows drifting across it, like the
+/// board in the distance. Reduce Motion: the arrows stand still.
 class HomeBackdrop extends StatefulWidget {
   const new({required this.theme, required this.restoration, super.key});
 
+  /// Kept for callers; Home no longer paints a chapter scene.
   final ChapterTheme theme;
+
+  /// Kept for callers.
   final double restoration;
 
   @override
@@ -23,7 +22,7 @@ class HomeBackdrop extends StatefulWidget {
 
 class _HomeBackdropState extends State<HomeBackdrop>
     with SingleTickerProviderStateMixin {
-  /// One full drift of the cloud layers.
+  /// One full drift of the arrow field.
   static final Duration _loop = TBMotion.shimmer * 40;
 
   late final AnimationController _drift = AnimationController(
@@ -50,56 +49,55 @@ class _HomeBackdropState extends State<HomeBackdrop>
   @override
   Widget build(BuildContext context) {
     return ExcludeSemantics(
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          CustomPaint(
-            painter: ChapterScenePainter(
-              chapter: widget.theme,
-              restoration: widget.restoration,
-              locked: false,
-            ),
-          ),
-          CustomPaint(
-            painter: _CloudsPainter(_drift, dark: widget.theme.darkTray),
-          ),
-        ],
+      child: ColoredBox(
+        color: TBColors.page,
+        child: CustomPaint(
+          size: Size.infinite,
+          painter: _ArrowFieldPainter(_drift),
+        ),
       ),
     );
   }
 }
 
-/// Three layers of soft cloud blobs: far (slow, small, faint) to near (fast,
-/// big).
-class _CloudsPainter extends CustomPainter {
-  new(this.t, {required this.dark}) : super(repaint: t);
+/// Faint straight arrows in a fixed pattern, drifting right and wrapping.
+class _ArrowFieldPainter extends CustomPainter {
+  new(this.t) : super(repaint: t);
 
   final Animation<double> t;
-  final bool dark;
 
-  static const List<(double speed, double scale, double alpha, double y)>
-  _layers = [(1, 0.5, 0.10, 0.18), (2, 0.8, 0.14, 0.30), (3, 1.2, 0.18, 0.12)];
+  // (row 0-1, start column 0-1, length in cells, speed multiplier)
+  static const List<(double, double, int, double)> _arrows = [
+    (0.08, 0.10, 3, 1),
+    (0.16, 0.62, 2, 2),
+    (0.25, 0.35, 4, 1),
+    (0.33, 0.85, 3, 3),
+    (0.42, 0.05, 2, 2),
+    (0.50, 0.55, 4, 1),
+    (0.58, 0.25, 3, 3),
+    (0.66, 0.78, 2, 1),
+    (0.74, 0.40, 3, 2),
+    (0.82, 0.08, 4, 1),
+    (0.90, 0.68, 2, 3),
+  ];
 
   @override
   void paint(Canvas canvas, Size size) {
-    for (final (speed, scale, alpha, y) in _layers) {
-      final paint = Paint()
-        ..color = (dark ? TBShade.white(alpha * 0.6) : TBShade.white(alpha));
-      final shift = t.value * speed * size.width;
-      for (var i = 0; i < 3; i++) {
-        final x =
-            ((i * size.width / 2.2 + shift) % (size.width * 1.4)) -
-            size.width * 0.2;
-        final cy = size.height * (y + 0.07 * math.sin(i * 2.1 + speed));
-        final r = size.width * 0.10 * scale;
-        canvas
-          ..drawCircle(Offset(x, cy), r, paint)
-          ..drawCircle(Offset(x + r, cy + r * 0.2), r * 0.8, paint)
-          ..drawCircle(Offset(x - r, cy + r * 0.3), r * 0.7, paint);
-      }
+    final c = size.width / 11;
+    final color = TBColors.ink900.withValues(alpha: 0.07);
+    final span = size.width + 6 * c;
+    for (final (row, start, len, speed) in _arrows) {
+      final x = ((start * span + t.value * speed * span) % span) - 3 * c;
+      final y = size.height * row;
+      EnamelTube.paint(
+        canvas,
+        [for (var i = 0; i < len; i++) Offset(x + i * c, y)],
+        c * 0.8,
+        color,
+      );
     }
   }
 
   @override
-  bool shouldRepaint(_CloudsPainter old) => old.dark != dark;
+  bool shouldRepaint(_ArrowFieldPainter old) => false;
 }

@@ -1,6 +1,5 @@
 import 'package:arrowchime/app/theme/chapter_theme.dart';
 import 'package:arrowchime/app/theme/tokens.dart';
-import 'package:arrowchime/core/ui/components/tb_chapter_card.dart';
 import 'package:arrowchime/core/ui/components/tb_icon_button.dart';
 import 'package:arrowchime/core/ui/components/tb_ribbon.dart';
 import 'package:arrowchime/core/ui/icons/tb_icon_id.dart';
@@ -58,16 +57,7 @@ class ScreenFrame extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        if (theme == null)
-          const ColoredBox(color: TBColors.ink700)
-        else
-          CustomPaint(
-            painter: ChapterScenePainter(
-              chapter: theme!,
-              restoration: 1,
-              locked: false,
-            ),
-          ),
+        const ColoredBox(color: TBColors.page),
         SafeArea(
           child: Padding(
             padding: EdgeInsets.only(

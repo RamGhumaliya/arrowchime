@@ -43,9 +43,8 @@ abstract final class TBTypography {
       fontFamily: TBFonts.display,
       fontSize: 44,
       fontWeight: FontWeight.w700,
-      color: TBColors.cream100,
+      color: TBColors.ink900,
     ),
-    sticker: TBStickerSpec(strokeWidth: 3, shadowOffsetY: 4),
   );
 
   static const TBTextSpec title = TBTextSpec(
@@ -53,9 +52,8 @@ abstract final class TBTypography {
       fontFamily: TBFonts.display,
       fontSize: 28,
       fontWeight: FontWeight.w700,
-      color: TBColors.cream100,
+      color: TBColors.ink900,
     ),
-    sticker: TBStickerSpec(strokeWidth: 2, shadowOffsetY: 3),
   );
 
   static const TBTextSpec counter = TBTextSpec(
@@ -63,10 +61,9 @@ abstract final class TBTypography {
       fontFamily: TBFonts.display,
       fontSize: 22,
       fontWeight: FontWeight.w700,
-      color: TBColors.cream100,
+      color: TBColors.ink900,
       fontFeatures: [FontFeature.tabularFigures()],
     ),
-    sticker: TBStickerSpec(strokeWidth: 2),
   );
 
   static const TBTextSpec button = TBTextSpec(
@@ -77,7 +74,6 @@ abstract final class TBTypography {
       letterSpacing: 0.2,
       color: TBColors.cream100,
     ),
-    buttonStroke: 1.5,
   );
 
   static const TBTextSpec body = TBTextSpec(

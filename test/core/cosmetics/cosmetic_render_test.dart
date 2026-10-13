@@ -22,11 +22,11 @@ void main() {
       expect(ArrowSkin.fromId('nope'), ArrowSkin.candy);
     });
 
-    test('each skin recolours the body; candy leaves it alone', () {
-      const base = TBColors.berry;
+    test('each skin recolours the line; candy keeps the board ink', () {
+      const base = TBColors.ink900;
       expect(ArrowSkin.candy.body(base), base);
-      expect(ArrowSkin.brass.body(base), TBMaterials.brassFace);
-      expect(ArrowSkin.neon.body(base), TBColors.ink900);
+      expect(ArrowSkin.brass.body(base), TBColors.butterLip);
+      expect(ArrowSkin.neon.body(base), TBColors.tangerine);
       for (final skin in ArrowSkin.values) {
         expect(skin.body(base), isA<Color>());
       }

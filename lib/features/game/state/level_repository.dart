@@ -1,4 +1,6 @@
+import 'package:arrowchime/core/level/generator/chapter_plan.dart';
 import 'package:arrowchime/core/level/generator/daily.dart';
+import 'package:arrowchime/core/level/generator/pack_builder.dart';
 import 'package:arrowchime/core/level/models/level.dart';
 import 'package:arrowchime/core/level/pack_loader.dart';
 import 'package:arrowchime/core/meta/date_key.dart';
@@ -60,7 +62,11 @@ levelOverridesProvider = NotifierProvider<LevelOverrides, Map<LevelRef, Level>>(
   LevelOverrides.new,
 );
 
-/// A single level of a chapter pack.
+Level _buildGenerated((int, int) at) =>
+    PackBuilder.buildLevel(at.$1, at.$2, PackBuilder.defaultBaseSeed).level;
+
+/// A single level of the endless track: bundled up to stage 5, generated
+/// beyond.
 @Riverpod(keepAlive: true, retry: _noRetry)
 Future<Level> level(Ref ref, LevelRef id) async {
   final replaced = ref.watch(levelOverridesProvider.select((m) => m[id]));
@@ -68,6 +74,11 @@ Future<Level> level(Ref ref, LevelRef id) async {
   final daily = id.daily;
   if (daily != null) {
     return await ref.watch(dailyLevelProvider(daily).future);
+  }
+  if (id.chapter > ChapterPlan.authoredChapters) {
+    // Past the shipped packs the track is generated on the device from the
+    // same deterministic seeds (identical on every device).
+    return await compute(_buildGenerated, (id.chapter, id.index));
   }
   final pack = await ref.watch(levelPackProvider(id.chapter).future);
   return pack.levels[id.index - 1];

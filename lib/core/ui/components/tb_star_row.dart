@@ -1,8 +1,6 @@
 import 'package:arrowchime/app/theme/tokens.dart';
 import 'package:arrowchime/core/ui/icons/tb_icon.dart';
 import 'package:arrowchime/core/ui/icons/tb_icon_id.dart';
-import 'package:arrowchime/core/ui/painters/brass_painter.dart';
-import 'package:arrowchime/core/ui/painters/inset_painter.dart';
 import 'package:arrowchime/core/ui/painters/shade.dart';
 import 'package:arrowchime/core/ui/support/tb_motion_scope.dart';
 import 'package:flutter/widgets.dart';
@@ -137,20 +135,14 @@ class _TBStarRowState extends State<TBStarRow> with TickerProviderStateMixin {
   }
 }
 
-/// Brass ring around a recessed socket.
+/// A soft round socket behind each star.
 class _SocketPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final outer = RRect.fromRectAndRadius(
-      Offset.zero & size,
-      Radius.circular(size.shortestSide / 2),
-    );
-    Brass.paint(canvas, outer);
-    Inset.paint(
-      canvas,
-      outer.deflate(TBBevel.plaqueRim * 1.5),
-      fill: TBColors.ink700,
-      shadowOpacity: 0.6,
+    canvas.drawCircle(
+      size.center(Offset.zero),
+      size.shortestSide / 2,
+      Paint()..color = TBColors.ink900.withValues(alpha: 0.12),
     );
   }
 

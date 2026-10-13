@@ -1,6 +1,8 @@
 import 'package:arrowchime/app/router.dart';
 import 'package:arrowchime/app/theme/tokens.dart';
 import 'package:arrowchime/core/audio/feedback_settings.dart';
+import 'package:arrowchime/core/companion/companion_controller.dart';
+import 'package:arrowchime/core/save/save_controller.dart';
 import 'package:arrowchime/core/ui/components/tb_panel.dart';
 import 'package:arrowchime/core/ui/components/tb_sheet.dart';
 import 'package:arrowchime/core/ui/components/tb_slider.dart';
@@ -95,6 +97,36 @@ class SettingsScreen extends ConsumerWidget {
                 ].indexOf(play.colorBlind),
                 onSelected: (i) =>
                     playCtl.setColorBlind(const ['off', 'deutan', 'tritan'][i]),
+              ),
+            ],
+          ),
+          const SizedBox(height: TBSpacing.s16),
+          _Group(
+            title: l10n.settingsCompanion,
+            children: [
+              TBText.caption(
+                l10n.settingsCompanionNote,
+                color: TBColors.ink700,
+              ),
+              _Segmented(
+                label: l10n.settingsCompanion,
+                labels: [
+                  l10n.settingsCompanionNormal,
+                  l10n.settingsCompanionFewer,
+                  l10n.settingsCompanionOff,
+                ],
+                selected: const ['normal', 'fewer', 'off'].indexOf(
+                  ref.watch(
+                    saveControllerProvider.select((d) => d.companion.mode),
+                  ),
+                ),
+                onSelected: (i) => ref
+                    .read(companionControllerProvider)
+                    .setMode(const ['normal', 'fewer', 'off'][i]),
+              ),
+              _ActionRow(
+                label: l10n.diaryTitle,
+                onTap: () => context.push(AppRoutes.diary),
               ),
             ],
           ),

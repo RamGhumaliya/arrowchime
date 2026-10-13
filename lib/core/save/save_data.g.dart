@@ -156,6 +156,38 @@ Map<String, dynamic> _$AdStateToJson(_AdState instance) => <String, dynamic>{
   'starterShownDate': instance.starterShownDate,
 };
 
+_CompanionState _$CompanionStateFromJson(Map<String, dynamic> json) =>
+    _CompanionState(
+      mode: json['mode'] as String? ?? 'normal',
+      optedInAt: (json['optedInAt'] as num?)?.toInt() ?? 0,
+      askState: json['askState'] as String? ?? '',
+      askRetryAt: (json['askRetryAt'] as num?)?.toInt() ?? 0,
+      ignoredInRow: (json['ignoredInRow'] as num?)?.toInt() ?? 0,
+      lastPlannedAt: (json['lastPlannedAt'] as num?)?.toInt() ?? 0,
+      lastPlannedCount: (json['lastPlannedCount'] as num?)?.toInt() ?? 0,
+      usualHour: (json['usualHour'] as num?)?.toInt() ?? 19,
+      todayDate: json['todayDate'] as String? ?? '',
+      todayLevels: (json['todayLevels'] as num?)?.toInt() ?? 0,
+      bestDayLevels: (json['bestDayLevels'] as num?)?.toInt() ?? 0,
+      yesterdayRecord: (json['yesterdayRecord'] as num?)?.toInt() ?? 0,
+    );
+
+Map<String, dynamic> _$CompanionStateToJson(_CompanionState instance) =>
+    <String, dynamic>{
+      'mode': instance.mode,
+      'optedInAt': instance.optedInAt,
+      'askState': instance.askState,
+      'askRetryAt': instance.askRetryAt,
+      'ignoredInRow': instance.ignoredInRow,
+      'lastPlannedAt': instance.lastPlannedAt,
+      'lastPlannedCount': instance.lastPlannedCount,
+      'usualHour': instance.usualHour,
+      'todayDate': instance.todayDate,
+      'todayLevels': instance.todayLevels,
+      'bestDayLevels': instance.bestDayLevels,
+      'yesterdayRecord': instance.yesterdayRecord,
+    };
+
 _SaveData _$SaveDataFromJson(Map<String, dynamic> json) => _SaveData(
   schemaVersion: (json['schemaVersion'] as num?)?.toInt() ?? currentSaveSchema,
   seq: (json['seq'] as num?)?.toInt() ?? 0,
@@ -209,6 +241,9 @@ _SaveData _$SaveDataFromJson(Map<String, dynamic> json) => _SaveData(
   ads: json['ads'] == null
       ? const AdState()
       : AdState.fromJson(json['ads'] as Map<String, dynamic>),
+  companion: json['companion'] == null
+      ? const CompanionState()
+      : CompanionState.fromJson(json['companion'] as Map<String, dynamic>),
   purchases:
       (json['purchases'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       const <String>[],
@@ -232,6 +267,7 @@ Map<String, dynamic> _$SaveDataToJson(_SaveData instance) => <String, dynamic>{
   'stats': instance.stats.toJson(),
   'flags': instance.flags,
   'ads': instance.ads.toJson(),
+  'companion': instance.companion.toJson(),
   'purchases': instance.purchases,
   'updatedAt': instance.updatedAt,
 };

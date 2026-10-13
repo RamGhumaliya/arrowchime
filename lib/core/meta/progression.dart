@@ -107,12 +107,12 @@ abstract final class Progression {
 
   /// Where Home's PLAY button goes: the first chapter with levels left.
   static (int chapter, int index) playTarget(SaveData d) {
-    for (var c = 1; c <= chapters; c++) {
-      if (isChapterUnlocked(d, c) && nextIndex(d, c) <= levelsPerChapter) {
-        return (c, nextIndex(d, c));
-      }
+    // The track never ends: the frontier is the first stage not yet finished.
+    var c = 1;
+    while (nextIndex(d, c) > levelsPerChapter) {
+      c++;
     }
-    return (chapters, levelsPerChapter);
+    return (c, nextIndex(d, c));
   }
 
   // --- recording a win ----------------------------------------------------------

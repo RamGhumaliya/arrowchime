@@ -1,7 +1,6 @@
 import 'package:arrowchime/app/theme/chapter_theme.dart';
 import 'package:arrowchime/app/theme/tokens.dart';
 import 'package:arrowchime/core/ui/components/tb_button.dart';
-import 'package:arrowchime/core/ui/components/tb_chapter_card.dart';
 import 'package:arrowchime/core/ui/components/tb_flow_meter.dart';
 import 'package:arrowchime/core/ui/components/tb_icon_button.dart';
 import 'package:arrowchime/core/ui/components/tb_pill.dart';
@@ -274,24 +273,6 @@ void main() {
       final rect = tester.getRect(column.first);
       expect(rect.width, lessThanOrEqualTo(TBSizes.contentMaxWidth));
       expect(rect.center.dx, closeTo(640, 2));
-    });
-
-    testWidgets('chapter cards keep their size in a landscape tablet', (
-      tester,
-    ) async {
-      await pumpSurface(
-        tester,
-        const TBChapterCard(
-          chapter: ChapterTheme.mistyGarden,
-          restoration: 0.3,
-        ),
-        size: const Size(1280, 800),
-        surface: TestSurface.ink,
-      );
-      expect(
-        tester.getSize(find.byType(TBChapterCard)),
-        const Size(TBSizes.chapterCardWidth, TBSizes.chapterCardHeight),
-      );
     });
   });
 

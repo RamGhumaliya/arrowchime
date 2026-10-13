@@ -66,13 +66,13 @@ int levelHash(Level level) => fnv1a32(jsonEncode(level.toJson()));
 
 /// Expected hashes (from `tool/print_golden_hashes.dart`).
 const Map<String, int> goldenHashes = {
-  'base_8x8_seed42': 0x4748D093,
-  'heart_10x10_seed7': 0xCDFD17D9,
-  'gates_frozen_links_10x10_seed99': 0xBC66DD01,
-  'portals_9x9_seed5': 0x45A2199E,
-  'rotators_8x8_seed13': 0x41FA23B1,
-  'pack_ch1_l25': 0x3EEAAB24,
-  'pack_ch3_l22': 0xC9370D9A,
+  'base_8x8_seed42': 0xC798F710,
+  'heart_10x10_seed7': 0xF68167BE,
+  'gates_frozen_links_10x10_seed99': 0xD624DA7C,
+  'portals_9x9_seed5': 0xA67BF7A7,
+  'rotators_8x8_seed13': 0x12125AAC,
+  'pack_ch1_l25': 0xC5B4E9BD,
+  'pack_ch3_l22': 0xE92AD4A7,
   'onboarding_l7': 0xB2BB014D,
-  'daily_2026_10_10': 0x3D82768A,
+  'daily_2026_10_10': 0xB7C78165,
 };

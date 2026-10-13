@@ -137,6 +137,121 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get companionTitle => 'Chime Companion';
+
+  @override
+  String get companionBody =>
+      'A kind nudge now and then? We\'ll cheer you on and remind you when a streak needs a play. One note a day at most, never at night.';
+
+  @override
+  String get companionYes => 'Yes, please';
+
+  @override
+  String get companionLater => 'Maybe later';
+
+  @override
+  String get noteAppreciationTitle => 'A great day';
+
+  @override
+  String noteAppreciationBody(int n) {
+    return 'You cleared $n levels yesterday, your best day yet.';
+  }
+
+  @override
+  String noteStreakTitle(int n) {
+    return 'Your $n-day streak';
+  }
+
+  @override
+  String get noteStreakBody =>
+      'It is safe until midnight. One quick puzzle keeps it going.';
+
+  @override
+  String get noteDailyTitle => 'Today\'s Daily Chime';
+
+  @override
+  String get noteDailyBody => 'A fresh puzzle is ready. About four minutes.';
+
+  @override
+  String get noteComeback3Title => 'Your arrows are waiting';
+
+  @override
+  String get noteComeback3Body => 'No pressure. Whenever you are ready.';
+
+  @override
+  String get noteComeback7Title => 'We kept your place';
+
+  @override
+  String get noteComeback7Body =>
+      'A free hint is waiting. Come back whenever you like.';
+
+  @override
+  String get settingsCompanion => 'Chime Companion';
+
+  @override
+  String get settingsCompanionNormal => 'Normal';
+
+  @override
+  String get settingsCompanionFewer => 'Fewer';
+
+  @override
+  String get settingsCompanionOff => 'Off';
+
+  @override
+  String get settingsCompanionNote =>
+      'Kind notes, at most one a day, never at night.';
+
+  @override
+  String get diaryTitle => 'Chime Diary';
+
+  @override
+  String get diaryIntro => 'Your best moments so far.';
+
+  @override
+  String get diaryLevels => 'Levels cleared';
+
+  @override
+  String get diaryArrows => 'Arrows freed';
+
+  @override
+  String get diaryBestChain => 'Best chain';
+
+  @override
+  String diaryChainValue(int n) {
+    return '×$n';
+  }
+
+  @override
+  String get diaryStreakBest => 'Longest streak';
+
+  @override
+  String diaryDays(int n) {
+    return '$n days';
+  }
+
+  @override
+  String get diaryPerfect => 'Perfect clears';
+
+  @override
+  String get diaryBestDay => 'Best day';
+
+  @override
+  String diaryLevelsCount(int n) {
+    return '$n levels';
+  }
+
+  @override
+  String get diaryTime => 'Time played';
+
+  @override
+  String diaryMinutes(int n) {
+    return '$n min';
+  }
+
+  @override
+  String get winHeadline => 'Beautifully done!';
+
+  @override
   String get winNext => 'Next level';
 
   @override
@@ -160,19 +275,19 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get chapterName1 => 'Misty Garden';
+  String get chapterName1 => 'levels 1–60';
 
   @override
-  String get chapterName2 => 'Clockwork Town';
+  String get chapterName2 => 'levels 61–120';
 
   @override
-  String get chapterName3 => 'Lantern Bazaar';
+  String get chapterName3 => 'levels 121–180';
 
   @override
-  String get chapterName4 => 'Frost Peaks';
+  String get chapterName4 => 'levels 181–240';
 
   @override
-  String get chapterName5 => 'Starlight Observatory';
+  String get chapterName5 => 'levels 241–300';
 
   @override
   String homePlay(int n) {
@@ -897,7 +1012,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String collLockChapter(String name) {
-    return 'Restore $name';
+    return 'Clear $name';
   }
 
   @override

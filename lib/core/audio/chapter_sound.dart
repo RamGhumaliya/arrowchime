@@ -177,5 +177,6 @@ class ChapterSound {
   ];
 
   /// The sound of chapter [chapter] (1-5).
-  static ChapterSound of(int chapter) => all[(chapter - 1).clamp(0, 4)];
+  static ChapterSound of(int chapter) =>
+      all[((chapter < 1 ? 1 : chapter) - 1) % all.length];
 }

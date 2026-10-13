@@ -112,6 +112,81 @@
       }
     }
   },
+  "companionTitle": "Chime Companion",
+  "companionBody": "A kind nudge now and then? We'll cheer you on and remind you when a streak needs a play. One note a day at most, never at night.",
+  "companionYes": "Yes, please",
+  "companionLater": "Maybe later",
+  "noteAppreciationTitle": "A great day",
+  "noteAppreciationBody": "You cleared {n} levels yesterday, your best day yet.",
+  "@noteAppreciationBody": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "noteStreakTitle": "Your {n}-day streak",
+  "@noteStreakTitle": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "noteStreakBody": "It is safe until midnight. One quick puzzle keeps it going.",
+  "noteDailyTitle": "Today's Daily Chime",
+  "noteDailyBody": "A fresh puzzle is ready. About four minutes.",
+  "noteComeback3Title": "Your arrows are waiting",
+  "noteComeback3Body": "No pressure. Whenever you are ready.",
+  "noteComeback7Title": "We kept your place",
+  "noteComeback7Body": "A free hint is waiting. Come back whenever you like.",
+  "settingsCompanion": "Chime Companion",
+  "settingsCompanionNormal": "Normal",
+  "settingsCompanionFewer": "Fewer",
+  "settingsCompanionOff": "Off",
+  "settingsCompanionNote": "Kind notes, at most one a day, never at night.",
+  "diaryTitle": "Chime Diary",
+  "diaryIntro": "Your best moments so far.",
+  "diaryLevels": "Levels cleared",
+  "diaryArrows": "Arrows freed",
+  "diaryBestChain": "Best chain",
+  "diaryChainValue": "×{n}",
+  "@diaryChainValue": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "diaryStreakBest": "Longest streak",
+  "diaryDays": "{n} days",
+  "@diaryDays": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "diaryPerfect": "Perfect clears",
+  "diaryBestDay": "Best day",
+  "diaryLevelsCount": "{n} levels",
+  "@diaryLevelsCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "diaryTime": "Time played",
+  "diaryMinutes": "{n} min",
+  "@diaryMinutes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "winHeadline": "Beautifully done!",
   "winNext": "Next level",
   "winReplay": "Replay",
   "failTitle": "Out of hearts",
@@ -126,11 +201,11 @@
       }
     }
   },
-  "chapterName1": "Misty Garden",
-  "chapterName2": "Clockwork Town",
-  "chapterName3": "Lantern Bazaar",
-  "chapterName4": "Frost Peaks",
-  "chapterName5": "Starlight Observatory",
+  "chapterName1": "levels 1–60",
+  "chapterName2": "levels 61–120",
+  "chapterName3": "levels 121–180",
+  "chapterName4": "levels 181–240",
+  "chapterName5": "levels 241–300",
   "homePlay": "PLAY · Level {n}",
   "@homePlay": {
     "placeholders": {
@@ -626,7 +701,7 @@
       }
     }
   },
-  "collLockChapter": "Restore {name}",
+  "collLockChapter": "Clear {name}",
   "@collLockChapter": {
     "placeholders": {
       "name": {

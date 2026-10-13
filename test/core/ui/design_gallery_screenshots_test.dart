@@ -18,11 +18,7 @@ void main() {
 
   // Tablet landscape (Android, 1280x800) for the pages that matter on it.
   const tablet = MapEntry('android_tablet', Size(1280, 800));
-  const tabletGroups = {
-    GalleryGroup.buttons,
-    GalleryGroup.hud,
-    GalleryGroup.chapters,
-  };
+  const tabletGroups = {GalleryGroup.buttons, GalleryGroup.hud};
 
   for (final group in GalleryGroup.values) {
     for (final device in [

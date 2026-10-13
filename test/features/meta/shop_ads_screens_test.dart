@@ -244,7 +244,7 @@ void main() {
       expect(find.text('Equipped'), findsWidgets);
       expect(find.text('Neon Tube'), findsWidgets);
       expect(find.text('Comes in a bundle'), findsWidgets);
-      expect(find.text('Restore Misty Garden'), findsWidgets);
+      expect(find.text('Clear levels 1–60'), findsWidgets);
       // Buying Paper-craft costs 500.
       await tester.ensureVisible(find.text('Paper-craft').first);
       await tester.tap(find.text('Paper-craft').first);

@@ -3,7 +3,6 @@ import 'package:arrowchime/app/theme/tokens.dart';
 import 'package:arrowchime/core/level/generator/mechanic_tutorials.dart';
 import 'package:arrowchime/core/level/models/level.dart';
 import 'package:arrowchime/core/ui/components/tb_button.dart';
-import 'package:arrowchime/core/ui/components/tb_chapter_card.dart';
 import 'package:arrowchime/core/ui/components/tb_flow_meter.dart';
 import 'package:arrowchime/core/ui/components/tb_icon_button.dart';
 import 'package:arrowchime/core/ui/components/tb_panel.dart';
@@ -42,7 +41,6 @@ enum GalleryGroup {
   surfaces('Panels'),
   hud('HUD'),
   controls('Controls'),
-  chapters('Chapters'),
   icons('Icons'),
   materials('Materials'),
   mechanics('Mechanics'),
@@ -58,7 +56,6 @@ enum GalleryGroup {
     GalleryGroup.surfaces => const _Surfaces(),
     GalleryGroup.hud => const _Hud(),
     GalleryGroup.controls => const _Controls(),
-    GalleryGroup.chapters => const _Chapters(),
     GalleryGroup.icons => const _Icons(),
     GalleryGroup.materials => const _Materials(),
     GalleryGroup.mechanics => const _Mechanics(),
@@ -682,66 +679,6 @@ class _ControlsState extends State<_Controls> {
           ],
           selectedIndex: _tab,
           onSelected: (i) => setState(() => _tab = i),
-        ),
-      ),
-    ]);
-  }
-}
-
-// --- Chapters -----------------------------------------------------------------
-
-class _Chapters extends StatelessWidget {
-  const new();
-
-  @override
-  Widget build(BuildContext context) {
-    return _column([
-      GalleryItem(
-        title: 'TBChapterCard',
-        note: 'Scenes are placeholders. Tilt 4° relaxes to 0 when focused.',
-        builder: (context, surface) => SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              StateLabel(
-                'tilted',
-                surface: surface,
-                child: const TBChapterCard(
-                  chapter: ChapterTheme.mistyGarden,
-                  restoration: 0.42,
-                ),
-              ),
-              const SizedBox(width: TBSpacing.s24),
-              StateLabel(
-                'focused',
-                surface: surface,
-                child: const TBChapterCard(
-                  chapter: ChapterTheme.clockworkTown,
-                  restoration: 0.9,
-                  focused: true,
-                ),
-              ),
-              const SizedBox(width: TBSpacing.s24),
-              StateLabel(
-                'locked',
-                surface: surface,
-                child: const TBChapterCard(
-                  chapter: ChapterTheme.lanternBazaar,
-                  restoration: 0,
-                  locked: true,
-                ),
-              ),
-              const SizedBox(width: TBSpacing.s24),
-              StateLabel(
-                'dark chapter',
-                surface: surface,
-                child: const TBChapterCard(
-                  chapter: ChapterTheme.starlightObservatory,
-                  restoration: 0.15,
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     ]);

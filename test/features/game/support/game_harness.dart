@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:arrowchime/core/ads/ads_controller.dart';
 import 'package:arrowchime/core/ads/ads_service.dart';
 import 'package:arrowchime/core/audio/audio_service.dart';
+import 'package:arrowchime/core/companion/notification_service.dart';
 import 'package:arrowchime/core/haptics/haptics_service.dart';
 import 'package:arrowchime/core/level/models/level.dart';
 import 'package:arrowchime/core/level/pack_loader.dart';
@@ -32,8 +33,12 @@ List<Override> feedbackOverrides(
   FakeAudioBackend audio,
   FakeHaptics haptics, [
   FakeAdsService? ads,
+  FakeNotificationService? notifications,
 ]) => [
   adsServiceProvider.overrideWithValue(ads ?? FakeAdsService()),
+  notificationServiceProvider.overrideWithValue(
+    notifications ?? FakeNotificationService(),
+  ),
   saveDebounceProvider.overrideWithValue(null),
   audioBackendProvider.overrideWithValue(audio),
   hapticsProvider.overrideWithValue(haptics),

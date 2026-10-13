@@ -6,6 +6,7 @@ import 'package:arrowchime/app/theme/tokens.dart';
 import 'package:arrowchime/core/ads/ads_controller.dart';
 import 'package:arrowchime/core/audio/audio_service.dart';
 import 'package:arrowchime/core/audio/sfx.dart';
+import 'package:arrowchime/core/companion/companion_controller.dart';
 import 'package:arrowchime/core/cosmetics/cosmetics.dart';
 import 'package:arrowchime/core/economy/wallet.dart';
 import 'package:arrowchime/core/haptics/haptics_service.dart';
@@ -17,7 +18,6 @@ import 'package:arrowchime/core/meta/progression.dart';
 import 'package:arrowchime/core/remote_config/app_config.dart';
 import 'package:arrowchime/core/save/save_controller.dart';
 import 'package:arrowchime/core/ui/components/tb_button.dart';
-import 'package:arrowchime/core/ui/components/tb_chapter_card.dart';
 import 'package:arrowchime/core/ui/components/tb_flow_meter.dart';
 import 'package:arrowchime/core/ui/components/tb_sheet.dart';
 import 'package:arrowchime/core/ui/components/tb_text.dart';
@@ -61,7 +61,8 @@ class GameScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final level = ref.watch(levelProvider(levelRef));
-    final theme = ChapterTheme.byId(levelRef.chapter);
+    final dark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+    final theme = dark ? ChapterTheme.cleanDark : ChapterTheme.cleanLight;
     return _Backdrop(
       theme: theme,
       child: level.when(
@@ -87,13 +88,7 @@ class _Backdrop extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        CustomPaint(
-          painter: ChapterScenePainter(
-            chapter: theme,
-            restoration: 1,
-            locked: false,
-          ),
-        ),
+        ColoredBox(color: theme.skyTop),
         SafeArea(child: child),
       ],
     );
@@ -334,16 +329,17 @@ class _GameViewState extends ConsumerState<_GameView> {
     if (reward == null) return;
     final id = widget.levelRef;
     final ads = ref.read(adsControllerProvider)..onWin();
+    ref.read(companionControllerProvider).onLevelCleared();
     final doubled = ValueNotifier<bool>(false);
     _feedback?.starsAwarded(state.stars);
     unawaited(
-      showTBSheet<void>(
+      showTBFullscreen<void>(
         context,
-        barrierDismissible: false,
-        sheet: ValueListenableBuilder<bool>(
+        page: ValueListenableBuilder<bool>(
           valueListenable: doubled,
           builder: (context, isDoubled, _) => WinSheet(
-            levelNumber: id.index,
+            levelNumber: id.globalIndex,
+            level: _session.engine.level,
             stars: state.stars,
             reward: reward,
             animate: !TBMotionScope.reduced(context),
@@ -370,7 +366,7 @@ class _GameViewState extends ConsumerState<_GameView> {
                     ? AppRoutes.daily
                     : (id.index < 60
                           ? AppRoutes.levelPath(id.chapterSlug, id.index + 1)
-                          : AppRoutes.chapterMap),
+                          : AppRoutes.levelPath('ch${id.chapter + 1}', 1)),
               );
             },
             onReplay: () {
@@ -452,7 +448,7 @@ class _GameViewState extends ConsumerState<_GameView> {
     final margin = TBLayout.screenMargin(context);
 
     final topBar = GameTopBar(
-      levelNumber: id.index,
+      levelNumber: id.globalIndex,
       hearts: state.hearts,
       totalHearts: state.initialHearts,
       coins: coins,

@@ -101,16 +101,6 @@ void main() {
         await shot(tester, 'home_new_${device.key}');
       });
 
-      testWidgets('chapter map', (tester) async {
-        await pumpApp(
-          tester,
-          size: device.value,
-          save: midGame,
-          location: AppRoutes.chapterMap,
-        );
-        await shot(tester, 'chapters_${device.key}');
-      });
-
       testWidgets('daily knot', (tester) async {
         await pumpApp(
           tester,

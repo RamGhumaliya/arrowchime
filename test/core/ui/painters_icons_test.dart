@@ -166,16 +166,16 @@ void main() {
       return -1;
     }
 
-    test('at rest the lip is 6 dp and the face starts at the top', () async {
+    test('at rest the lip is 4 dp and the face starts at the top', () async {
       final r = await button(0);
-      expect(lipRows(r), inInclusiveRange(5, 6));
+      expect(lipRows(r), inInclusiveRange(3, 4));
       expect(firstOpaqueRow(r), inInclusiveRange(0, 1));
     });
 
-    test('pressed: face moves down 4 dp and the lip shrinks to 2 dp', () async {
+    test('pressed: face moves down 2 dp and the lip shrinks to 2 dp', () async {
       final r = await button(1);
       expect(lipRows(r), inInclusiveRange(2, 3));
-      expect(firstOpaqueRow(r), inInclusiveRange(4, 5));
+      expect(firstOpaqueRow(r), inInclusiveRange(2, 3));
     });
 
     test('disabled has no lip and is desaturated', () async {
@@ -188,12 +188,11 @@ void main() {
       expect(hsl.saturation, lessThan(0.45));
     });
 
-    test('light comes from the top-left: highlight left, none right', () async {
+    test('the face is flat: no highlight or gradient across it', () async {
       final r = await button(0);
-      // 1.5 dp inner highlight runs along the top and left edges.
-      final left = r.luma(1, 30);
-      final right = r.luma(size.width.round() - 2, 30);
-      expect(left, greaterThan(right + 4));
+      final left = r.luma(10, 20);
+      final right = r.luma(size.width.round() - 10, 20);
+      expect((left - right).abs(), lessThan(3));
     });
 
     test('focus draws a sky ring outside the slab', () async {
@@ -235,15 +234,14 @@ void main() {
   });
 
   group('Knob', () {
-    test('lit top-left, shaded bottom-right, painted without error', () async {
+    test('is a flat solid disc, painted without error', () async {
       const d = 64.0;
       final r = await rasterize(
         const Size(d + 8, d + 8),
         (c) => Knob.paint(c, const Offset(4, 4), d),
       );
       expect(r.opaquePixels, greaterThan(2000));
-      // Specular streak up-left is brighter than the lower-right face.
-      expect(r.luma(24, 22), greaterThan(r.luma(50, 50)));
+      expect((r.luma(24, 22) - r.luma(50, 40)).abs(), lessThan(3));
     });
 
     test('focus ring is drawn when focused', () async {
@@ -256,26 +254,23 @@ void main() {
   });
 
   group('Paper / Inset / Wood / Brass / Crystal', () {
-    test(
-      'recessed paper is darker top-left (inner shadow) than bottom-right',
-      () async {
-        const size = Size(160, 100);
-        final r = await rasterize(
-          size,
-          (c) => Paper.paintRecessed(c, size, radius: TBRadius.r20),
-        );
-        expect(r.luma(24, 6), lessThan(r.luma(130, 85)));
-      },
-    );
+    test('recessed paper is a flat tinted well', () async {
+      const size = Size(160, 100);
+      final r = await rasterize(
+        size,
+        (c) => Paper.paintRecessed(c, size, radius: TBRadius.r20),
+      );
+      expect((r.luma(24, 6) - r.luma(130, 85)).abs(), lessThan(3));
+    });
 
-    test('raised paper has a bevel strip darker than its face', () async {
+    test('raised paper is a white card with a hairline border', () async {
       const size = Size(160, 100);
       final r = await rasterize(
         size,
         (c) => Paper.paintRaised(c, size, elevation: const []),
       );
-      expect(r.luma(80, 97), lessThan(r.luma(80, 60)));
-      expect(near(r.at(80, 97), TBColors.cream300, 20), isTrue);
+      expect(near(r.at(80, 60), TBColors.cream100, 4), isTrue);
+      expect(near(r.at(80, 0), TBColors.cream300, 30), isTrue);
     });
 
     test('grain is deterministic', () async {
@@ -302,7 +297,7 @@ void main() {
       );
     });
 
-    test('inset: shadow top-left, light rim bottom-right', () async {
+    test('inset is a solid fill', () async {
       const size = Size(160, 60);
       final r = await rasterize(
         size,
@@ -315,33 +310,28 @@ void main() {
           fill: TBColors.cream300,
         ),
       );
-      expect(r.luma(30, 3), lessThan(r.luma(130, 56)));
+      expect((r.luma(30, 3) - r.luma(130, 56)).abs(), lessThan(3));
     });
 
-    test(
-      'wood grain is deterministic and the plank has a darker lip',
-      () async {
-        const size = Size(160, 60);
-        Future<Raster> draw() =>
-            rasterize(size, (c) => Wood.paint(c, size, elevation: const []));
-        final a = await draw();
-        expect(a.bytes, (await draw()).bytes);
-        expect(a.luma(80, 57), lessThan(a.luma(80, 30)));
-      },
-    );
+    test('the slab is flat with a darker lip', () async {
+      const size = Size(160, 60);
+      Future<Raster> draw() =>
+          rasterize(size, (c) => Wood.paint(c, size, elevation: const []));
+      final a = await draw();
+      expect(a.bytes, (await draw()).bytes);
+      expect(a.luma(80, 58), lessThan(a.luma(80, 30)));
+    });
 
-    test('felt tray shows felt inside a wooden rim', () async {
+    test('the tray is a flat fill in the felt colour', () async {
       const size = Size(160, 100);
       final r = await rasterize(
         size,
         (c) => Felt.paintTray(c, size, felt: const Color(0xFFE9E2D0)),
       );
-      // Centre ~ felt colour; the rim ring is much darker (wood).
-      expect(r.luma(80, 50), greaterThan(180));
-      expect(r.luma(80, 2), lessThan(140));
+      expect(near(r.at(80, 50), const Color(0xFFE9E2D0), 4), isTrue);
     });
 
-    test('brass reads as metal: a light-dark-light gradient', () async {
+    test('brass is a flat butter plate with a darker edge', () async {
       const size = Size(160, 60);
       final r = await rasterize(
         size,
@@ -354,11 +344,7 @@ void main() {
           elevation: const [],
         ),
       );
-      final lumas = [for (var x = 12; x < 148; x += 8) r.luma(x, 30)];
-      final spread =
-          lumas.reduce((a, b) => a > b ? a : b) -
-          lumas.reduce((a, b) => a < b ? a : b);
-      expect(spread, greaterThan(30));
+      expect(near(r.at(80, 30), TBMaterials.brassFace, 6), isTrue);
       expect(const BrassPainter().shouldRepaint(const BrassPainter()), isFalse);
       expect(
         const BrassPainter(radius: TBRadius.r20)
@@ -367,7 +353,7 @@ void main() {
       );
     });
 
-    test('crystal is translucent with a bright top-left rim', () async {
+    test('crystal is a pale flat block with an outline', () async {
       const size = Size(120, 80);
       final r = await rasterize(
         size,
@@ -379,8 +365,7 @@ void main() {
           ),
         ),
       );
-      expect(r.alpha(60, 40), lessThan(255), reason: 'translucent face');
-      expect(r.luma(4, 30), greaterThan(r.luma(116, 60)));
+      expect(r.alpha(60, 40), 255);
       expect(
         const CrystalPainter().shouldRepaint(const CrystalPainter()),
         isFalse,
@@ -399,18 +384,7 @@ void main() {
       (canvas) => EnamelTube.paint(canvas, pts, c, TBColors.berry),
     );
 
-    int whitish(Raster r) {
-      var n = 0;
-      for (var y = 0; y < r.height; y++) {
-        for (var x = 0; x < r.width; x++) {
-          final (rr, g, b, a) = r.at(x, y);
-          if (a > 200 && rr > 235 && g > 200 && b > 200) n++;
-        }
-      }
-      return n;
-    }
-
-    test('paints a body, head and nock for every shape', () async {
+    test('paints a line and a head for every shape', () async {
       for (final pts in [
         const [Offset(130, 60)],
         const [Offset(40, 60), Offset(220, 60)],
@@ -428,36 +402,28 @@ void main() {
         ],
       ]) {
         final r = await tube(pts);
-        expect(r.opaquePixels, greaterThan(600), reason: '$pts');
+        expect(r.opaquePixels, greaterThan(200), reason: '$pts');
       }
     });
 
-    test(
-      'five passes: dark rim, body colour, lighter band, specular',
-      () async {
-        final r = await tube(const [Offset(40, 60), Offset(180, 60)]);
-        // Down the middle of the tube: rim (dark) -> body -> band (light).
-        final rim = r.luma(110, 60 + 8);
-        final body = r.luma(110, 60);
-        expect(body, isNot(closeTo(rim, 4)));
-        final column = [for (var y = 40; y < 80; y++) r.luma(110, y)];
-        expect(
-          column.reduce((a, b) => a > b ? a : b),
-          greaterThan(column.reduce((a, b) => a < b ? a : b) + 25),
-        );
-      },
-    );
-
-    test('specular only on segments running up or left', () async {
-      final right = await tube(const [Offset(40, 60), Offset(200, 60)]);
-      final left = await tube(const [Offset(200, 60), Offset(40, 60)]);
-      expect(whitish(left), greaterThan(whitish(right)));
+    test('the line is the given colour with no shadow below it', () async {
+      final r = await tube(const [Offset(40, 60), Offset(180, 60)]);
+      expect(near(r.at(110, 60), TBColors.berry, 6), isTrue);
+      expect(r.alpha(110, 60 + 18), 0);
+      expect(r.alpha(110, 60 - 18), 0);
     });
 
-    test('the shadow falls down and to the right', () async {
+    test('the head is wider than the line', () async {
       final r = await tube(const [Offset(40, 60), Offset(180, 60)]);
-      // Below the tube there is shadow (alpha), above it is empty.
-      expect(r.alpha(100, 60 + 18), greaterThan(r.alpha(100, 60 - 24)));
+      int column(int x) {
+        var n = 0;
+        for (var y = 0; y < r.height; y++) {
+          if (r.alpha(x, y) > 128) n++;
+        }
+        return n;
+      }
+
+      expect(column(180), greaterThan(column(110) * 2));
     });
 
     test('the widget painter fits cells into its box', () async {
@@ -468,7 +434,7 @@ void main() {
           color: TBColors.teal,
         ).paint(c, const Size(200, 80)),
       );
-      expect(r.opaquePixels, greaterThan(800));
+      expect(r.opaquePixels, greaterThan(200));
       const p = EnamelTubePainter(cells: [(0, 0)], color: TBColors.teal);
       expect(p.shouldRepaint(p), isFalse);
       expect(
@@ -528,14 +494,14 @@ void main() {
       },
     );
 
-    test('3-tone: the coin is lit top-left and shaded bottom-right', () async {
+    test('flat: the coin is one solid colour, no bevel', () async {
       final r = await rasterize(
         const Size.square(128),
         (c) =>
             const TBIconPainter(TBIconId.coin).paint(c, const Size.square(128)),
       );
       // Inside the rim at 225 deg (top-left) vs 45 deg (bottom-right).
-      expect(r.luma(28, 28), greaterThan(r.luma(100, 100)));
+      expect((r.luma(28, 28) - r.luma(100, 100)).abs(), lessThan(3));
     });
 
     test('the painter repaints only when the icon changes', () {

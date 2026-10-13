@@ -40,8 +40,8 @@
     "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
     "chapter": { "type": "integer", "minimum": 0 },
     "index": { "type": "integer", "minimum": 1 },
-    "width": { "type": "integer", "minimum": 3, "maximum": 24 },
-    "height": { "type": "integer", "minimum": 3, "maximum": 24 },
+    "width": { "type": "integer", "minimum": 3, "maximum": 40 },
+    "height": { "type": "integer", "minimum": 3, "maximum": 40 },
     "mask": {
       "description": "null = full rectangle; else `height` strings of length `width`, '1' cell / '0' void",
       "oneOf": [

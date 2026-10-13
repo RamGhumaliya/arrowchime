@@ -262,6 +262,21 @@ The layouts you approved (docs/10 §7) are built. The app now starts on the **Sp
 2. The tutorials are generated, not hand-made; if one feels wrong, Regenerate and tell me.
 3. Open points: ceramic portal "swirl shader + fallback": the swirl is code-drawn (animated arcs); a real fragment shader is art/engineering work for later.
 
+## V2 "Clean Line" redesign (branch `redesign_game`) — in progress
+Why: first outside feedback was "boring, 3D arrows and boards look bad, cells small, levels with few arrows". Direction and research: `docs/11_REDESIGN_V2.md`; mock-ups: `docs/screenshots/v2_clean/`.
+
+Done so far (all tests green, analyzer clean):
+- **Look**: flat tokens (white page, navy ink, teal accent), flat painters (button, card, slab, plaque, knob), thin-line arrows with a small head, no tray, faint dot grid, light/dark game board (follows system), flat icons, flat ribbons/progress, home with a drifting field of faint arrows.
+- **Win screen**: full-screen teal sunburst + confetti + stars + the finished picture of the level (cells coloured by arrow, masked cells empty).
+- **Juice**: arrows pop in at level start (staggered), idle "tap me" bounce after 6 s, accent press/hint highlight.
+- **Endless track**: no chapter UI; level numbers are global; stages 1–5 are the shipped packs, 6+ are generated on the device from the same seeds (`PackBuilder`, 12 tries); sound palettes cycle every 60 levels.
+- **Denser, shaped levels**: see `docs/04` §1.2. 21 silhouettes, boards 10–34 wide, minimum arrow counts, packs and Dailies regenerated (`generatorVersion 2.0.0`).
+- **Chime Companion** (`lib/core/companion/`): pure planner (opt-in, 1/day, quiet hours, usual hour learned, stop after 3 ignored, comeback only at day 3 and 7), `flutter_local_notifications` behind `NotificationService`, pre-prompt after level 5, Settings (Normal/Fewer/Off), Chime Diary screen. Real-device delivery not yet verified.
+- **Single configuration**: dev flavor removed (Android + iOS project, CI, docs); entrypoint `lib/main.dart`. iOS project edit is untested (no Mac).
+- Dependencies: + `flutter_local_notifications`, `timezone`, `flutter_timezone`; − `connectivity_plus` (unused).
+
+Still to do: sound pass (new exit/combo sounds), combo ripple + slow-mo last arrow, in-game zoom defaults for dense boards, Level picker, remove `ChapterTheme` scenes and the chapter art placeholders, real-device check, docs 02/03/06/07/10 rewrite to V2.
+
 ## Phase 8 — Shop, cosmetics, ads & IAP (design gate: human review)
 Built:
 - **Config**: `core/remote_config/{defaults,remote_config_service,app_config}.dart` (`LocalRemoteConfig` until Firebase in Phase 9); every economy/ad number reads `AppConfig`. `core/economy/pricing.dart` removed.

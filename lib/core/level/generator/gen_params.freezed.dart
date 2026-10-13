@@ -311,7 +311,11 @@ mixin _$GenParams {
  double get singleCellShare;/// Probability that a body turns at each step (0 straight … 1 random).
  double get windiness;/// Chance a new head is drawn towards the board centre.
  double get centerBias;/// Chance a new head is drawn next to existing arrows.
- double get clusterBias;/// Consecutive-ish placement failures before giving up.
+ double get clusterBias;/// Chance a new head is the innermost of a handful of candidates, so the
+/// board is built from the middle outwards. Late arrows then sit near the
+/// edge where their exit ray is still free, which is what lets the fill
+/// reach 0.9+ while staying solvable.
+ double get peelBias;/// Consecutive-ish placement failures before giving up.
  int get maxFailures;/// Hard cap on the number of arrows (onboarding levels), or `null`.
  int? get maxArrows; MechanicMix get mix; int get hearts;/// Accepted `trapRatio` band for rotator levels.
  double get trapMin; double get trapMax;/// Rotator generate-and-test: attempts per level and search budget.
@@ -327,20 +331,20 @@ $GenParamsCopyWith<GenParams> get copyWith => _$GenParamsCopyWithImpl<GenParams>
 @override
 bool operator ==(Object other) {
   final _this = this as GenParams;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GenParams&&(identical(other.width, _this.width) || other.width == _this.width)&&(identical(other.height, _this.height) || other.height == _this.height)&&const DeepCollectionEquality().equals(other.mask, _this.mask)&&(identical(other.targetFill, _this.targetFill) || other.targetFill == _this.targetFill)&&(identical(other.lenMin, _this.lenMin) || other.lenMin == _this.lenMin)&&(identical(other.lenMax, _this.lenMax) || other.lenMax == _this.lenMax)&&(identical(other.lenSkew, _this.lenSkew) || other.lenSkew == _this.lenSkew)&&(identical(other.singleCellShare, _this.singleCellShare) || other.singleCellShare == _this.singleCellShare)&&(identical(other.windiness, _this.windiness) || other.windiness == _this.windiness)&&(identical(other.centerBias, _this.centerBias) || other.centerBias == _this.centerBias)&&(identical(other.clusterBias, _this.clusterBias) || other.clusterBias == _this.clusterBias)&&(identical(other.maxFailures, _this.maxFailures) || other.maxFailures == _this.maxFailures)&&(identical(other.maxArrows, _this.maxArrows) || other.maxArrows == _this.maxArrows)&&(identical(other.mix, _this.mix) || other.mix == _this.mix)&&(identical(other.hearts, _this.hearts) || other.hearts == _this.hearts)&&(identical(other.trapMin, _this.trapMin) || other.trapMin == _this.trapMin)&&(identical(other.trapMax, _this.trapMax) || other.trapMax == _this.trapMax)&&(identical(other.rotatorTries, _this.rotatorTries) || other.rotatorTries == _this.rotatorTries)&&(identical(other.searchStateLimit, _this.searchStateLimit) || other.searchStateLimit == _this.searchStateLimit));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GenParams&&(identical(other.width, _this.width) || other.width == _this.width)&&(identical(other.height, _this.height) || other.height == _this.height)&&const DeepCollectionEquality().equals(other.mask, _this.mask)&&(identical(other.targetFill, _this.targetFill) || other.targetFill == _this.targetFill)&&(identical(other.lenMin, _this.lenMin) || other.lenMin == _this.lenMin)&&(identical(other.lenMax, _this.lenMax) || other.lenMax == _this.lenMax)&&(identical(other.lenSkew, _this.lenSkew) || other.lenSkew == _this.lenSkew)&&(identical(other.singleCellShare, _this.singleCellShare) || other.singleCellShare == _this.singleCellShare)&&(identical(other.windiness, _this.windiness) || other.windiness == _this.windiness)&&(identical(other.centerBias, _this.centerBias) || other.centerBias == _this.centerBias)&&(identical(other.clusterBias, _this.clusterBias) || other.clusterBias == _this.clusterBias)&&(identical(other.peelBias, _this.peelBias) || other.peelBias == _this.peelBias)&&(identical(other.maxFailures, _this.maxFailures) || other.maxFailures == _this.maxFailures)&&(identical(other.maxArrows, _this.maxArrows) || other.maxArrows == _this.maxArrows)&&(identical(other.mix, _this.mix) || other.mix == _this.mix)&&(identical(other.hearts, _this.hearts) || other.hearts == _this.hearts)&&(identical(other.trapMin, _this.trapMin) || other.trapMin == _this.trapMin)&&(identical(other.trapMax, _this.trapMax) || other.trapMax == _this.trapMax)&&(identical(other.rotatorTries, _this.rotatorTries) || other.rotatorTries == _this.rotatorTries)&&(identical(other.searchStateLimit, _this.searchStateLimit) || other.searchStateLimit == _this.searchStateLimit));
 }
 
 
 @override
 int get hashCode {
   final _this = this as GenParams;
-  return Object.hashAll([runtimeType,_this.width,_this.height,const DeepCollectionEquality().hash(_this.mask),_this.targetFill,_this.lenMin,_this.lenMax,_this.lenSkew,_this.singleCellShare,_this.windiness,_this.centerBias,_this.clusterBias,_this.maxFailures,_this.maxArrows,_this.mix,_this.hearts,_this.trapMin,_this.trapMax,_this.rotatorTries,_this.searchStateLimit]);
+  return Object.hashAll([runtimeType,_this.width,_this.height,const DeepCollectionEquality().hash(_this.mask),_this.targetFill,_this.lenMin,_this.lenMax,_this.lenSkew,_this.singleCellShare,_this.windiness,_this.centerBias,_this.clusterBias,_this.peelBias,_this.maxFailures,_this.maxArrows,_this.mix,_this.hearts,_this.trapMin,_this.trapMax,_this.rotatorTries,_this.searchStateLimit]);
 }
 
 @override
 String toString() {
   final _this = this as GenParams;
-  return 'GenParams(width: ${_this.width}, height: ${_this.height}, mask: ${_this.mask}, targetFill: ${_this.targetFill}, lenMin: ${_this.lenMin}, lenMax: ${_this.lenMax}, lenSkew: ${_this.lenSkew}, singleCellShare: ${_this.singleCellShare}, windiness: ${_this.windiness}, centerBias: ${_this.centerBias}, clusterBias: ${_this.clusterBias}, maxFailures: ${_this.maxFailures}, maxArrows: ${_this.maxArrows}, mix: ${_this.mix}, hearts: ${_this.hearts}, trapMin: ${_this.trapMin}, trapMax: ${_this.trapMax}, rotatorTries: ${_this.rotatorTries}, searchStateLimit: ${_this.searchStateLimit})';
+  return 'GenParams(width: ${_this.width}, height: ${_this.height}, mask: ${_this.mask}, targetFill: ${_this.targetFill}, lenMin: ${_this.lenMin}, lenMax: ${_this.lenMax}, lenSkew: ${_this.lenSkew}, singleCellShare: ${_this.singleCellShare}, windiness: ${_this.windiness}, centerBias: ${_this.centerBias}, clusterBias: ${_this.clusterBias}, peelBias: ${_this.peelBias}, maxFailures: ${_this.maxFailures}, maxArrows: ${_this.maxArrows}, mix: ${_this.mix}, hearts: ${_this.hearts}, trapMin: ${_this.trapMin}, trapMax: ${_this.trapMax}, rotatorTries: ${_this.rotatorTries}, searchStateLimit: ${_this.searchStateLimit})';
 }
 
 
@@ -351,7 +355,7 @@ abstract mixin class $GenParamsCopyWith<$Res>  {
   factory $GenParamsCopyWith(GenParams value, $Res Function(GenParams) _then) = _$GenParamsCopyWithImpl;
 @useResult
 $Res call({
- int width, int height, List<String>? mask, double targetFill, int lenMin, int lenMax, int lenSkew, double singleCellShare, double windiness, double centerBias, double clusterBias, int maxFailures, int? maxArrows, MechanicMix mix, int hearts, double trapMin, double trapMax, int rotatorTries, int searchStateLimit
+ int width, int height, List<String>? mask, double targetFill, int lenMin, int lenMax, int lenSkew, double singleCellShare, double windiness, double centerBias, double clusterBias, double peelBias, int maxFailures, int? maxArrows, MechanicMix mix, int hearts, double trapMin, double trapMax, int rotatorTries, int searchStateLimit
 });
 
 
@@ -368,7 +372,7 @@ class _$GenParamsCopyWithImpl<$Res>
 
 /// Create a copy of GenParams
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? width = null,Object? height = null,Object? mask = freezed,Object? targetFill = null,Object? lenMin = null,Object? lenMax = null,Object? lenSkew = null,Object? singleCellShare = null,Object? windiness = null,Object? centerBias = null,Object? clusterBias = null,Object? maxFailures = null,Object? maxArrows = freezed,Object? mix = null,Object? hearts = null,Object? trapMin = null,Object? trapMax = null,Object? rotatorTries = null,Object? searchStateLimit = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? width = null,Object? height = null,Object? mask = freezed,Object? targetFill = null,Object? lenMin = null,Object? lenMax = null,Object? lenSkew = null,Object? singleCellShare = null,Object? windiness = null,Object? centerBias = null,Object? clusterBias = null,Object? peelBias = null,Object? maxFailures = null,Object? maxArrows = freezed,Object? mix = null,Object? hearts = null,Object? trapMin = null,Object? trapMax = null,Object? rotatorTries = null,Object? searchStateLimit = null,}) {
   return _then(GenParams(
 width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
 as int,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
@@ -381,6 +385,7 @@ as int,singleCellShare: null == singleCellShare ? _self.singleCellShare : single
 as double,windiness: null == windiness ? _self.windiness : windiness // ignore: cast_nullable_to_non_nullable
 as double,centerBias: null == centerBias ? _self.centerBias : centerBias // ignore: cast_nullable_to_non_nullable
 as double,clusterBias: null == clusterBias ? _self.clusterBias : clusterBias // ignore: cast_nullable_to_non_nullable
+as double,peelBias: null == peelBias ? _self.peelBias : peelBias // ignore: cast_nullable_to_non_nullable
 as double,maxFailures: null == maxFailures ? _self.maxFailures : maxFailures // ignore: cast_nullable_to_non_nullable
 as int,maxArrows: freezed == maxArrows ? _self.maxArrows : maxArrows // ignore: cast_nullable_to_non_nullable
 as int?,mix: null == mix ? _self.mix : mix // ignore: cast_nullable_to_non_nullable
@@ -483,10 +488,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int width,  int height,  List<String>? mask,  double targetFill,  int lenMin,  int lenMax,  int lenSkew,  double singleCellShare,  double windiness,  double centerBias,  double clusterBias,  int maxFailures,  int? maxArrows,  MechanicMix mix,  int hearts,  double trapMin,  double trapMax,  int rotatorTries,  int searchStateLimit)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int width,  int height,  List<String>? mask,  double targetFill,  int lenMin,  int lenMax,  int lenSkew,  double singleCellShare,  double windiness,  double centerBias,  double clusterBias,  double peelBias,  int maxFailures,  int? maxArrows,  MechanicMix mix,  int hearts,  double trapMin,  double trapMax,  int rotatorTries,  int searchStateLimit)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GenParams() when $default != null:
-return $default(_that.width,_that.height,_that.mask,_that.targetFill,_that.lenMin,_that.lenMax,_that.lenSkew,_that.singleCellShare,_that.windiness,_that.centerBias,_that.clusterBias,_that.maxFailures,_that.maxArrows,_that.mix,_that.hearts,_that.trapMin,_that.trapMax,_that.rotatorTries,_that.searchStateLimit);case _:
+return $default(_that.width,_that.height,_that.mask,_that.targetFill,_that.lenMin,_that.lenMax,_that.lenSkew,_that.singleCellShare,_that.windiness,_that.centerBias,_that.clusterBias,_that.peelBias,_that.maxFailures,_that.maxArrows,_that.mix,_that.hearts,_that.trapMin,_that.trapMax,_that.rotatorTries,_that.searchStateLimit);case _:
   return orElse();
 
 }
@@ -504,10 +509,10 @@ return $default(_that.width,_that.height,_that.mask,_that.targetFill,_that.lenMi
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int width,  int height,  List<String>? mask,  double targetFill,  int lenMin,  int lenMax,  int lenSkew,  double singleCellShare,  double windiness,  double centerBias,  double clusterBias,  int maxFailures,  int? maxArrows,  MechanicMix mix,  int hearts,  double trapMin,  double trapMax,  int rotatorTries,  int searchStateLimit)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int width,  int height,  List<String>? mask,  double targetFill,  int lenMin,  int lenMax,  int lenSkew,  double singleCellShare,  double windiness,  double centerBias,  double clusterBias,  double peelBias,  int maxFailures,  int? maxArrows,  MechanicMix mix,  int hearts,  double trapMin,  double trapMax,  int rotatorTries,  int searchStateLimit)  $default,) {final _that = this;
 switch (_that) {
 case _GenParams():
-return $default(_that.width,_that.height,_that.mask,_that.targetFill,_that.lenMin,_that.lenMax,_that.lenSkew,_that.singleCellShare,_that.windiness,_that.centerBias,_that.clusterBias,_that.maxFailures,_that.maxArrows,_that.mix,_that.hearts,_that.trapMin,_that.trapMax,_that.rotatorTries,_that.searchStateLimit);case _:
+return $default(_that.width,_that.height,_that.mask,_that.targetFill,_that.lenMin,_that.lenMax,_that.lenSkew,_that.singleCellShare,_that.windiness,_that.centerBias,_that.clusterBias,_that.peelBias,_that.maxFailures,_that.maxArrows,_that.mix,_that.hearts,_that.trapMin,_that.trapMax,_that.rotatorTries,_that.searchStateLimit);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -524,10 +529,10 @@ return $default(_that.width,_that.height,_that.mask,_that.targetFill,_that.lenMi
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int width,  int height,  List<String>? mask,  double targetFill,  int lenMin,  int lenMax,  int lenSkew,  double singleCellShare,  double windiness,  double centerBias,  double clusterBias,  int maxFailures,  int? maxArrows,  MechanicMix mix,  int hearts,  double trapMin,  double trapMax,  int rotatorTries,  int searchStateLimit)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int width,  int height,  List<String>? mask,  double targetFill,  int lenMin,  int lenMax,  int lenSkew,  double singleCellShare,  double windiness,  double centerBias,  double clusterBias,  double peelBias,  int maxFailures,  int? maxArrows,  MechanicMix mix,  int hearts,  double trapMin,  double trapMax,  int rotatorTries,  int searchStateLimit)?  $default,) {final _that = this;
 switch (_that) {
 case _GenParams() when $default != null:
-return $default(_that.width,_that.height,_that.mask,_that.targetFill,_that.lenMin,_that.lenMax,_that.lenSkew,_that.singleCellShare,_that.windiness,_that.centerBias,_that.clusterBias,_that.maxFailures,_that.maxArrows,_that.mix,_that.hearts,_that.trapMin,_that.trapMax,_that.rotatorTries,_that.searchStateLimit);case _:
+return $default(_that.width,_that.height,_that.mask,_that.targetFill,_that.lenMin,_that.lenMax,_that.lenSkew,_that.singleCellShare,_that.windiness,_that.centerBias,_that.clusterBias,_that.peelBias,_that.maxFailures,_that.maxArrows,_that.mix,_that.hearts,_that.trapMin,_that.trapMax,_that.rotatorTries,_that.searchStateLimit);case _:
   return null;
 
 }
@@ -539,7 +544,7 @@ return $default(_that.width,_that.height,_that.mask,_that.targetFill,_that.lenMi
 
 
 class _GenParams implements GenParams {
-  const _GenParams({required this.width, required this.height,  List<String>? mask, this.targetFill = 0.7, this.lenMin = 2, this.lenMax = 6, this.lenSkew = 0, this.singleCellShare = 0.0, this.windiness = 0.4, this.centerBias = 0.3, this.clusterBias = 0.5, this.maxFailures = 800, this.maxArrows, this.mix = MechanicMix.none, this.hearts = 3, this.trapMin = 0.0, this.trapMax = 0.5, this.rotatorTries = 200, this.searchStateLimit = 20000}): _mask = mask;
+  const _GenParams({required this.width, required this.height,  List<String>? mask, this.targetFill = 0.7, this.lenMin = 2, this.lenMax = 6, this.lenSkew = 0, this.singleCellShare = 0.0, this.windiness = 0.4, this.centerBias = 0.3, this.clusterBias = 0.5, this.peelBias = 0.0, this.maxFailures = 800, this.maxArrows, this.mix = MechanicMix.none, this.hearts = 3, this.trapMin = 0.0, this.trapMax = 0.5, this.rotatorTries = 200, this.searchStateLimit = 20000}): _mask = mask;
   
 
 @override final  int width;
@@ -572,6 +577,11 @@ class _GenParams implements GenParams {
 @override@JsonKey() final  double centerBias;
 /// Chance a new head is drawn next to existing arrows.
 @override@JsonKey() final  double clusterBias;
+/// Chance a new head is the innermost of a handful of candidates, so the
+/// board is built from the middle outwards. Late arrows then sit near the
+/// edge where their exit ray is still free, which is what lets the fill
+/// reach 0.9+ while staying solvable.
+@override@JsonKey() final  double peelBias;
 /// Consecutive-ish placement failures before giving up.
 @override@JsonKey() final  int maxFailures;
 /// Hard cap on the number of arrows (onboarding levels), or `null`.
@@ -595,18 +605,18 @@ _$GenParamsCopyWith<_GenParams> get copyWith => __$GenParamsCopyWithImpl<_GenPar
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GenParams&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&const DeepCollectionEquality().equals(other.mask, _mask)&&(identical(other.targetFill, targetFill) || other.targetFill == targetFill)&&(identical(other.lenMin, lenMin) || other.lenMin == lenMin)&&(identical(other.lenMax, lenMax) || other.lenMax == lenMax)&&(identical(other.lenSkew, lenSkew) || other.lenSkew == lenSkew)&&(identical(other.singleCellShare, singleCellShare) || other.singleCellShare == singleCellShare)&&(identical(other.windiness, windiness) || other.windiness == windiness)&&(identical(other.centerBias, centerBias) || other.centerBias == centerBias)&&(identical(other.clusterBias, clusterBias) || other.clusterBias == clusterBias)&&(identical(other.maxFailures, maxFailures) || other.maxFailures == maxFailures)&&(identical(other.maxArrows, maxArrows) || other.maxArrows == maxArrows)&&(identical(other.mix, mix) || other.mix == mix)&&(identical(other.hearts, hearts) || other.hearts == hearts)&&(identical(other.trapMin, trapMin) || other.trapMin == trapMin)&&(identical(other.trapMax, trapMax) || other.trapMax == trapMax)&&(identical(other.rotatorTries, rotatorTries) || other.rotatorTries == rotatorTries)&&(identical(other.searchStateLimit, searchStateLimit) || other.searchStateLimit == searchStateLimit));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GenParams&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&const DeepCollectionEquality().equals(other.mask, _mask)&&(identical(other.targetFill, targetFill) || other.targetFill == targetFill)&&(identical(other.lenMin, lenMin) || other.lenMin == lenMin)&&(identical(other.lenMax, lenMax) || other.lenMax == lenMax)&&(identical(other.lenSkew, lenSkew) || other.lenSkew == lenSkew)&&(identical(other.singleCellShare, singleCellShare) || other.singleCellShare == singleCellShare)&&(identical(other.windiness, windiness) || other.windiness == windiness)&&(identical(other.centerBias, centerBias) || other.centerBias == centerBias)&&(identical(other.clusterBias, clusterBias) || other.clusterBias == clusterBias)&&(identical(other.peelBias, peelBias) || other.peelBias == peelBias)&&(identical(other.maxFailures, maxFailures) || other.maxFailures == maxFailures)&&(identical(other.maxArrows, maxArrows) || other.maxArrows == maxArrows)&&(identical(other.mix, mix) || other.mix == mix)&&(identical(other.hearts, hearts) || other.hearts == hearts)&&(identical(other.trapMin, trapMin) || other.trapMin == trapMin)&&(identical(other.trapMax, trapMax) || other.trapMax == trapMax)&&(identical(other.rotatorTries, rotatorTries) || other.rotatorTries == rotatorTries)&&(identical(other.searchStateLimit, searchStateLimit) || other.searchStateLimit == searchStateLimit));
 }
 
 
 @override
 int get hashCode {
-    return Object.hashAll([runtimeType,width,height,const DeepCollectionEquality().hash(_mask),targetFill,lenMin,lenMax,lenSkew,singleCellShare,windiness,centerBias,clusterBias,maxFailures,maxArrows,mix,hearts,trapMin,trapMax,rotatorTries,searchStateLimit]);
+    return Object.hashAll([runtimeType,width,height,const DeepCollectionEquality().hash(_mask),targetFill,lenMin,lenMax,lenSkew,singleCellShare,windiness,centerBias,clusterBias,peelBias,maxFailures,maxArrows,mix,hearts,trapMin,trapMax,rotatorTries,searchStateLimit]);
 }
 
 @override
 String toString() {
-    return 'GenParams(width: $width, height: $height, mask: $mask, targetFill: $targetFill, lenMin: $lenMin, lenMax: $lenMax, lenSkew: $lenSkew, singleCellShare: $singleCellShare, windiness: $windiness, centerBias: $centerBias, clusterBias: $clusterBias, maxFailures: $maxFailures, maxArrows: $maxArrows, mix: $mix, hearts: $hearts, trapMin: $trapMin, trapMax: $trapMax, rotatorTries: $rotatorTries, searchStateLimit: $searchStateLimit)';
+    return 'GenParams(width: $width, height: $height, mask: $mask, targetFill: $targetFill, lenMin: $lenMin, lenMax: $lenMax, lenSkew: $lenSkew, singleCellShare: $singleCellShare, windiness: $windiness, centerBias: $centerBias, clusterBias: $clusterBias, peelBias: $peelBias, maxFailures: $maxFailures, maxArrows: $maxArrows, mix: $mix, hearts: $hearts, trapMin: $trapMin, trapMax: $trapMax, rotatorTries: $rotatorTries, searchStateLimit: $searchStateLimit)';
 }
 
 
@@ -617,7 +627,7 @@ abstract mixin class _$GenParamsCopyWith<$Res> implements $GenParamsCopyWith<$Re
   factory _$GenParamsCopyWith(_GenParams value, $Res Function(_GenParams) _then) = __$GenParamsCopyWithImpl;
 @override @useResult
 $Res call({
- int width, int height, List<String>? mask, double targetFill, int lenMin, int lenMax, int lenSkew, double singleCellShare, double windiness, double centerBias, double clusterBias, int maxFailures, int? maxArrows, MechanicMix mix, int hearts, double trapMin, double trapMax, int rotatorTries, int searchStateLimit
+ int width, int height, List<String>? mask, double targetFill, int lenMin, int lenMax, int lenSkew, double singleCellShare, double windiness, double centerBias, double clusterBias, double peelBias, int maxFailures, int? maxArrows, MechanicMix mix, int hearts, double trapMin, double trapMax, int rotatorTries, int searchStateLimit
 });
 
 
@@ -634,7 +644,7 @@ class __$GenParamsCopyWithImpl<$Res>
 
 /// Create a copy of GenParams
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? width = null,Object? height = null,Object? mask = freezed,Object? targetFill = null,Object? lenMin = null,Object? lenMax = null,Object? lenSkew = null,Object? singleCellShare = null,Object? windiness = null,Object? centerBias = null,Object? clusterBias = null,Object? maxFailures = null,Object? maxArrows = freezed,Object? mix = null,Object? hearts = null,Object? trapMin = null,Object? trapMax = null,Object? rotatorTries = null,Object? searchStateLimit = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? width = null,Object? height = null,Object? mask = freezed,Object? targetFill = null,Object? lenMin = null,Object? lenMax = null,Object? lenSkew = null,Object? singleCellShare = null,Object? windiness = null,Object? centerBias = null,Object? clusterBias = null,Object? peelBias = null,Object? maxFailures = null,Object? maxArrows = freezed,Object? mix = null,Object? hearts = null,Object? trapMin = null,Object? trapMax = null,Object? rotatorTries = null,Object? searchStateLimit = null,}) {
   return _then(_GenParams(
 width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
 as int,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
@@ -647,6 +657,7 @@ as int,singleCellShare: null == singleCellShare ? _self.singleCellShare : single
 as double,windiness: null == windiness ? _self.windiness : windiness // ignore: cast_nullable_to_non_nullable
 as double,centerBias: null == centerBias ? _self.centerBias : centerBias // ignore: cast_nullable_to_non_nullable
 as double,clusterBias: null == clusterBias ? _self.clusterBias : clusterBias // ignore: cast_nullable_to_non_nullable
+as double,peelBias: null == peelBias ? _self.peelBias : peelBias // ignore: cast_nullable_to_non_nullable
 as double,maxFailures: null == maxFailures ? _self.maxFailures : maxFailures // ignore: cast_nullable_to_non_nullable
 as int,maxArrows: freezed == maxArrows ? _self.maxArrows : maxArrows // ignore: cast_nullable_to_non_nullable
 as int?,mix: null == mix ? _self.mix : mix // ignore: cast_nullable_to_non_nullable

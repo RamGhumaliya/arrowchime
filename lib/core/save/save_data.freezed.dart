@@ -2070,6 +2070,329 @@ as String,
 
 
 /// @nodoc
+mixin _$CompanionState {
+
+/// `normal`, `fewer` or `off`.
+ String get mode;/// When the player said yes to notifications (0 = never).
+ int get optedInAt;/// The pre-prompt: `''` never shown, `declined`, or `asked`.
+ String get askState;/// When the pre-prompt may be shown again after "Maybe later".
+ int get askRetryAt;/// Notifications in a row that were never opened. At 3 it stays quiet.
+ int get ignoredInRow;/// When the last batch was planned (0 = never) and how many it held.
+ int get lastPlannedAt; int get lastPlannedCount;/// The hour of day the player usually plays (moving average).
+ int get usualHour;/// Levels cleared today (local date) and the best such day so far.
+ String get todayDate; int get todayLevels; int get bestDayLevels;/// Levels cleared yesterday, if that was a new best day (shown in the
+/// appreciation note).
+ int get yesterdayRecord;
+/// Create a copy of CompanionState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CompanionStateCopyWith<CompanionState> get copyWith => _$CompanionStateCopyWithImpl<CompanionState>(this as CompanionState, _$identity);
+
+  /// Serializes this CompanionState to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as CompanionState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanionState&&(identical(other.mode, _this.mode) || other.mode == _this.mode)&&(identical(other.optedInAt, _this.optedInAt) || other.optedInAt == _this.optedInAt)&&(identical(other.askState, _this.askState) || other.askState == _this.askState)&&(identical(other.askRetryAt, _this.askRetryAt) || other.askRetryAt == _this.askRetryAt)&&(identical(other.ignoredInRow, _this.ignoredInRow) || other.ignoredInRow == _this.ignoredInRow)&&(identical(other.lastPlannedAt, _this.lastPlannedAt) || other.lastPlannedAt == _this.lastPlannedAt)&&(identical(other.lastPlannedCount, _this.lastPlannedCount) || other.lastPlannedCount == _this.lastPlannedCount)&&(identical(other.usualHour, _this.usualHour) || other.usualHour == _this.usualHour)&&(identical(other.todayDate, _this.todayDate) || other.todayDate == _this.todayDate)&&(identical(other.todayLevels, _this.todayLevels) || other.todayLevels == _this.todayLevels)&&(identical(other.bestDayLevels, _this.bestDayLevels) || other.bestDayLevels == _this.bestDayLevels)&&(identical(other.yesterdayRecord, _this.yesterdayRecord) || other.yesterdayRecord == _this.yesterdayRecord));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+  final _this = this as CompanionState;
+  return Object.hash(runtimeType,_this.mode,_this.optedInAt,_this.askState,_this.askRetryAt,_this.ignoredInRow,_this.lastPlannedAt,_this.lastPlannedCount,_this.usualHour,_this.todayDate,_this.todayLevels,_this.bestDayLevels,_this.yesterdayRecord);
+}
+
+@override
+String toString() {
+  final _this = this as CompanionState;
+  return 'CompanionState(mode: ${_this.mode}, optedInAt: ${_this.optedInAt}, askState: ${_this.askState}, askRetryAt: ${_this.askRetryAt}, ignoredInRow: ${_this.ignoredInRow}, lastPlannedAt: ${_this.lastPlannedAt}, lastPlannedCount: ${_this.lastPlannedCount}, usualHour: ${_this.usualHour}, todayDate: ${_this.todayDate}, todayLevels: ${_this.todayLevels}, bestDayLevels: ${_this.bestDayLevels}, yesterdayRecord: ${_this.yesterdayRecord})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CompanionStateCopyWith<$Res>  {
+  factory $CompanionStateCopyWith(CompanionState value, $Res Function(CompanionState) _then) = _$CompanionStateCopyWithImpl;
+@useResult
+$Res call({
+ String mode, int optedInAt, String askState, int askRetryAt, int ignoredInRow, int lastPlannedAt, int lastPlannedCount, int usualHour, String todayDate, int todayLevels, int bestDayLevels, int yesterdayRecord
+});
+
+
+
+
+}
+/// @nodoc
+class _$CompanionStateCopyWithImpl<$Res>
+    implements $CompanionStateCopyWith<$Res> {
+  _$CompanionStateCopyWithImpl(this._self, this._then);
+
+  final CompanionState _self;
+  final $Res Function(CompanionState) _then;
+
+/// Create a copy of CompanionState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? mode = null,Object? optedInAt = null,Object? askState = null,Object? askRetryAt = null,Object? ignoredInRow = null,Object? lastPlannedAt = null,Object? lastPlannedCount = null,Object? usualHour = null,Object? todayDate = null,Object? todayLevels = null,Object? bestDayLevels = null,Object? yesterdayRecord = null,}) {
+  return _then(CompanionState(
+mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
+as String,optedInAt: null == optedInAt ? _self.optedInAt : optedInAt // ignore: cast_nullable_to_non_nullable
+as int,askState: null == askState ? _self.askState : askState // ignore: cast_nullable_to_non_nullable
+as String,askRetryAt: null == askRetryAt ? _self.askRetryAt : askRetryAt // ignore: cast_nullable_to_non_nullable
+as int,ignoredInRow: null == ignoredInRow ? _self.ignoredInRow : ignoredInRow // ignore: cast_nullable_to_non_nullable
+as int,lastPlannedAt: null == lastPlannedAt ? _self.lastPlannedAt : lastPlannedAt // ignore: cast_nullable_to_non_nullable
+as int,lastPlannedCount: null == lastPlannedCount ? _self.lastPlannedCount : lastPlannedCount // ignore: cast_nullable_to_non_nullable
+as int,usualHour: null == usualHour ? _self.usualHour : usualHour // ignore: cast_nullable_to_non_nullable
+as int,todayDate: null == todayDate ? _self.todayDate : todayDate // ignore: cast_nullable_to_non_nullable
+as String,todayLevels: null == todayLevels ? _self.todayLevels : todayLevels // ignore: cast_nullable_to_non_nullable
+as int,bestDayLevels: null == bestDayLevels ? _self.bestDayLevels : bestDayLevels // ignore: cast_nullable_to_non_nullable
+as int,yesterdayRecord: null == yesterdayRecord ? _self.yesterdayRecord : yesterdayRecord // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [CompanionState].
+extension CompanionStatePatterns on CompanionState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _CompanionState value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _CompanionState() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _CompanionState value)  $default,){
+final _that = this;
+switch (_that) {
+case _CompanionState():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _CompanionState value)?  $default,){
+final _that = this;
+switch (_that) {
+case _CompanionState() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String mode,  int optedInAt,  String askState,  int askRetryAt,  int ignoredInRow,  int lastPlannedAt,  int lastPlannedCount,  int usualHour,  String todayDate,  int todayLevels,  int bestDayLevels,  int yesterdayRecord)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _CompanionState() when $default != null:
+return $default(_that.mode,_that.optedInAt,_that.askState,_that.askRetryAt,_that.ignoredInRow,_that.lastPlannedAt,_that.lastPlannedCount,_that.usualHour,_that.todayDate,_that.todayLevels,_that.bestDayLevels,_that.yesterdayRecord);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String mode,  int optedInAt,  String askState,  int askRetryAt,  int ignoredInRow,  int lastPlannedAt,  int lastPlannedCount,  int usualHour,  String todayDate,  int todayLevels,  int bestDayLevels,  int yesterdayRecord)  $default,) {final _that = this;
+switch (_that) {
+case _CompanionState():
+return $default(_that.mode,_that.optedInAt,_that.askState,_that.askRetryAt,_that.ignoredInRow,_that.lastPlannedAt,_that.lastPlannedCount,_that.usualHour,_that.todayDate,_that.todayLevels,_that.bestDayLevels,_that.yesterdayRecord);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String mode,  int optedInAt,  String askState,  int askRetryAt,  int ignoredInRow,  int lastPlannedAt,  int lastPlannedCount,  int usualHour,  String todayDate,  int todayLevels,  int bestDayLevels,  int yesterdayRecord)?  $default,) {final _that = this;
+switch (_that) {
+case _CompanionState() when $default != null:
+return $default(_that.mode,_that.optedInAt,_that.askState,_that.askRetryAt,_that.ignoredInRow,_that.lastPlannedAt,_that.lastPlannedCount,_that.usualHour,_that.todayDate,_that.todayLevels,_that.bestDayLevels,_that.yesterdayRecord);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _CompanionState implements CompanionState {
+  const _CompanionState({this.mode = 'normal', this.optedInAt = 0, this.askState = '', this.askRetryAt = 0, this.ignoredInRow = 0, this.lastPlannedAt = 0, this.lastPlannedCount = 0, this.usualHour = 19, this.todayDate = '', this.todayLevels = 0, this.bestDayLevels = 0, this.yesterdayRecord = 0});
+  factory _CompanionState.fromJson(Map<String, dynamic> json) => _$CompanionStateFromJson(json);
+
+/// `normal`, `fewer` or `off`.
+@override@JsonKey() final  String mode;
+/// When the player said yes to notifications (0 = never).
+@override@JsonKey() final  int optedInAt;
+/// The pre-prompt: `''` never shown, `declined`, or `asked`.
+@override@JsonKey() final  String askState;
+/// When the pre-prompt may be shown again after "Maybe later".
+@override@JsonKey() final  int askRetryAt;
+/// Notifications in a row that were never opened. At 3 it stays quiet.
+@override@JsonKey() final  int ignoredInRow;
+/// When the last batch was planned (0 = never) and how many it held.
+@override@JsonKey() final  int lastPlannedAt;
+@override@JsonKey() final  int lastPlannedCount;
+/// The hour of day the player usually plays (moving average).
+@override@JsonKey() final  int usualHour;
+/// Levels cleared today (local date) and the best such day so far.
+@override@JsonKey() final  String todayDate;
+@override@JsonKey() final  int todayLevels;
+@override@JsonKey() final  int bestDayLevels;
+/// Levels cleared yesterday, if that was a new best day (shown in the
+/// appreciation note).
+@override@JsonKey() final  int yesterdayRecord;
+
+/// Create a copy of CompanionState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CompanionStateCopyWith<_CompanionState> get copyWith => __$CompanionStateCopyWithImpl<_CompanionState>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$CompanionStateToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompanionState&&(identical(other.mode, mode) || other.mode == mode)&&(identical(other.optedInAt, optedInAt) || other.optedInAt == optedInAt)&&(identical(other.askState, askState) || other.askState == askState)&&(identical(other.askRetryAt, askRetryAt) || other.askRetryAt == askRetryAt)&&(identical(other.ignoredInRow, ignoredInRow) || other.ignoredInRow == ignoredInRow)&&(identical(other.lastPlannedAt, lastPlannedAt) || other.lastPlannedAt == lastPlannedAt)&&(identical(other.lastPlannedCount, lastPlannedCount) || other.lastPlannedCount == lastPlannedCount)&&(identical(other.usualHour, usualHour) || other.usualHour == usualHour)&&(identical(other.todayDate, todayDate) || other.todayDate == todayDate)&&(identical(other.todayLevels, todayLevels) || other.todayLevels == todayLevels)&&(identical(other.bestDayLevels, bestDayLevels) || other.bestDayLevels == bestDayLevels)&&(identical(other.yesterdayRecord, yesterdayRecord) || other.yesterdayRecord == yesterdayRecord));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,mode,optedInAt,askState,askRetryAt,ignoredInRow,lastPlannedAt,lastPlannedCount,usualHour,todayDate,todayLevels,bestDayLevels,yesterdayRecord);
+}
+
+@override
+String toString() {
+    return 'CompanionState(mode: $mode, optedInAt: $optedInAt, askState: $askState, askRetryAt: $askRetryAt, ignoredInRow: $ignoredInRow, lastPlannedAt: $lastPlannedAt, lastPlannedCount: $lastPlannedCount, usualHour: $usualHour, todayDate: $todayDate, todayLevels: $todayLevels, bestDayLevels: $bestDayLevels, yesterdayRecord: $yesterdayRecord)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CompanionStateCopyWith<$Res> implements $CompanionStateCopyWith<$Res> {
+  factory _$CompanionStateCopyWith(_CompanionState value, $Res Function(_CompanionState) _then) = __$CompanionStateCopyWithImpl;
+@override @useResult
+$Res call({
+ String mode, int optedInAt, String askState, int askRetryAt, int ignoredInRow, int lastPlannedAt, int lastPlannedCount, int usualHour, String todayDate, int todayLevels, int bestDayLevels, int yesterdayRecord
+});
+
+
+
+
+}
+/// @nodoc
+class __$CompanionStateCopyWithImpl<$Res>
+    implements _$CompanionStateCopyWith<$Res> {
+  __$CompanionStateCopyWithImpl(this._self, this._then);
+
+  final _CompanionState _self;
+  final $Res Function(_CompanionState) _then;
+
+/// Create a copy of CompanionState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? mode = null,Object? optedInAt = null,Object? askState = null,Object? askRetryAt = null,Object? ignoredInRow = null,Object? lastPlannedAt = null,Object? lastPlannedCount = null,Object? usualHour = null,Object? todayDate = null,Object? todayLevels = null,Object? bestDayLevels = null,Object? yesterdayRecord = null,}) {
+  return _then(_CompanionState(
+mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
+as String,optedInAt: null == optedInAt ? _self.optedInAt : optedInAt // ignore: cast_nullable_to_non_nullable
+as int,askState: null == askState ? _self.askState : askState // ignore: cast_nullable_to_non_nullable
+as String,askRetryAt: null == askRetryAt ? _self.askRetryAt : askRetryAt // ignore: cast_nullable_to_non_nullable
+as int,ignoredInRow: null == ignoredInRow ? _self.ignoredInRow : ignoredInRow // ignore: cast_nullable_to_non_nullable
+as int,lastPlannedAt: null == lastPlannedAt ? _self.lastPlannedAt : lastPlannedAt // ignore: cast_nullable_to_non_nullable
+as int,lastPlannedCount: null == lastPlannedCount ? _self.lastPlannedCount : lastPlannedCount // ignore: cast_nullable_to_non_nullable
+as int,usualHour: null == usualHour ? _self.usualHour : usualHour // ignore: cast_nullable_to_non_nullable
+as int,todayDate: null == todayDate ? _self.todayDate : todayDate // ignore: cast_nullable_to_non_nullable
+as String,todayLevels: null == todayLevels ? _self.todayLevels : todayLevels // ignore: cast_nullable_to_non_nullable
+as int,bestDayLevels: null == bestDayLevels ? _self.bestDayLevels : bestDayLevels // ignore: cast_nullable_to_non_nullable
+as int,yesterdayRecord: null == yesterdayRecord ? _self.yesterdayRecord : yesterdayRecord // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
 mixin _$SaveData {
 
  int get schemaVersion;/// Monotonic write counter: of two storage slots, the higher valid one
@@ -2080,7 +2403,8 @@ mixin _$SaveData {
  Map<String, DailyResult> get daily;/// Achievement id → local date unlocked.
  Map<String, String> get achievements; QuestState get quests; SaveSettings get settings; PlayStats get stats;/// Free-form flags (`adsRemoved`, `onboardingDone`, ...).
  Map<String, bool> get flags;/// Ad frequency state.
- AdState get ads;/// Store transactions already fulfilled (purchases are idempotent).
+ AdState get ads;/// The Chime Companion (notifications).
+ CompanionState get companion;/// Store transactions already fulfilled (purchases are idempotent).
  List<String> get purchases; String get updatedAt;
 /// Create a copy of SaveData
 /// with the given fields replaced by the non-null parameter values.
@@ -2095,20 +2419,20 @@ $SaveDataCopyWith<SaveData> get copyWith => _$SaveDataCopyWithImpl<SaveData>(thi
 @override
 bool operator ==(Object other) {
   final _this = this as SaveData;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SaveData&&(identical(other.schemaVersion, _this.schemaVersion) || other.schemaVersion == _this.schemaVersion)&&(identical(other.seq, _this.seq) || other.seq == _this.seq)&&const DeepCollectionEquality().equals(other.stars, _this.stars)&&const DeepCollectionEquality().equals(other.currentLevel, _this.currentLevel)&&(identical(other.coins, _this.coins) || other.coins == _this.coins)&&(identical(other.xp, _this.xp) || other.xp == _this.xp)&&const DeepCollectionEquality().equals(other.inventory, _this.inventory)&&const DeepCollectionEquality().equals(other.equipped, _this.equipped)&&(identical(other.streak, _this.streak) || other.streak == _this.streak)&&const DeepCollectionEquality().equals(other.daily, _this.daily)&&const DeepCollectionEquality().equals(other.achievements, _this.achievements)&&(identical(other.quests, _this.quests) || other.quests == _this.quests)&&(identical(other.settings, _this.settings) || other.settings == _this.settings)&&(identical(other.stats, _this.stats) || other.stats == _this.stats)&&const DeepCollectionEquality().equals(other.flags, _this.flags)&&(identical(other.ads, _this.ads) || other.ads == _this.ads)&&const DeepCollectionEquality().equals(other.purchases, _this.purchases)&&(identical(other.updatedAt, _this.updatedAt) || other.updatedAt == _this.updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SaveData&&(identical(other.schemaVersion, _this.schemaVersion) || other.schemaVersion == _this.schemaVersion)&&(identical(other.seq, _this.seq) || other.seq == _this.seq)&&const DeepCollectionEquality().equals(other.stars, _this.stars)&&const DeepCollectionEquality().equals(other.currentLevel, _this.currentLevel)&&(identical(other.coins, _this.coins) || other.coins == _this.coins)&&(identical(other.xp, _this.xp) || other.xp == _this.xp)&&const DeepCollectionEquality().equals(other.inventory, _this.inventory)&&const DeepCollectionEquality().equals(other.equipped, _this.equipped)&&(identical(other.streak, _this.streak) || other.streak == _this.streak)&&const DeepCollectionEquality().equals(other.daily, _this.daily)&&const DeepCollectionEquality().equals(other.achievements, _this.achievements)&&(identical(other.quests, _this.quests) || other.quests == _this.quests)&&(identical(other.settings, _this.settings) || other.settings == _this.settings)&&(identical(other.stats, _this.stats) || other.stats == _this.stats)&&const DeepCollectionEquality().equals(other.flags, _this.flags)&&(identical(other.ads, _this.ads) || other.ads == _this.ads)&&(identical(other.companion, _this.companion) || other.companion == _this.companion)&&const DeepCollectionEquality().equals(other.purchases, _this.purchases)&&(identical(other.updatedAt, _this.updatedAt) || other.updatedAt == _this.updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as SaveData;
-  return Object.hash(runtimeType,_this.schemaVersion,_this.seq,const DeepCollectionEquality().hash(_this.stars),const DeepCollectionEquality().hash(_this.currentLevel),_this.coins,_this.xp,const DeepCollectionEquality().hash(_this.inventory),const DeepCollectionEquality().hash(_this.equipped),_this.streak,const DeepCollectionEquality().hash(_this.daily),const DeepCollectionEquality().hash(_this.achievements),_this.quests,_this.settings,_this.stats,const DeepCollectionEquality().hash(_this.flags),_this.ads,const DeepCollectionEquality().hash(_this.purchases),_this.updatedAt);
+  return Object.hashAll([runtimeType,_this.schemaVersion,_this.seq,const DeepCollectionEquality().hash(_this.stars),const DeepCollectionEquality().hash(_this.currentLevel),_this.coins,_this.xp,const DeepCollectionEquality().hash(_this.inventory),const DeepCollectionEquality().hash(_this.equipped),_this.streak,const DeepCollectionEquality().hash(_this.daily),const DeepCollectionEquality().hash(_this.achievements),_this.quests,_this.settings,_this.stats,const DeepCollectionEquality().hash(_this.flags),_this.ads,_this.companion,const DeepCollectionEquality().hash(_this.purchases),_this.updatedAt]);
 }
 
 @override
 String toString() {
   final _this = this as SaveData;
-  return 'SaveData(schemaVersion: ${_this.schemaVersion}, seq: ${_this.seq}, stars: ${_this.stars}, currentLevel: ${_this.currentLevel}, coins: ${_this.coins}, xp: ${_this.xp}, inventory: ${_this.inventory}, equipped: ${_this.equipped}, streak: ${_this.streak}, daily: ${_this.daily}, achievements: ${_this.achievements}, quests: ${_this.quests}, settings: ${_this.settings}, stats: ${_this.stats}, flags: ${_this.flags}, ads: ${_this.ads}, purchases: ${_this.purchases}, updatedAt: ${_this.updatedAt})';
+  return 'SaveData(schemaVersion: ${_this.schemaVersion}, seq: ${_this.seq}, stars: ${_this.stars}, currentLevel: ${_this.currentLevel}, coins: ${_this.coins}, xp: ${_this.xp}, inventory: ${_this.inventory}, equipped: ${_this.equipped}, streak: ${_this.streak}, daily: ${_this.daily}, achievements: ${_this.achievements}, quests: ${_this.quests}, settings: ${_this.settings}, stats: ${_this.stats}, flags: ${_this.flags}, ads: ${_this.ads}, companion: ${_this.companion}, purchases: ${_this.purchases}, updatedAt: ${_this.updatedAt})';
 }
 
 
@@ -2119,11 +2443,11 @@ abstract mixin class $SaveDataCopyWith<$Res>  {
   factory $SaveDataCopyWith(SaveData value, $Res Function(SaveData) _then) = _$SaveDataCopyWithImpl;
 @useResult
 $Res call({
- int schemaVersion, int seq, Map<String, int> stars, Map<String, int> currentLevel, int coins, int xp, List<String> inventory, Map<String, String> equipped, StreakState streak, Map<String, DailyResult> daily, Map<String, String> achievements, QuestState quests, SaveSettings settings, PlayStats stats, Map<String, bool> flags, AdState ads, List<String> purchases, String updatedAt
+ int schemaVersion, int seq, Map<String, int> stars, Map<String, int> currentLevel, int coins, int xp, List<String> inventory, Map<String, String> equipped, StreakState streak, Map<String, DailyResult> daily, Map<String, String> achievements, QuestState quests, SaveSettings settings, PlayStats stats, Map<String, bool> flags, AdState ads, CompanionState companion, List<String> purchases, String updatedAt
 });
 
 
-$StreakStateCopyWith<$Res> get streak;$QuestStateCopyWith<$Res> get quests;$SaveSettingsCopyWith<$Res> get settings;$PlayStatsCopyWith<$Res> get stats;$AdStateCopyWith<$Res> get ads;
+$StreakStateCopyWith<$Res> get streak;$QuestStateCopyWith<$Res> get quests;$SaveSettingsCopyWith<$Res> get settings;$PlayStatsCopyWith<$Res> get stats;$AdStateCopyWith<$Res> get ads;$CompanionStateCopyWith<$Res> get companion;
 
 }
 /// @nodoc
@@ -2136,7 +2460,7 @@ class _$SaveDataCopyWithImpl<$Res>
 
 /// Create a copy of SaveData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? schemaVersion = null,Object? seq = null,Object? stars = null,Object? currentLevel = null,Object? coins = null,Object? xp = null,Object? inventory = null,Object? equipped = null,Object? streak = null,Object? daily = null,Object? achievements = null,Object? quests = null,Object? settings = null,Object? stats = null,Object? flags = null,Object? ads = null,Object? purchases = null,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? schemaVersion = null,Object? seq = null,Object? stars = null,Object? currentLevel = null,Object? coins = null,Object? xp = null,Object? inventory = null,Object? equipped = null,Object? streak = null,Object? daily = null,Object? achievements = null,Object? quests = null,Object? settings = null,Object? stats = null,Object? flags = null,Object? ads = null,Object? companion = null,Object? purchases = null,Object? updatedAt = null,}) {
   return _then(SaveData(
 schemaVersion: null == schemaVersion ? _self.schemaVersion : schemaVersion // ignore: cast_nullable_to_non_nullable
 as int,seq: null == seq ? _self.seq : seq // ignore: cast_nullable_to_non_nullable
@@ -2154,7 +2478,8 @@ as QuestState,settings: null == settings ? _self.settings : settings // ignore: 
 as SaveSettings,stats: null == stats ? _self.stats : stats // ignore: cast_nullable_to_non_nullable
 as PlayStats,flags: null == flags ? _self.flags : flags // ignore: cast_nullable_to_non_nullable
 as Map<String, bool>,ads: null == ads ? _self.ads : ads // ignore: cast_nullable_to_non_nullable
-as AdState,purchases: null == purchases ? _self.purchases : purchases // ignore: cast_nullable_to_non_nullable
+as AdState,companion: null == companion ? _self.companion : companion // ignore: cast_nullable_to_non_nullable
+as CompanionState,purchases: null == purchases ? _self.purchases : purchases // ignore: cast_nullable_to_non_nullable
 as List<String>,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -2203,6 +2528,15 @@ $AdStateCopyWith<$Res> get ads {
   
   return $AdStateCopyWith<$Res>(_self.ads, (value) {
     return _then(_self.copyWith(ads: value));
+  });
+}/// Create a copy of SaveData
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CompanionStateCopyWith<$Res> get companion {
+  
+  return $CompanionStateCopyWith<$Res>(_self.companion, (value) {
+    return _then(_self.copyWith(companion: value));
   });
 }
 }
@@ -2286,10 +2620,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int schemaVersion,  int seq,  Map<String, int> stars,  Map<String, int> currentLevel,  int coins,  int xp,  List<String> inventory,  Map<String, String> equipped,  StreakState streak,  Map<String, DailyResult> daily,  Map<String, String> achievements,  QuestState quests,  SaveSettings settings,  PlayStats stats,  Map<String, bool> flags,  AdState ads,  List<String> purchases,  String updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int schemaVersion,  int seq,  Map<String, int> stars,  Map<String, int> currentLevel,  int coins,  int xp,  List<String> inventory,  Map<String, String> equipped,  StreakState streak,  Map<String, DailyResult> daily,  Map<String, String> achievements,  QuestState quests,  SaveSettings settings,  PlayStats stats,  Map<String, bool> flags,  AdState ads,  CompanionState companion,  List<String> purchases,  String updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SaveData() when $default != null:
-return $default(_that.schemaVersion,_that.seq,_that.stars,_that.currentLevel,_that.coins,_that.xp,_that.inventory,_that.equipped,_that.streak,_that.daily,_that.achievements,_that.quests,_that.settings,_that.stats,_that.flags,_that.ads,_that.purchases,_that.updatedAt);case _:
+return $default(_that.schemaVersion,_that.seq,_that.stars,_that.currentLevel,_that.coins,_that.xp,_that.inventory,_that.equipped,_that.streak,_that.daily,_that.achievements,_that.quests,_that.settings,_that.stats,_that.flags,_that.ads,_that.companion,_that.purchases,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -2307,10 +2641,10 @@ return $default(_that.schemaVersion,_that.seq,_that.stars,_that.currentLevel,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int schemaVersion,  int seq,  Map<String, int> stars,  Map<String, int> currentLevel,  int coins,  int xp,  List<String> inventory,  Map<String, String> equipped,  StreakState streak,  Map<String, DailyResult> daily,  Map<String, String> achievements,  QuestState quests,  SaveSettings settings,  PlayStats stats,  Map<String, bool> flags,  AdState ads,  List<String> purchases,  String updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int schemaVersion,  int seq,  Map<String, int> stars,  Map<String, int> currentLevel,  int coins,  int xp,  List<String> inventory,  Map<String, String> equipped,  StreakState streak,  Map<String, DailyResult> daily,  Map<String, String> achievements,  QuestState quests,  SaveSettings settings,  PlayStats stats,  Map<String, bool> flags,  AdState ads,  CompanionState companion,  List<String> purchases,  String updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _SaveData():
-return $default(_that.schemaVersion,_that.seq,_that.stars,_that.currentLevel,_that.coins,_that.xp,_that.inventory,_that.equipped,_that.streak,_that.daily,_that.achievements,_that.quests,_that.settings,_that.stats,_that.flags,_that.ads,_that.purchases,_that.updatedAt);case _:
+return $default(_that.schemaVersion,_that.seq,_that.stars,_that.currentLevel,_that.coins,_that.xp,_that.inventory,_that.equipped,_that.streak,_that.daily,_that.achievements,_that.quests,_that.settings,_that.stats,_that.flags,_that.ads,_that.companion,_that.purchases,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -2327,10 +2661,10 @@ return $default(_that.schemaVersion,_that.seq,_that.stars,_that.currentLevel,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int schemaVersion,  int seq,  Map<String, int> stars,  Map<String, int> currentLevel,  int coins,  int xp,  List<String> inventory,  Map<String, String> equipped,  StreakState streak,  Map<String, DailyResult> daily,  Map<String, String> achievements,  QuestState quests,  SaveSettings settings,  PlayStats stats,  Map<String, bool> flags,  AdState ads,  List<String> purchases,  String updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int schemaVersion,  int seq,  Map<String, int> stars,  Map<String, int> currentLevel,  int coins,  int xp,  List<String> inventory,  Map<String, String> equipped,  StreakState streak,  Map<String, DailyResult> daily,  Map<String, String> achievements,  QuestState quests,  SaveSettings settings,  PlayStats stats,  Map<String, bool> flags,  AdState ads,  CompanionState companion,  List<String> purchases,  String updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _SaveData() when $default != null:
-return $default(_that.schemaVersion,_that.seq,_that.stars,_that.currentLevel,_that.coins,_that.xp,_that.inventory,_that.equipped,_that.streak,_that.daily,_that.achievements,_that.quests,_that.settings,_that.stats,_that.flags,_that.ads,_that.purchases,_that.updatedAt);case _:
+return $default(_that.schemaVersion,_that.seq,_that.stars,_that.currentLevel,_that.coins,_that.xp,_that.inventory,_that.equipped,_that.streak,_that.daily,_that.achievements,_that.quests,_that.settings,_that.stats,_that.flags,_that.ads,_that.companion,_that.purchases,_that.updatedAt);case _:
   return null;
 
 }
@@ -2342,7 +2676,7 @@ return $default(_that.schemaVersion,_that.seq,_that.stars,_that.currentLevel,_th
 @JsonSerializable()
 
 class _SaveData extends SaveData {
-  const _SaveData({this.schemaVersion = currentSaveSchema, this.seq = 0,  Map<String, int> stars = const <String, int>{},  Map<String, int> currentLevel = const <String, int>{'1' : 1}, this.coins = 0, this.xp = 0,  List<String> inventory = const <String>[],  Map<String, String> equipped = const <String, String>{}, this.streak = const StreakState(),  Map<String, DailyResult> daily = const <String, DailyResult>{},  Map<String, String> achievements = const <String, String>{}, this.quests = const QuestState(), this.settings = const SaveSettings(), this.stats = const PlayStats(),  Map<String, bool> flags = const <String, bool>{}, this.ads = const AdState(),  List<String> purchases = const <String>[], this.updatedAt = ''}): _stars = stars,_currentLevel = currentLevel,_inventory = inventory,_equipped = equipped,_daily = daily,_achievements = achievements,_flags = flags,_purchases = purchases,super._();
+  const _SaveData({this.schemaVersion = currentSaveSchema, this.seq = 0,  Map<String, int> stars = const <String, int>{},  Map<String, int> currentLevel = const <String, int>{'1' : 1}, this.coins = 0, this.xp = 0,  List<String> inventory = const <String>[],  Map<String, String> equipped = const <String, String>{}, this.streak = const StreakState(),  Map<String, DailyResult> daily = const <String, DailyResult>{},  Map<String, String> achievements = const <String, String>{}, this.quests = const QuestState(), this.settings = const SaveSettings(), this.stats = const PlayStats(),  Map<String, bool> flags = const <String, bool>{}, this.ads = const AdState(), this.companion = const CompanionState(),  List<String> purchases = const <String>[], this.updatedAt = ''}): _stars = stars,_currentLevel = currentLevel,_inventory = inventory,_equipped = equipped,_daily = daily,_achievements = achievements,_flags = flags,_purchases = purchases,super._();
   factory _SaveData.fromJson(Map<String, dynamic> json) => _$SaveDataFromJson(json);
 
 @override@JsonKey() final  int schemaVersion;
@@ -2416,6 +2750,8 @@ class _SaveData extends SaveData {
 
 /// Ad frequency state.
 @override@JsonKey() final  AdState ads;
+/// The Chime Companion (notifications).
+@override@JsonKey() final  CompanionState companion;
 /// Store transactions already fulfilled (purchases are idempotent).
  final  List<String> _purchases;
 /// Store transactions already fulfilled (purchases are idempotent).
@@ -2440,18 +2776,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SaveData&&(identical(other.schemaVersion, schemaVersion) || other.schemaVersion == schemaVersion)&&(identical(other.seq, seq) || other.seq == seq)&&const DeepCollectionEquality().equals(other.stars, _stars)&&const DeepCollectionEquality().equals(other.currentLevel, _currentLevel)&&(identical(other.coins, coins) || other.coins == coins)&&(identical(other.xp, xp) || other.xp == xp)&&const DeepCollectionEquality().equals(other.inventory, _inventory)&&const DeepCollectionEquality().equals(other.equipped, _equipped)&&(identical(other.streak, streak) || other.streak == streak)&&const DeepCollectionEquality().equals(other.daily, _daily)&&const DeepCollectionEquality().equals(other.achievements, _achievements)&&(identical(other.quests, quests) || other.quests == quests)&&(identical(other.settings, settings) || other.settings == settings)&&(identical(other.stats, stats) || other.stats == stats)&&const DeepCollectionEquality().equals(other.flags, _flags)&&(identical(other.ads, ads) || other.ads == ads)&&const DeepCollectionEquality().equals(other.purchases, _purchases)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SaveData&&(identical(other.schemaVersion, schemaVersion) || other.schemaVersion == schemaVersion)&&(identical(other.seq, seq) || other.seq == seq)&&const DeepCollectionEquality().equals(other.stars, _stars)&&const DeepCollectionEquality().equals(other.currentLevel, _currentLevel)&&(identical(other.coins, coins) || other.coins == coins)&&(identical(other.xp, xp) || other.xp == xp)&&const DeepCollectionEquality().equals(other.inventory, _inventory)&&const DeepCollectionEquality().equals(other.equipped, _equipped)&&(identical(other.streak, streak) || other.streak == streak)&&const DeepCollectionEquality().equals(other.daily, _daily)&&const DeepCollectionEquality().equals(other.achievements, _achievements)&&(identical(other.quests, quests) || other.quests == quests)&&(identical(other.settings, settings) || other.settings == settings)&&(identical(other.stats, stats) || other.stats == stats)&&const DeepCollectionEquality().equals(other.flags, _flags)&&(identical(other.ads, ads) || other.ads == ads)&&(identical(other.companion, companion) || other.companion == companion)&&const DeepCollectionEquality().equals(other.purchases, _purchases)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,schemaVersion,seq,const DeepCollectionEquality().hash(_stars),const DeepCollectionEquality().hash(_currentLevel),coins,xp,const DeepCollectionEquality().hash(_inventory),const DeepCollectionEquality().hash(_equipped),streak,const DeepCollectionEquality().hash(_daily),const DeepCollectionEquality().hash(_achievements),quests,settings,stats,const DeepCollectionEquality().hash(_flags),ads,const DeepCollectionEquality().hash(_purchases),updatedAt);
+    return Object.hashAll([runtimeType,schemaVersion,seq,const DeepCollectionEquality().hash(_stars),const DeepCollectionEquality().hash(_currentLevel),coins,xp,const DeepCollectionEquality().hash(_inventory),const DeepCollectionEquality().hash(_equipped),streak,const DeepCollectionEquality().hash(_daily),const DeepCollectionEquality().hash(_achievements),quests,settings,stats,const DeepCollectionEquality().hash(_flags),ads,companion,const DeepCollectionEquality().hash(_purchases),updatedAt]);
 }
 
 @override
 String toString() {
-    return 'SaveData(schemaVersion: $schemaVersion, seq: $seq, stars: $stars, currentLevel: $currentLevel, coins: $coins, xp: $xp, inventory: $inventory, equipped: $equipped, streak: $streak, daily: $daily, achievements: $achievements, quests: $quests, settings: $settings, stats: $stats, flags: $flags, ads: $ads, purchases: $purchases, updatedAt: $updatedAt)';
+    return 'SaveData(schemaVersion: $schemaVersion, seq: $seq, stars: $stars, currentLevel: $currentLevel, coins: $coins, xp: $xp, inventory: $inventory, equipped: $equipped, streak: $streak, daily: $daily, achievements: $achievements, quests: $quests, settings: $settings, stats: $stats, flags: $flags, ads: $ads, companion: $companion, purchases: $purchases, updatedAt: $updatedAt)';
 }
 
 
@@ -2462,11 +2798,11 @@ abstract mixin class _$SaveDataCopyWith<$Res> implements $SaveDataCopyWith<$Res>
   factory _$SaveDataCopyWith(_SaveData value, $Res Function(_SaveData) _then) = __$SaveDataCopyWithImpl;
 @override @useResult
 $Res call({
- int schemaVersion, int seq, Map<String, int> stars, Map<String, int> currentLevel, int coins, int xp, List<String> inventory, Map<String, String> equipped, StreakState streak, Map<String, DailyResult> daily, Map<String, String> achievements, QuestState quests, SaveSettings settings, PlayStats stats, Map<String, bool> flags, AdState ads, List<String> purchases, String updatedAt
+ int schemaVersion, int seq, Map<String, int> stars, Map<String, int> currentLevel, int coins, int xp, List<String> inventory, Map<String, String> equipped, StreakState streak, Map<String, DailyResult> daily, Map<String, String> achievements, QuestState quests, SaveSettings settings, PlayStats stats, Map<String, bool> flags, AdState ads, CompanionState companion, List<String> purchases, String updatedAt
 });
 
 
-@override $StreakStateCopyWith<$Res> get streak;@override $QuestStateCopyWith<$Res> get quests;@override $SaveSettingsCopyWith<$Res> get settings;@override $PlayStatsCopyWith<$Res> get stats;@override $AdStateCopyWith<$Res> get ads;
+@override $StreakStateCopyWith<$Res> get streak;@override $QuestStateCopyWith<$Res> get quests;@override $SaveSettingsCopyWith<$Res> get settings;@override $PlayStatsCopyWith<$Res> get stats;@override $AdStateCopyWith<$Res> get ads;@override $CompanionStateCopyWith<$Res> get companion;
 
 }
 /// @nodoc
@@ -2479,7 +2815,7 @@ class __$SaveDataCopyWithImpl<$Res>
 
 /// Create a copy of SaveData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? schemaVersion = null,Object? seq = null,Object? stars = null,Object? currentLevel = null,Object? coins = null,Object? xp = null,Object? inventory = null,Object? equipped = null,Object? streak = null,Object? daily = null,Object? achievements = null,Object? quests = null,Object? settings = null,Object? stats = null,Object? flags = null,Object? ads = null,Object? purchases = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? schemaVersion = null,Object? seq = null,Object? stars = null,Object? currentLevel = null,Object? coins = null,Object? xp = null,Object? inventory = null,Object? equipped = null,Object? streak = null,Object? daily = null,Object? achievements = null,Object? quests = null,Object? settings = null,Object? stats = null,Object? flags = null,Object? ads = null,Object? companion = null,Object? purchases = null,Object? updatedAt = null,}) {
   return _then(_SaveData(
 schemaVersion: null == schemaVersion ? _self.schemaVersion : schemaVersion // ignore: cast_nullable_to_non_nullable
 as int,seq: null == seq ? _self.seq : seq // ignore: cast_nullable_to_non_nullable
@@ -2497,7 +2833,8 @@ as QuestState,settings: null == settings ? _self.settings : settings // ignore: 
 as SaveSettings,stats: null == stats ? _self.stats : stats // ignore: cast_nullable_to_non_nullable
 as PlayStats,flags: null == flags ? _self._flags : flags // ignore: cast_nullable_to_non_nullable
 as Map<String, bool>,ads: null == ads ? _self.ads : ads // ignore: cast_nullable_to_non_nullable
-as AdState,purchases: null == purchases ? _self._purchases : purchases // ignore: cast_nullable_to_non_nullable
+as AdState,companion: null == companion ? _self.companion : companion // ignore: cast_nullable_to_non_nullable
+as CompanionState,purchases: null == purchases ? _self._purchases : purchases // ignore: cast_nullable_to_non_nullable
 as List<String>,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -2547,6 +2884,15 @@ $AdStateCopyWith<$Res> get ads {
   
   return $AdStateCopyWith<$Res>(_self.ads, (value) {
     return _then(_self.copyWith(ads: value));
+  });
+}/// Create a copy of SaveData
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CompanionStateCopyWith<$Res> get companion {
+  
+  return $CompanionStateCopyWith<$Res>(_self.companion, (value) {
+    return _then(_self.copyWith(companion: value));
   });
 }
 }

@@ -2,17 +2,28 @@ import 'package:arrowchime/core/level/generator/chapter_plan.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('band table (docs/04 §5)', () {
+  group('band table (docs/04 §1.2, V2 dense boards)', () {
     test('values match the doc', () {
       const b = ChapterPlan.bands;
       expect(b.keys, [1, 2, 3, 4, 5]);
-      expect((b[1]!.sizeMin, b[1]!.sizeMax), (6, 12));
-      expect((b[1]!.scoreMin, b[1]!.scoreMax, b[1]!.bossScore), (10, 35, 45));
-      expect((b[2]!.sizeMin, b[2]!.sizeMax), (8, 14));
-      expect((b[3]!.fillMin, b[3]!.fillMax), (0.70, 0.85));
-      expect((b[4]!.scoreMin, b[4]!.scoreMax, b[4]!.bossScore), (40, 65, 75));
-      expect((b[5]!.sizeMin, b[5]!.sizeMax), (14, 22));
-      expect((b[5]!.scoreMin, b[5]!.scoreMax, b[5]!.bossScore), (50, 75, 88));
+      expect((b[1]!.sizeMin, b[1]!.sizeMax), (10, 17));
+      expect((b[1]!.scoreMin, b[1]!.scoreMax, b[1]!.bossScore), (26, 56, 66));
+      expect((b[2]!.sizeMin, b[2]!.sizeMax), (14, 22));
+      expect((b[3]!.fillMin, b[3]!.fillMax), (0.86, 0.92));
+      expect((b[5]!.sizeMin, b[5]!.sizeMax), (26, 34));
+      expect((b[5]!.scoreMin, b[5]!.scoreMax, b[5]!.bossScore), (68, 88, 94));
+    });
+
+    test('boards are busy: every chapter demands many arrows', () {
+      for (final c in ChapterPlan.bands.keys) {
+        expect(ChapterPlan.minArrows(c, 1), greaterThanOrEqualTo(16));
+        expect(
+          ChapterPlan.minArrows(c, 59),
+          greaterThan(ChapterPlan.minArrows(c, 2)),
+        );
+      }
+      expect(ChapterPlan.minArrows(1, 59), greaterThanOrEqualTo(50));
+      expect(ChapterPlan.minArrows(5, 59), greaterThanOrEqualTo(150));
     });
   });
 
@@ -25,15 +36,15 @@ void main() {
     });
 
     test('target = band interpolation + saw, knot +8, boss absolute', () {
-      // Chapter 1, level 3: 10 + 25 * 3/60 + 6.
+      // Chapter 1, level 3: 26 + 30 * 3/60 + 6.
       expect(
         ChapterPlan.targetScore(1, 3),
-        closeTo(10 + 25 * 3 / 60 + 6, 1e-9),
+        closeTo(26 + 30 * 3 / 60 + 6, 1e-9),
       );
-      // Knot (level 10): 10 + 25*10/60 + (-8) + 8.
-      expect(ChapterPlan.targetScore(1, 10), closeTo(10 + 25 * 10 / 60, 1e-9));
-      expect(ChapterPlan.targetScore(1, 60), 45);
-      expect(ChapterPlan.targetScore(5, 60), 88);
+      // Knot (level 10): 26 + 30*10/60 + (-8) + 8.
+      expect(ChapterPlan.targetScore(1, 10), closeTo(26 + 30 * 10 / 60, 1e-9));
+      expect(ChapterPlan.targetScore(1, 60), 66);
+      expect(ChapterPlan.targetScore(5, 60), 94);
     });
 
     test('every target is on the 0–100 scale', () {
@@ -73,19 +84,32 @@ void main() {
       expect(ChapterPlan.isBreather(6), isFalse);
     });
 
-    test('masks: knots cycle shapes, boss is a circle, chapter 1 from L12', () {
-      expect(ChapterPlan.maskKind(1, 10), 'heart');
-      expect(ChapterPlan.maskKind(1, 20), 'ring');
-      expect(ChapterPlan.maskKind(1, 30), 'diamond');
-      expect(ChapterPlan.maskKind(1, 40), 'star');
-      expect(ChapterPlan.maskKind(1, 50), 'cross');
-      expect(ChapterPlan.maskKind(3, 60), 'circle');
-      expect(ChapterPlan.maskKind(1, 8), isNull, reason: 'no masks before L12');
-      expect(ChapterPlan.maskKind(1, 11), isNull);
-      expect(ChapterPlan.maskKind(1, 12), 'diamond');
-      expect(ChapterPlan.maskKind(1, 16), 'ring');
-      expect(ChapterPlan.maskKind(2, 3), isNotNull);
-      expect(ChapterPlan.maskKind(2, 4), isNull);
+    test(
+      'masks: nearly every level is a silhouette, the first are squares',
+      () {
+        for (var i = 1; i <= 5; i++) {
+          expect(ChapterPlan.maskKind(1, i), isNull, reason: 'onboarding L$i');
+        }
+        expect(ChapterPlan.maskKind(3, 60), 'circle', reason: 'the boss');
+        for (final c in ChapterPlan.bands.keys) {
+          var shaped = 0;
+          for (var i = 6; i <= 59; i++) {
+            final kind = ChapterPlan.maskKind(c, i);
+            if (kind != null) shaped++;
+            if (ChapterPlan.isKnot(i)) {
+              expect(kind, isNotNull, reason: 'knots are always shaped');
+            }
+          }
+          expect(shaped, greaterThan(54 * 0.6), reason: 'ch$c');
+          expect(shaped, lessThan(54), reason: 'ch$c keeps some squares');
+        }
+      },
+    );
+
+    test('many different silhouettes appear in one chapter', () {
+      final kinds = {for (var i = 6; i <= 59; i++) ChapterPlan.maskKind(1, i)}
+        ..remove(null);
+      expect(kinds.length, greaterThanOrEqualTo(12));
     });
   });
 
@@ -140,24 +164,46 @@ void main() {
   });
 
   group('paramsFor', () {
-    test('board grows from level 1 to the boss', () {
+    test('boards grow over the chapter and stay within the limit', () {
       for (final c in ChapterPlan.bands.keys) {
         final b = ChapterPlan.bands[c]!;
-        expect(ChapterPlan.paramsFor(c, 1).width, b.sizeMin);
+        expect(
+          ChapterPlan.paramsFor(c, 1).width,
+          greaterThanOrEqualTo(b.sizeMin),
+        );
+        for (var i = 1; i <= 60; i++) {
+          expect(
+            ChapterPlan.paramsFor(c, i).width,
+            lessThanOrEqualTo(ChapterPlan.maxBoardSize),
+          );
+        }
         expect(
           ChapterPlan.paramsFor(c, 59).width,
-          greaterThanOrEqualTo(b.sizeMax - 1),
+          greaterThanOrEqualTo(b.sizeMax - 2),
         );
-        expect(ChapterPlan.paramsFor(c, 60).width, b.sizeMax + 2);
       }
     });
 
-    test('knots are bigger, breathers smaller', () {
+    test('a thin silhouette gets a bigger board for the same cell count', () {
+      // Level 6 of chapter 1 is a plain-sized plan; every shaped board has at
+      // least two thirds of a full square of the planned size to play on.
+      for (var i = 6; i <= 59; i++) {
+        final p = ChapterPlan.paramsFor(1, i);
+        final cells = p.mask == null
+            ? p.width * p.height
+            : p.mask!.fold<int>(
+                0,
+                (a, r) => a + r.split('').where((x) => x == '1').length,
+              );
+        expect(cells, greaterThan(20), reason: 'L$i');
+      }
+    });
+
+    test('knots are shaped and breathers are less full', () {
       final knot = ChapterPlan.paramsFor(1, 30);
       final plain = ChapterPlan.paramsFor(1, 31);
       final breather = ChapterPlan.paramsFor(1, 35);
       expect(knot.mask, isNotNull);
-      expect(breather.width, lessThanOrEqualTo(plain.width));
       expect(breather.targetFill, lessThan(plain.targetFill));
     });
 
@@ -165,22 +211,31 @@ void main() {
       final easy = ChapterPlan.paramsFor(2, 30, adapt: -3);
       final hard = ChapterPlan.paramsFor(2, 30, adapt: 3);
       expect(hard.targetFill, greaterThan(easy.targetFill));
-      expect(hard.width, greaterThanOrEqualTo(easy.width));
       final clamped = ChapterPlan.paramsFor(2, 30, adapt: 99);
       expect(clamped.targetFill, hard.targetFill);
       expect(
         ChapterPlan.paramsFor(1, 1, adapt: -3).width,
-        greaterThanOrEqualTo(5),
+        greaterThanOrEqualTo(6),
       );
       expect(
         ChapterPlan.paramsFor(5, 60, adapt: 3).width,
-        lessThanOrEqualTo(24),
+        lessThanOrEqualTo(ChapterPlan.maxBoardSize),
       );
     });
 
-    test('rotator chapters ask for single-cell arrows', () {
-      expect(ChapterPlan.paramsFor(2, 5).singleCellShare, greaterThan(0));
-      expect(ChapterPlan.paramsFor(1, 5).singleCellShare, 0);
+    test('rotator chapters ask for more single-cell arrows', () {
+      expect(
+        ChapterPlan.paramsFor(2, 5).singleCellShare,
+        greaterThan(ChapterPlan.paramsFor(1, 5).singleCellShare),
+      );
+    });
+
+    test('bodies are short and skewed short so arrows are many', () {
+      final p = ChapterPlan.paramsFor(3, 30);
+      expect(p.lenMin, 2);
+      expect(p.lenMax, lessThanOrEqualTo(11));
+      expect(p.lenSkew, greaterThan(0));
+      expect(p.peelBias, greaterThan(0.5));
     });
   });
 

@@ -118,3 +118,45 @@ class _SheetRoute<T> extends PopupRoute<T> {
     );
   }
 }
+
+/// Shows [page] as an opaque full-screen route that fades in (no scrim). Used
+/// by the win screen. Pop it with `Navigator.pop`.
+Future<T?> showTBFullscreen<T>(BuildContext context, {required Widget page}) {
+  return Navigator.of(context).push<T>(_FullscreenRoute<T>(page: page));
+}
+
+class _FullscreenRoute<T> extends PopupRoute<T> {
+  new({required this.page});
+
+  final Widget page;
+
+  @override
+  bool get barrierDismissible => false;
+
+  @override
+  Color? get barrierColor => null;
+
+  @override
+  String? get barrierLabel => null;
+
+  @override
+  bool get opaque => true;
+
+  @override
+  Duration get transitionDuration => TBMotion.enter;
+
+  @override
+  Widget buildPage(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) => page;
+
+  @override
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) => FadeTransition(opacity: animation, child: child);
+}

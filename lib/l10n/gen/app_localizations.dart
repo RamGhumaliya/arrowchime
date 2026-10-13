@@ -304,6 +304,204 @@ abstract class AppLocalizations {
   /// **'{count} of 3 stars'**
   String winStars(int count);
 
+  /// No description provided for @companionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Chime Companion'**
+  String get companionTitle;
+
+  /// No description provided for @companionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A kind nudge now and then? We\'ll cheer you on and remind you when a streak needs a play. One note a day at most, never at night.'**
+  String get companionBody;
+
+  /// No description provided for @companionYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, please'**
+  String get companionYes;
+
+  /// No description provided for @companionLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Maybe later'**
+  String get companionLater;
+
+  /// No description provided for @noteAppreciationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A great day'**
+  String get noteAppreciationTitle;
+
+  /// No description provided for @noteAppreciationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You cleared {n} levels yesterday, your best day yet.'**
+  String noteAppreciationBody(int n);
+
+  /// No description provided for @noteStreakTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your {n}-day streak'**
+  String noteStreakTitle(int n);
+
+  /// No description provided for @noteStreakBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It is safe until midnight. One quick puzzle keeps it going.'**
+  String get noteStreakBody;
+
+  /// No description provided for @noteDailyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Daily Chime'**
+  String get noteDailyTitle;
+
+  /// No description provided for @noteDailyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A fresh puzzle is ready. About four minutes.'**
+  String get noteDailyBody;
+
+  /// No description provided for @noteComeback3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Your arrows are waiting'**
+  String get noteComeback3Title;
+
+  /// No description provided for @noteComeback3Body.
+  ///
+  /// In en, this message translates to:
+  /// **'No pressure. Whenever you are ready.'**
+  String get noteComeback3Body;
+
+  /// No description provided for @noteComeback7Title.
+  ///
+  /// In en, this message translates to:
+  /// **'We kept your place'**
+  String get noteComeback7Title;
+
+  /// No description provided for @noteComeback7Body.
+  ///
+  /// In en, this message translates to:
+  /// **'A free hint is waiting. Come back whenever you like.'**
+  String get noteComeback7Body;
+
+  /// No description provided for @settingsCompanion.
+  ///
+  /// In en, this message translates to:
+  /// **'Chime Companion'**
+  String get settingsCompanion;
+
+  /// No description provided for @settingsCompanionNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get settingsCompanionNormal;
+
+  /// No description provided for @settingsCompanionFewer.
+  ///
+  /// In en, this message translates to:
+  /// **'Fewer'**
+  String get settingsCompanionFewer;
+
+  /// No description provided for @settingsCompanionOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get settingsCompanionOff;
+
+  /// No description provided for @settingsCompanionNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Kind notes, at most one a day, never at night.'**
+  String get settingsCompanionNote;
+
+  /// No description provided for @diaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Chime Diary'**
+  String get diaryTitle;
+
+  /// No description provided for @diaryIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Your best moments so far.'**
+  String get diaryIntro;
+
+  /// No description provided for @diaryLevels.
+  ///
+  /// In en, this message translates to:
+  /// **'Levels cleared'**
+  String get diaryLevels;
+
+  /// No description provided for @diaryArrows.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrows freed'**
+  String get diaryArrows;
+
+  /// No description provided for @diaryBestChain.
+  ///
+  /// In en, this message translates to:
+  /// **'Best chain'**
+  String get diaryBestChain;
+
+  /// No description provided for @diaryChainValue.
+  ///
+  /// In en, this message translates to:
+  /// **'×{n}'**
+  String diaryChainValue(int n);
+
+  /// No description provided for @diaryStreakBest.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest streak'**
+  String get diaryStreakBest;
+
+  /// No description provided for @diaryDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} days'**
+  String diaryDays(int n);
+
+  /// No description provided for @diaryPerfect.
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect clears'**
+  String get diaryPerfect;
+
+  /// No description provided for @diaryBestDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Best day'**
+  String get diaryBestDay;
+
+  /// No description provided for @diaryLevelsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} levels'**
+  String diaryLevelsCount(int n);
+
+  /// No description provided for @diaryTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Time played'**
+  String get diaryTime;
+
+  /// No description provided for @diaryMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} min'**
+  String diaryMinutes(int n);
+
+  /// No description provided for @winHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Beautifully done!'**
+  String get winHeadline;
+
   /// No description provided for @winNext.
   ///
   /// In en, this message translates to:
@@ -349,31 +547,31 @@ abstract class AppLocalizations {
   /// No description provided for @chapterName1.
   ///
   /// In en, this message translates to:
-  /// **'Misty Garden'**
+  /// **'levels 1–60'**
   String get chapterName1;
 
   /// No description provided for @chapterName2.
   ///
   /// In en, this message translates to:
-  /// **'Clockwork Town'**
+  /// **'levels 61–120'**
   String get chapterName2;
 
   /// No description provided for @chapterName3.
   ///
   /// In en, this message translates to:
-  /// **'Lantern Bazaar'**
+  /// **'levels 121–180'**
   String get chapterName3;
 
   /// No description provided for @chapterName4.
   ///
   /// In en, this message translates to:
-  /// **'Frost Peaks'**
+  /// **'levels 181–240'**
   String get chapterName4;
 
   /// No description provided for @chapterName5.
   ///
   /// In en, this message translates to:
-  /// **'Starlight Observatory'**
+  /// **'levels 241–300'**
   String get chapterName5;
 
   /// No description provided for @homePlay.
@@ -1675,7 +1873,7 @@ abstract class AppLocalizations {
   /// No description provided for @collLockChapter.
   ///
   /// In en, this message translates to:
-  /// **'Restore {name}'**
+  /// **'Clear {name}'**
   String collLockChapter(String name);
 
   /// No description provided for @collLockStars.

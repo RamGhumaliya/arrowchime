@@ -139,7 +139,7 @@ class _TogglePainter extends CustomPainter {
       const Radius.circular(TBRadius.pill),
     );
     final on = t.clamp(0.0, 1.0);
-    var fill = Color.lerp(TBColors.ink700, TBColors.teal, on)!;
+    var fill = Color.lerp(TBColors.cream300, TBColors.tangerine, on)!;
     if (!enabled) fill = TBShade.desaturate(fill, TBBevel.disabledDesaturation);
     Inset.paint(canvas, track, fill: fill, shadowOpacity: 0.45);
 

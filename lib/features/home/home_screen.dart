@@ -6,6 +6,7 @@ import 'package:arrowchime/app/theme/tokens.dart';
 import 'package:arrowchime/core/ads/ads_controller.dart';
 import 'package:arrowchime/core/ads/tracking_service.dart';
 import 'package:arrowchime/core/audio/audio_service.dart';
+import 'package:arrowchime/core/companion/companion_controller.dart';
 import 'package:arrowchime/core/iap/starter_offer.dart';
 import 'package:arrowchime/core/meta/date_key.dart';
 import 'package:arrowchime/core/meta/meta_actions.dart';
@@ -16,18 +17,16 @@ import 'package:arrowchime/core/remote_config/app_config.dart';
 import 'package:arrowchime/core/save/save_controller.dart';
 import 'package:arrowchime/core/ui/components/tb_button.dart';
 import 'package:arrowchime/core/ui/components/tb_icon_button.dart';
-import 'package:arrowchime/core/ui/components/tb_panel.dart';
 import 'package:arrowchime/core/ui/components/tb_pill.dart';
-import 'package:arrowchime/core/ui/components/tb_text.dart';
 import 'package:arrowchime/core/ui/icons/tb_icon_id.dart';
 import 'package:arrowchime/core/ui/painters/wood_painter.dart';
 import 'package:arrowchime/core/ui/support/tb_layout.dart';
 import 'package:arrowchime/core/ui/support/tb_pressable.dart';
+import 'package:arrowchime/features/companion/companion_sheet.dart';
 import 'package:arrowchime/features/home/daily_plaque.dart';
 import 'package:arrowchime/features/home/home_backdrop.dart';
 import 'package:arrowchime/features/home/streak_badge.dart';
 import 'package:arrowchime/features/quests/quests_sheet.dart';
-import 'package:arrowchime/features/shared/chapter_names.dart';
 import 'package:arrowchime/features/shop/att_sheet.dart';
 import 'package:arrowchime/features/shop/starter_bundle_sheet.dart';
 import 'package:arrowchime/l10n/gen/app_localizations.dart';
@@ -105,6 +104,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         (d) => StarterOffer.shown(d, nowMs: nowMs, today: DateKey.of(now)),
       );
       await showStarterBundleSheet(context);
+      return;
+    }
+    final companion = ref.read(companionControllerProvider);
+    if (companion.shouldAsk() && mounted) {
+      final choice = await showCompanionSheet(context);
+      if (choice == CompanionChoice.yes) {
+        await companion.accept();
+      } else {
+        companion.later();
+      }
     }
   }
 
@@ -117,7 +126,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final theme = ChapterTheme.byId(chapter);
     final margin = TBLayout.screenMargin(context);
     final width = MediaQuery.sizeOf(context).width;
-    final percent = (Progression.restoration(save, chapter) * 100).round();
     final dailyDone = save.daily.containsKey(DateKey.utc(now));
     final streak = Streak.liveCount(save.streak, DateKey.of(now));
 
@@ -148,16 +156,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     onSettings: () => context.push(AppRoutes.settings),
                   ),
                   const SizedBox(height: TBSpacing.s12),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: _ChapterPlaque(
-                      label: l10n.homeChapterPlaque(
-                        chapterName(l10n, chapter),
-                        percent,
-                      ),
-                      onTap: () => context.push(AppRoutes.chapterMap),
-                    ),
-                  ),
                   const Spacer(),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -174,7 +172,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SizedBox(
                     width: (width - 2 * margin) * _playWidth,
                     child: TBButton.primary(
-                      label: l10n.homePlay(index),
+                      label: l10n.homePlay((chapter - 1) * 60 + index),
                       expand: true,
                       onPressed: () => context.push(
                         AppRoutes.levelPath('ch$chapter', index),
@@ -186,6 +184,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     onShop: () => context.push(AppRoutes.shop),
                     onCollection: () => context.push(AppRoutes.collection),
                     onQuests: () => showQuestsSheet(context),
+                    onDiary: () => context.push(AppRoutes.diary),
                   ),
                 ],
               ),
@@ -248,42 +247,18 @@ class _TopRow extends StatelessWidget {
   }
 }
 
-class _ChapterPlaque extends StatelessWidget {
-  const new({required this.label, required this.onTap});
-
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return TBPressable(
-      onPressed: onTap,
-      semanticLabel: label,
-      builder: (context, press) => Transform.translate(
-        offset: Offset(0, TBSizes.buttonPressDepth * press.press),
-        child: TBPanel(
-          radius: TBRadius.r20,
-          padding: const EdgeInsets.symmetric(
-            horizontal: TBSpacing.s16,
-            vertical: TBSpacing.s8,
-          ),
-          child: TBText.body(label, color: TBColors.ink900),
-        ),
-      ),
-    );
-  }
-}
-
 class _Shelf extends StatelessWidget {
   const new({
     required this.onShop,
     required this.onCollection,
     required this.onQuests,
+    required this.onDiary,
   });
 
   final VoidCallback onShop;
   final VoidCallback onCollection;
   final VoidCallback onQuests;
+  final VoidCallback onDiary;
 
   @override
   Widget build(BuildContext context) {
@@ -312,6 +287,11 @@ class _Shelf extends StatelessWidget {
               icon: TBIconId.quests,
               semanticLabel: l10n.homeQuests,
               onPressed: onQuests,
+            ),
+            TBIconButton(
+              icon: TBIconId.bell,
+              semanticLabel: l10n.diaryTitle,
+              onPressed: onDiary,
             ),
           ],
         ),

@@ -14,7 +14,7 @@ import 'package:integration_test/integration_test.dart';
 /// (`docs/09` Phase 4 acceptance): every arrow is tapped on screen in the
 /// solution order, each level must reach the win sheet, and "Next level" must
 /// open the following one. Run with
-/// `flutter test integration_test/play_chapter1_test.dart --flavor dev`.
+/// `flutter test integration_test/play_chapter1_test.dart`.
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 

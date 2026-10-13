@@ -11,7 +11,7 @@
 | Routing | `go_router` | Deep links from notifications (`/daily`, `/level/ch1/7`). |
 | Models | `freezed` + `json_serializable` | Immutable models, generated JSON. |
 | Local storage | `hive_ce` (+ `hive_ce_flutter`) | Fast local object storage on Android & iOS. |
-| Backend | Firebase: Core, Auth (anonymous + Google + Apple), Firestore (cloud save, daily leaderboard v1.1), Remote Config, Analytics, Crashlytics, Storage (daily/event packs) | Two Firebase projects: `arrowchime-dev`, `arrowchime-prod` (flavors). |
+| Backend | Firebase: Core, Auth (anonymous + Google + Apple), Firestore (cloud save, daily leaderboard v1.1), Remote Config, Analytics, Crashlytics, Storage (daily/event packs) | One Firebase project: `arrowchime-prod` (no flavors). |
 | Ads | `google_mobile_ads` + Google UMP consent | Behind `AdsService`; a fake implementation is used in tests and dev. |
 | IAP | RevenueCat (`purchases_flutter`) **or** `in_app_purchase` | RevenueCat recommended (receipt validation, entitlements, paywall analytics). Decide before Phase 8. |
 | UI | Custom `TB*` component library (`lib/core/ui/`) per `10_DESIGN_SYSTEM.md`; `flutter_animate`; Rive for animated mascot/3D-feel buttons (optional) | No default Material look in player UI. |
@@ -50,7 +50,7 @@ arrowchime/
 ├── CLAUDE.md
 ├── docs/                         # this pack
 ├── lib/
-│   ├── main_dev.dart / main_prod.dart
+│   ├── main.dart
 │   ├── bootstrap.dart            # init Firebase, Hive, audio, error handlers
 │   ├── app/
 │   │   ├── app.dart              # MaterialApp.router, theme, l10n
@@ -165,6 +165,6 @@ Level ids and difficulty score attached to level events → lets you re-tune dif
 `hearts_per_level`, `interstitial_min_level`, `interstitial_min_seconds_between`, `interstitial_every_n_levels`, `max_interstitials_per_hour`, `rewarded_heart_cap`, `hint_price`, `undo_price`, `heart_price`, `peek_shows_verdict`, `daily_reward_coins`, `remove_ads_sku`, `starter_bundle_enabled`, `event_tangle_tower_enabled`.
 
 ## 11. CI / delivery
-- GitHub Actions on every PR: `dart format --set-exit-if-changed`, `flutter analyze`, `flutter test` (incl. golden tests), `dart run tool/level_check.dart assets/levels/`, `flutter build appbundle --flavor dev`; macOS runner for `flutter build ios --no-codesign` nightly.
+- GitHub Actions on every PR: `dart format --set-exit-if-changed`, `flutter analyze`, `flutter test` (incl. golden tests), `dart run tool/level_check.dart assets/levels/`, `flutter build appbundle`; macOS runner for `flutter build ios --no-codesign` nightly.
 - Release: Codemagic or Fastlane for Play Store and App Store (TestFlight + internal testing tracks).
-- Flavors: `dev` / `prod` (`--flavor` + `-t lib/main_dev.dart`), separate bundle ids, Firebase configs via `flutterfire configure`.
+- No flavors (V2): a single `prod` configuration, entrypoint `lib/main.dart`, bundle id `com.webazonic.arrowchime`, Firebase config via `flutterfire configure`.

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show immutable;
 
-/// Which level: chapter 1–5 and index 1–60 inside it, or a Daily Knot.
+/// Which level: stage 1… (endless) and index 1–60 inside it, or a Daily Knot.
+/// Players only see the global number ([globalIndex]).
 /// Value-equal so it can key Riverpod families.
 @immutable
 class LevelRef {
@@ -38,7 +39,7 @@ class LevelRef {
   static LevelRef? parse(String? chapter, String? index) {
     final c = int.tryParse((chapter ?? '').replaceFirst('ch', ''));
     final i = int.tryParse(index ?? '');
-    if (c == null || i == null || c < 1 || c > 5 || i < 1 || i > 60) {
+    if (c == null || i == null || c < 1 || c > 9999 || i < 1 || i > 60) {
       return null;
     }
     return LevelRef(c, i);

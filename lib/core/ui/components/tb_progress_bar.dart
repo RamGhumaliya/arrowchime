@@ -87,7 +87,7 @@ class _ProgressPainter extends CustomPainter {
       Offset.zero & size,
       const Radius.circular(TBRadius.pill),
     );
-    Inset.paint(canvas, tube, fill: TBColors.ink700, shadowOpacity: 0.5);
+    Inset.paint(canvas, tube, fill: TBColors.cream300);
 
     final inner = tube.deflate(TBBevel.rimLight * 1.5);
     final w = inner.width * value;
